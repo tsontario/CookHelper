@@ -30,10 +30,9 @@ public class IngredientMeasure {
     }
 
     /*
-    IngredientMeasure setters
-     */
-    public void setUnit(String unit){
-        this.unit = unit;
+IngredientMeasure setters
+ */
+    public void setUnit(String unit){this.unit = unit;
     }
 
     public void setAmount(int amount){
