@@ -39,4 +39,16 @@ public class IngredientMeasure {
     public void setAmount(int amount){
         this.amount = amount;
     }
+
+    /*
+    Unidirectional [*..1] link to specific Ingredient
+     */
+    public void setIngredientLink(Ingredient ingredient){
+        this.ingredient = ingredient;
+    }
+
+    public Ingredient getIngredient(){
+        return ingredient;
+    }
+
 }
