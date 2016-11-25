@@ -1,7 +1,7 @@
 package com.example.caitlin.cookhelper;
 
 /**
- * Created by PC on 2016-11-25.
+ * Ingredient class
  */
 
 public class Ingredient {
@@ -11,4 +11,16 @@ public class Ingredient {
     public Ingredient(String name){
         this.name = name;
     }
+
+    /*
+    Getters and setters to handle search & edit activities
+     */
+    public String getName(){
+        return name;
+    }
+
+    public void setName(String name){
+        this.name = name;
+    }
+
 }
