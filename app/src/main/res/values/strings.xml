@@ -1,3 +1,78 @@
 <resources>
+
     <string name="app_name">CookHelper</string>
+    <string name="add_a_recipe">Add a Recipe</string>
+    <string name="find_a_recipe">Find a Recipe</string>
+    <string name="browse_my_recipes">Browse my Recipes</string>
+    <string name="help">How to Use CookHelper</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+
+    <!--AddRecipe-->
+    <string name="enter_the_name_of_your_recipe_here">What\'s the name of your recipe?</string>
+    <string name="recipe_name">Recipe Name</string>
+    <string name="cookhelper">CookHelper</string>
+    <string name="category">Category</string>
+    <string name="enter_the_recipe_category_here">German? Thai?</string>
+    <string name="type">Type</string>
+    <string name="enter_the_recipe_type_here">Appetizer? Dessert?</string>
+    <string name="prep_time">Prep Time</string>
+    <string name="cook_time">Cook Time</string>
+    <string name="enter_the_time_here">How long?</string>
+    <string name="number_of_servings">Servings</string>
+    <string name="number_of_calories">Calories</string>
+    <string name="enter_the_servings_here">How many?</string>
+    <string name="enter_the_calories_here">Calories per serving?</string>
+    <string name="instructions">Instructions</string>
+    <string name="enter_first_instruction_here">What\'s the first instruction?</string>
+    <string name="enter_another_instruction_here">What\'s the next instruction?</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="enter_first_ingredient_here">What\'s the first ingredient?</string>
+    <string name="enter_another_ingredient_here">What\'s the next ingredient?</string>
+    <string name="quantity">Quantity</string>
+    <string name="measure">Unit</string>
+    <string name="ingredient_name">Ingredient</string>
+    <string name="quantity_hint">0.5</string>
+    <string name="measure_hint">Teaspoon</string>
+    <string name="ingredient_name_hint">Cinnamon</string>
+
+    <!--Home-->
+    <string name="tarjeta_roja">By Tarjeta Roja</string>
+
+    <!--Help-->
+    <string name="how_to_find">How do I find a recipe?</string>
+    <string name="how_to_find_instructions">First, go to the home screen and select the Find A
+        Recipe button. Next, enter your search criteria. You can select a Category and or a Type
+        from the drop-down menus. You can also enter ingredients that you would (or would not) like
+        a recipe to contain. For example, you can type "chicken AND onion NOT potato" in the field
+        that says Ingredients. Finally, select the Search button.</string>
+
+    <string name="how_to_browse">How do I view all of my recipes?</string>
+    <string name="how_to_browse_instructions">Go to the home screen and select the Browse
+        My Recipes button.</string>
+
+    <string name="how_to_add">How do I add a new recipe?</string>
+    <string name="how_to_add_instructions">Select the Add A Recipe button on the home screen. Then,
+    add your recipe\'s details to the form and select the Save button at the bottom of the screen.
+    </string>
+
+    <string name="how_to_edit">How do I edit a recipe?</string>
+    <string name="how_to_edit_instructions">First, select a recipe that you have already saved. You
+        can do this by browsing your recipes or by finding a recipe with search criteria. Now
+        select the recipe you wish to edit; you should see a screen with this recipe\'s details. In
+        the top-right corner of the screen, there is an icon with a pencil. Select this icon to edit
+        your recipe.</string>
+
+    <string name="how_to_delete">How do I delete a recipe?</string>
+    <string name="how_to_delete_instructions">Follow the steps to edit a recipe. However, instead of
+    selecting the icon with a pencil, select the icon with a garbage can. </string>
+
+    <!--FindRecipe-->
+    <string name="search_ingredients_instructions1">Use ingredients and the words AND, OR, and NOT
+    in the field below.</string>
+    <string name="search_ingredients_instructions2">Example: chicken AND onion NOT potato</string>
+    <string name="enter_search_ingredients">Enter ingredients here</string>
+    <string name="search">Search</string>
+
+
 </resources>
