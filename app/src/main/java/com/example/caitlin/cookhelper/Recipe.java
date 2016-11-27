@@ -40,6 +40,14 @@ public class Recipe {
         directions = someDirections;    // Q: Where will we add the end of direction symbols
         type = aType;                   // for each line?
         category = aCategory;
+
+        // Q: In what form will the Ingredient names and
+        // IngredientMeasure units and amounts be sent to Recipe?
+
+        Ingredient ingredient;
+        // loop over Ingredient / Ingredient Measure information
+            ingredient = checkIngredientTable();    // pass ingredient String name as param
+            addIngredientMeasure(ingredient);       // pass String unit and int amount as params too
     }
 
     // ---------------
@@ -142,7 +150,4 @@ public class Recipe {
         ingredientMeasure.deleteLinks(); // Delete links to Recipe and Ingredient
         ingredientMeasures.remove(ingredientMeasure);
     }
-
-
-
 }
