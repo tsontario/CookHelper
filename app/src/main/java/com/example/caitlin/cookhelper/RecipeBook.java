@@ -49,10 +49,11 @@ public class RecipeBook {
     // METHODS
     // ---------------
 
-    public void addRecipe() {
+    public void addRecipe(String aName, int aNumServings, int aNumCalories,String aPrepTime,
+                          String aCookTime, String someDirections, String aType, String aCategory) {
 
-        Recipe(String aName, int aNumServings, int aNumCalories,String aPrepTime,
-                String aCookTime, String someDirections, String aType, String aCategory);
+        new Recipe(aName, aNumServings, aNumCalories, aPrepTime,
+                aCookTime, someDirections, aType, aCategory);
     }
 
     public void removeRecipe(Recipe recipe) {
