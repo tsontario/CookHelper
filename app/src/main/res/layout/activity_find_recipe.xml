@@ -69,7 +69,7 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="@string/type"
                 android:id="@+id/txtviewFindType"
-                android:layout_gravity="left"
+                android:layout_gravity="start"
                 android:textStyle="bold"
                 android:textIsSelectable="false"
                 android:textColor="@android:color/black" />
@@ -102,7 +102,7 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="@string/category"
                 android:id="@+id/txtviewFindCategory"
-                android:layout_gravity="left"
+                android:layout_gravity="start"
                 android:textStyle="bold"
                 android:textIsSelectable="false"
                 android:textColor="@android:color/black" />
@@ -135,7 +135,7 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="@string/ingredients"
                 android:id="@+id/txtviewFindIngredient"
-                android:layout_gravity="left"
+                android:layout_gravity="start"
                 android:textStyle="bold"
                 android:textIsSelectable="false"
                 android:textColor="@android:color/black" />
@@ -181,7 +181,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:id="@+id/editTextFind"
-                    android:layout_gravity="left"
+                    android:layout_gravity="start"
                     android:hint="@string/enter_search_ingredients"
                     android:layout_weight="1" />
             </LinearLayout>

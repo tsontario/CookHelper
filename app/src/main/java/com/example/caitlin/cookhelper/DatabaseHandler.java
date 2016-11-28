@@ -20,7 +20,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // Table Names
     private static final String TABLE_RECIPES = "Recipes";
     private static final String TABLE_INGREDIENTS = "Ingredients";
-    private static final String TABLE_INGREDIENT_MEASURES = "Ingredient_Measures"
+    private static final String TABLE_INGREDIENT_MEASURES = "Ingredient_Measures";
 
     // Recipes Table Columns
     private static final String KEY_RECIPE_ID = "_id";
