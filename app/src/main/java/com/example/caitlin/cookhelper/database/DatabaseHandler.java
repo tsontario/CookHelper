@@ -1,10 +1,12 @@
-package com.example.caitlin.cookhelper;
+package com.example.caitlin.cookhelper.database;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import com.example.caitlin.cookhelper.Recipe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +22,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // Table Names
     private static final String TABLE_RECIPES = "Recipes";
     private static final String TABLE_INGREDIENTS = "Ingredients";
-    private static final String TABLE_INGREDIENT_MEASURES = "Ingredient_Measures"
+    private static final String TABLE_INGREDIENT_MEASURES = "Ingredient_Measures";
 
     // Recipes Table Columns
     private static final String KEY_RECIPE_ID = "_id";
@@ -40,7 +42,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_INGREDIENT_MEASURE_RECIPE = "recipe";
     private static final String KEY_INGREDIENT_MEASURE_NAME = "name";
     private static final String KEY_INGREDIENT_MEASURE_QTY = "quantity";
-    private static final String KEY_INGREDIENT_MEASURE_MEASUREMENT = "measurement";
+    private static final String KEY_INGREDIENT_MEASURE_MEASUREMENT = "measurement
 
 
     public DatabaseHandler(Context context) {
@@ -89,15 +91,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_RECIPE_NAME, r.getRecipeName());         // Recipe name
-        values.put(KEY_RECIPE_CATEGORY, r.getRecipeCategory()); // Recipe category
+        values.put(KEY_RECIPE_NAME, r.getName());         // Recipe name
+        values.put(KEY_RECIPE_CATEGORY, r.getCategory()); // Recipe category
 
         // Insert the row
-        db.insert(TABLE_RECIPES, null, values);
+        // long _id = db.insert(TABLE_RECIPES, null, values); // will return value of primary key
+        // r.setId(_id); //TODO recipe objects need an id to be set before returning (assist in retrieval during program)
         db.close();
     }
 
     public Recipe getRecipe(int id) {
+        // TODO This doesn't search properly at all (total rewrite)
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_RECIPES,
@@ -110,10 +114,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             cursor.moveToFirst();
         }
 
-        Recipe recipe = new Recipe(
-                Integer.parseInt(cursor.getString(0)),
-                cursor.getString(1),
-                cursor.getString(2));
+        Recipe recipe = new Recipe(null, 0, 0, null, null, null, null, null);
+
         // Return the recipe
         return recipe;
     }
@@ -129,10 +131,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // Loop through all rows and add to the list
         if (cursor.moveToFirst()) {
             do {
-                Recipe r = new Recipe();
-                r.setRecipeName(cursor.getString(1));
-                r.setRecipeCategory(cursor.getString(2));
-
+                /** Get Constructor params first */
+                //Recipe r = new Recipe();
+                Recipe r = null;
                 // Add Recipe to List
                 recipeList.add(r);
             } while (cursor.moveToNext());
@@ -157,18 +158,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_RECIPE_NAME, r.getRecipeName());
-        values.put(KEY_RECIPE_CATEGORY, r.getRecipeCategory());
+        values.put(KEY_RECIPE_NAME, r.getName());
+        values.put(KEY_RECIPE_CATEGORY, r.getCategory());
 
-        return db.update(TABLE_RECIPES, values, KEY_RECIPE_ID + " = ?",
-                new String[] {String.valueOf(r.getID())});
+        return db.update(TABLE_RECIPES, values, KEY_RECIPE_ID + " = ?", null);
     }
 
     public void deleteRecipe(Recipe r) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         db.delete(TABLE_RECIPES, KEY_RECIPE_NAME + " =?",
-                new String[] {String.valueOf(r.getRecipeName())});
+                new String[] {String.valueOf(r.getName())});
         db.close();
     }
 

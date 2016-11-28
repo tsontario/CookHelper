@@ -12,12 +12,13 @@ public class Recipe {
     // ---------------
 
     // attributes
+    private long _id = -1;
     private String name;
     private int numServings;
     private int numCalories;
     private String prepTime;
     private String cookTime;
-    private String directions;
+    private ArrayList<String> directions;
     private String type;
     private String category;
 
@@ -30,7 +31,7 @@ public class Recipe {
     // ---------------
 
     public Recipe(String aName, int aNumServings, int aNumCalories,String aPrepTime,
-                  String aCookTime, String someDirections, String aType, String aCategory) {
+                  String aCookTime, ArrayList<String> someDirections, String aType, String aCategory) {
 
         name = aName;
         numServings = aNumServings;
@@ -59,7 +60,7 @@ public class Recipe {
     public int getNumCalories() { return numCalories; }
     public String getPrepTime() { return prepTime; }
     public String getCookTime() { return cookTime; }
-    public String getDirections() { return directions; }
+    public ArrayList<String> getDirections() { return directions; }
     public String getType() { return type; }
     public String getCategory() { return category; }
 
@@ -136,6 +137,7 @@ public class Recipe {
         directions = null;
         type = null;
         category = null;
+        // TODO db.delete(this._id) e.g.
     }
 
     /**
