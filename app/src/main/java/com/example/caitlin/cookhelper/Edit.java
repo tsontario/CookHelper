@@ -8,50 +8,55 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-import java.util.ArrayList;
+public class Edit extends AppCompatActivity {
 
-public class AddRecipe extends AppCompatActivity {
-    /*
-    private LinearLayout instructionLL;
-    private EditText instructionET;
-    private ImageButton addInstructionB;
-    */
+    String recipeName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_recipe);
+        setContentView(R.layout.activity_edit);
 
-        /*
-        instructionLL = (LinearLayout) findViewById(R.id.instructionLinearLayout);
-        instructionET = (EditText) findViewById(R.id.firstInstruction);
-        addInstructionB = (ImageButton) findViewById(R.id.addInstructionButton);
-        */
-        //Onclick button methods for save and cancel buttons
+        //receiving recipe name
+        Bundle bundle = getIntent().getExtras();
+        recipeName = bundle.getString("recipe_name");
+        //Setting recipe name
+        EditText recipeNameToChange = (EditText) findViewById(R.id.editTextNameEdit);
+        recipeNameToChange.setText(recipeName);
+
+        //Calling on click methods
         toSave();
         toCancel();
     }
 
-    //Method to save recipe and go to final recipe view screen
     private void toSave() {
-        Button toViewRecipe = (Button) findViewById(R.id.saveRecipeButton);
-        toViewRecipe.setOnClickListener(new View.OnClickListener() {
+        Button toEdit = (Button) findViewById(R.id.saveRecipeButtonEdit);
+        toEdit.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
+                //Receiving the edited text name
+                EditText edit =  (EditText) findViewById(R.id.editTextNameEdit);
+                String recipeName = edit.getText().toString();
+                //Sending edited text name to view activity, and then starting viewRecipe
                 Intent intent = new Intent(getApplicationContext(), ViewRecipe.class);
-                intent.putExtra("recipe_name", receiveRecipeName());     //Sending added recipe name
+                intent.putExtra("recipe_name", recipeName);     //Sending added recipe name
                 startActivity(intent);
-                finish();
+                finish();  //Ending edit activity
             }
         });
     }
 
-    //Method to cancel adding recipe and go back to home screen
     private void toCancel() {
-        Button toViewRecipe = (Button) findViewById(R.id.cancelAddButton);
-        toViewRecipe.setOnClickListener(new View.OnClickListener() {
+        Button toEdit = (Button) findViewById(R.id.cancelEditButton);
+        toEdit.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                onBackPressed();
+
+
+                //Sending original text name to view activity, and then starting viewRecipe
+                Intent intent = new Intent(getApplicationContext(), ViewRecipe.class);
+                intent.putExtra("recipe_name", recipeName);     //Sending added recipe name
+                startActivity(intent);
+                finish();   //Ending edit activity
             }
         });
     }
@@ -59,61 +64,61 @@ public class AddRecipe extends AppCompatActivity {
     //--------------------- Methods to get edittext text from textfields ---------------------------
     private String receiveRecipeName() {
         //Getting edit text text
-        EditText edit =  (EditText) findViewById(R.id.editTextName);
+        EditText edit =  (EditText) findViewById(R.id.editTextNameEdit);
         String recipeName = edit.getText().toString();
         return recipeName;
     }
 
     private String receiveRecipeType() {
         //Getting edit text text
-        EditText edit =  (EditText) findViewById(R.id.editTextType);
+        EditText edit =  (EditText) findViewById(R.id.editTextTypeEdit);
         String recipeType = edit.getText().toString();
         return recipeType;
     }
 
     private String receiveRecipeCategory() {
         //Getting edit text text
-        EditText edit =  (EditText) findViewById(R.id.editTextCategory);
+        EditText edit =  (EditText) findViewById(R.id.editTextCategoryEdit);
         String recipeCategory = edit.getText().toString();
         return recipeCategory;
     }
 
     private String receiveRecipePrepTime() {
         //Getting edit text text
-        EditText edit =  (EditText) findViewById(R.id.editTextPrepTime);
+        EditText edit =  (EditText) findViewById(R.id.editTextPrepTimeEdit);
         String recipePrep = edit.getText().toString();
         return recipePrep;
     }
 
     private String receiveRecipeCookTime() {
         //Getting edit text text
-        EditText edit =  (EditText) findViewById(R.id.editTextCookTime);
+        EditText edit =  (EditText) findViewById(R.id.editTextCookTimeEdit);
         String recipeCook = edit.getText().toString();
         return recipeCook;
     }
 
     private String receiveRecipeServings() {
         //Getting edit text text
-        EditText edit =  (EditText) findViewById(R.id.editTextServings);
+        EditText edit =  (EditText) findViewById(R.id.editTextServingsEdit);
         String recipeServings = edit.getText().toString();
         return recipeServings;
     }
 
     private String receiveRecipeCalories() {
         //Getting edit text text
-        EditText edit =  (EditText) findViewById(R.id.editTextCalories);
+        EditText edit =  (EditText) findViewById(R.id.editTextCaloriesEdit);
         String recipeCalories = edit.getText().toString();
         return recipeCalories;
     }
 
     //Getting recipe instrctions string on click
     private void receiveRecipeInstructions() {
-        ImageButton instructionClick = (ImageButton) findViewById(R.id.addInstructionButton);
+        ImageButton instructionClick = (ImageButton) findViewById(R.id.addInstructionButtonEdit);
         instructionClick.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
                 //Getting text in edit text
-                EditText edit =  (EditText) findViewById(R.id.firstInstruction);
+                EditText edit =  (EditText) findViewById(R.id.firstInstructionEdit);
                 String recipeInstruction = edit.getText().toString();
 
                 //*** Insert method to save text to database
@@ -125,7 +130,7 @@ public class AddRecipe extends AppCompatActivity {
     }
 
     private void receiveRecipeIngredients() {
-        ImageButton ingredientClick = (ImageButton) findViewById(R.id.addIngredientButton);
+        ImageButton ingredientClick = (ImageButton) findViewById(R.id.addIngredientButtonEdit);
         ingredientClick.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //***ON Click for ingredients button
@@ -134,7 +139,7 @@ public class AddRecipe extends AppCompatActivity {
                 //**METHOD to add ingredient name to database
 
                 //Clearing text for next entry
-                EditText edit =  (EditText) findViewById(R.id.firstIngredient);
+                EditText edit =  (EditText) findViewById(R.id.firstIngredientEdit);
                 edit.setText("");
             }
         });
@@ -142,50 +147,30 @@ public class AddRecipe extends AppCompatActivity {
 
     private String receiveIngredientName() {
         //Getting edit text text
-        EditText edit =  (EditText) findViewById(R.id.firstIngredient);
+        EditText edit =  (EditText) findViewById(R.id.firstIngredientEdit);
         String ingredient = edit.getText().toString();
         return ingredient;
     }
 
     private String receiveIngredientQuantity() {
         //Getting edit text text
-        EditText edit =  (EditText) findViewById(R.id.editTextQuantity);
+        EditText edit =  (EditText) findViewById(R.id.editTextQuantityEdit);
         String recipeQuantity = edit.getText().toString();
         return recipeQuantity;
     }
 
     private String receiveIngredientUnit() {
         //Getting edit text text
-        EditText edit =  (EditText) findViewById(R.id.editTextUnit);
+        EditText edit =  (EditText) findViewById(R.id.editTextUnitEdit);
         String recipeUnit = edit.getText().toString();
         return recipeUnit;
     }
 
     private String receiveIngredientMeasure() {
         //Getting edit text text
-        EditText edit =  (EditText) findViewById(R.id.editTextMeasure);
+        EditText edit =  (EditText) findViewById(R.id.editTextMeasureEdit);
         String recipeMeasure = edit.getText().toString();
         return recipeMeasure;
     }
-    //----------------------------------------------------------------------------------------------
-
-    /*
-    public void onAddNewInstructionClick(View view) {
-        int index = instructionLL.indexOfChild(addInstructionB);
-        instructionLL.addView(createNewEditText(),index);
-    }
-*/
-    public void addRecipe(View v) {
-    }
-
-
-    private EditText createNewEditText(){
-        EditText newET = new EditText(this);
-        LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT,
-                LayoutParams.WRAP_CONTENT);
-        newET.setLayoutParams(params);
-        newET.setHint("Enter the next instruction");
-        return newET;
-    }
-
+    //-------------------------------------------------------
 }

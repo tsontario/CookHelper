@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/cookhelper"
-        android:id="@+id/titleAddRecipe"
+        android:id="@+id/titleEditRecipe"
         android:layout_gravity="center_horizontal"
         android:textStyle="bold"
         android:textColor="@android:color/black" />
@@ -33,8 +33,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/add_a_recipe"
-        android:id="@+id/subtitleAddRecipe"
+        android:text="@string/edit_recipe"
+        android:id="@+id/subtitleEditRecipe"
         android:textStyle="bold"
         android:textIsSelectable="false"
         android:textColor="@android:color/black"
@@ -48,7 +48,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/scrollView" >
+        android:id="@+id/scrollViewEdit" >
 
         <LinearLayout
             android:orientation="vertical"
@@ -65,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="@string/recipe_name"
-                android:id="@+id/txtviewName"
+                android:id="@+id/txtviewNameEdit"
                 android:layout_gravity="start"
                 android:textStyle="bold"
                 android:textIsSelectable="false"
@@ -74,7 +74,7 @@
             <EditText
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/editTextName"
+                android:id="@+id/editTextNameEdit"
                 android:layout_gravity="start"
                 android:hint="@string/enter_the_name_of_your_recipe_here" />
 
@@ -87,7 +87,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="@string/type"
-                android:id="@+id/txtviewType"
+                android:id="@+id/txtviewTypeEdit"
                 android:layout_gravity="start"
                 android:textStyle="bold"
                 android:textIsSelectable="false"
@@ -96,7 +96,7 @@
             <EditText
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/editTextType"
+                android:id="@+id/editTextTypeEdit"
                 android:layout_gravity="start"
                 android:hint="@string/enter_the_recipe_type_here" />
 
@@ -109,7 +109,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="@string/category"
-                android:id="@+id/txtviewCategory"
+                android:id="@+id/txtviewCategoryEdit"
                 android:layout_gravity="start"
                 android:textStyle="bold"
                 android:textIsSelectable="false"
@@ -118,7 +118,7 @@
             <EditText
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/editTextCategory"
+                android:id="@+id/editTextCategoryEdit"
                 android:layout_gravity="start"
                 android:hint="@string/enter_the_recipe_category_here" />
 
@@ -136,7 +136,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/prep_time"
-                    android:id="@+id/txtviewPrepTime"
+                    android:id="@+id/txtviewPrepTimeEdit"
                     android:textStyle="bold"
                     android:textIsSelectable="false"
                     android:textColor="@android:color/black"
@@ -148,7 +148,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/cook_time"
-                    android:id="@+id/txtviewCookTime"
+                    android:id="@+id/txtviewCookTimeEdit"
                     android:textStyle="bold"
                     android:textIsSelectable="false"
                     android:textColor="@android:color/black"
@@ -165,7 +165,7 @@
                 <EditText
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:id="@+id/editTextPrepTime"
+                    android:id="@+id/editTextPrepTimeEdit"
                     android:layout_gravity="start"
                     android:hint="@string/enter_the_time_here"
                     android:layout_weight="1" />
@@ -173,7 +173,7 @@
                 <EditText
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:id="@+id/editTextCookTime"
+                    android:id="@+id/editTextCookTimeEdit"
                     android:layout_gravity="end"
                     android:hint="@string/enter_the_time_here"
                     android:layout_weight="1" />
@@ -193,7 +193,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/number_of_servings"
-                    android:id="@+id/txtviewServings"
+                    android:id="@+id/txtviewServingsEdit"
                     android:textStyle="bold"
                     android:textIsSelectable="false"
                     android:textColor="@android:color/black"
@@ -205,7 +205,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/number_of_calories"
-                    android:id="@+id/txtviewCalories"
+                    android:id="@+id/txtviewCaloriesEdit"
                     android:textStyle="bold"
                     android:textIsSelectable="false"
                     android:textColor="@android:color/black"
@@ -221,7 +221,7 @@
                 <EditText
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:id="@+id/editTextServings"
+                    android:id="@+id/editTextServingsEdit"
                     android:layout_gravity="start"
                     android:hint="@string/enter_the_servings_here"
                     android:layout_weight="1" />
@@ -229,7 +229,7 @@
                 <EditText
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:id="@+id/editTextCalories"
+                    android:id="@+id/editTextCaloriesEdit"
                     android:layout_gravity="end"
                     android:hint="@string/enter_the_calories_here"
                     android:layout_weight="1" />
@@ -243,14 +243,14 @@
                 android:orientation="vertical"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/outerInstructionLL">
+                android:id="@+id/outerInstructionLLEdit">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/instructions"
-                    android:id="@+id/instructionHeading"
+                    android:id="@+id/instructionHeadingEdit"
                     android:layout_gravity="start"
                     android:textStyle="bold"
                     android:textIsSelectable="false"
@@ -260,12 +260,12 @@
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/innerInstructionLL">
+                    android:id="@+id/innerInstructionLLEdit">
 
                     <EditText
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:id="@+id/firstInstruction"
+                        android:id="@+id/firstInstructionEdit"
                         android:layout_gravity="end"
                         android:hint="@string/enter_first_instruction_here"
                         android:layout_weight="1" />
@@ -273,7 +273,7 @@
                     <ImageButton
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:id="@+id/addInstructionButton"
+                        android:id="@+id/addInstructionButtonEdit"
                         android:layout_gravity="bottom|end"
                         android:background="@android:drawable/ic_input_add"
                         android:clickable="true"
@@ -285,7 +285,6 @@
             <Space
                 android:layout_width="20dp"
                 android:layout_height="20dp" />
-
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
@@ -296,14 +295,14 @@
                 android:orientation="vertical"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/outerIngredientLL" >
+                android:id="@+id/outerIngredientLLEdit" >
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/ingredients"
-                    android:id="@+id/ingredientsHeading"
+                    android:id="@+id/ingredientsHeadingEdit"
                     android:textStyle="bold"
                     android:textIsSelectable="false"
                     android:textColor="@android:color/black" />
@@ -311,7 +310,7 @@
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:id="@+id/firstIngredient"
+                    android:id="@+id/firstIngredientEdit"
                     android:layout_gravity="start"
                     android:hint="@string/enter_first_ingredient_here"
                     android:layout_weight="1" />
@@ -320,14 +319,14 @@
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/linearLayout" >
+                    android:id="@+id/linearLayoutEdit" >
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:text="@string/quantity"
-                        android:id="@+id/txtviewQuantity"
+                        android:id="@+id/txtviewQuantityEdit"
                         android:layout_weight=".4"
                         android:textAlignment="center" />
 
@@ -336,7 +335,7 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:text="@string/measure"
-                        android:id="@+id/txtviewUnit"
+                        android:id="@+id/txtviewUnitEdit"
                         android:layout_weight=".6"
                         android:textAlignment="center" />
 
@@ -345,7 +344,7 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:text="@string/ingredient_name"
-                        android:id="@+id/txtviewMeasure"
+                        android:id="@+id/txtviewMeasureEdit"
                         android:layout_weight="1"
                         android:textAlignment="center" />
 
@@ -359,12 +358,12 @@
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/innerIngredientLL" >
+                    android:id="@+id/innerIngredientLLEdit" >
 
                     <EditText
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:id="@+id/editTextQuantity"
+                        android:id="@+id/editTextQuantityEdit"
                         android:layout_weight=".4"
                         android:inputType="number|numberDecimal"
                         android:hint="@string/quantity_hint"
@@ -373,7 +372,7 @@
                     <EditText
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:id="@+id/editTextUnit"
+                        android:id="@+id/editTextUnitEdit"
                         android:layout_weight=".6"
                         android:hint="@string/measure_hint"
                         android:textAlignment="center" />
@@ -381,7 +380,7 @@
                     <EditText
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:id="@+id/editTextMeasure"
+                        android:id="@+id/editTextMeasureEdit"
                         android:layout_weight="1"
                         android:hint="@string/ingredient_name_hint"
                         android:textAlignment="center" />
@@ -389,7 +388,7 @@
                     <ImageButton
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:id="@+id/addIngredientButton"
+                        android:id="@+id/addIngredientButtonEdit"
                         android:background="@android:drawable/ic_input_add"
                         android:clickable="true"
                         android:contentDescription="@string/button_to_add_the_ingredients" />
@@ -409,7 +408,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@string/save"
-                    android:id="@+id/saveRecipeButton"
+                    android:id="@+id/saveRecipeButtonEdit"
                     android:layout_weight="1"
                     android:background="@drawable/custombutton"/>
 
@@ -422,7 +421,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@android:string/cancel"
-                    android:id="@+id/cancelAddButton"
+                    android:id="@+id/cancelEditButton"
                     android:layout_weight="1"
                     android:background="@drawable/custombutton"/>
             </LinearLayout>
