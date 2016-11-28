@@ -8,6 +8,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import java.util.ArrayList;
+
 public class AddRecipe extends AppCompatActivity {
     /*
     private LinearLayout instructionLL;
@@ -172,7 +174,9 @@ public class AddRecipe extends AppCompatActivity {
         int index = instructionLL.indexOfChild(addInstructionB);
         instructionLL.addView(createNewEditText(),index);
     }
-
+*/
+    public void addRecipe(View v) {
+    }
 
 
     private EditText createNewEditText(){
@@ -183,5 +187,5 @@ public class AddRecipe extends AppCompatActivity {
         newET.setHint("Enter the next instruction");
         return newET;
     }
-    */
+
 }
