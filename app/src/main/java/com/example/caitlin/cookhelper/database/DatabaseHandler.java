@@ -19,6 +19,7 @@ import java.util.List;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
+    /** SCHEMA DEFINITIONS */
     // Database Version
     private static final int DATABASE_VERSION               = 1;
 
@@ -51,11 +52,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_INGREDIENT_MEASURE_MEASUREMENT  = "measurement";
 
 
+    /** Constructor */
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    // Creating Tables
+    /** Initial Database creation. */
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_RECIPES_TABLE =
@@ -95,7 +97,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_INGREDIENT_MEASURES_TABLE);
     }
 
-    // Upgrading database
+    /** On version change */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older tables if exists
@@ -107,7 +109,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    // CRUD OPERATIONS
+    /** CRUD operations */
     public void addRecipe(Recipe r) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -122,6 +124,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    /** Helper methods for addRecipe(Recipe r) */
     private void addToIngredientTables(long _id, ArrayList<IngredientMeasure> iMeasures,
            SQLiteDatabase db) {
         for (IngredientMeasure im: iMeasures) {
@@ -164,7 +167,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         r.setId(_id);
         // DB closed in caller
     }
+    /** End of helper methods for addRecipe(Recipe r) */
 
+    /** Return a specific Recipe object from the database */
     public Recipe getRecipe(int id) {
         // Get the database row
         SQLiteDatabase db = this.getReadableDatabase();
@@ -197,8 +202,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         // Now build the recipe
         RecipeBuilder builder = new RecipeBuilder();
-        builder.setId(id)
-                .setName(name)
+        builder.setName(name)
                 .setNumServings(numServings)
                 .setNumCalories(numCalories)
                 .setPrepTime(prepTime)
@@ -209,9 +213,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 .setIngredientMeasures(ingredientMeasures);
 
         // Return the recipe
-        return builder.createRecipe();
+        Recipe r = builder.createRecipe();
+        r.setId(id);
+
+        cursor.close();
+        db.close();
+        return r;
     }
 
+    /** Helper methods for getRecipe(int id) */
     private void getDirections(String rawDirectionsString, ArrayList<String> directions) {
         try {
             JSONArray transform = new JSONArray(rawDirectionsString);
@@ -241,9 +251,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             ingredientMeasures.add(iM);
         }
     }
+    /** End of helper methods for getRecipe(int id) */
 
-    public List<Recipe> getAllRecipes() {
-        List<Recipe> recipeList = new ArrayList<Recipe>();
+    // TODO Change to return either list of string or list of SearchResult<id, name> obj
+    public List<SearchResult> getAllRecipes() {
+        ArrayList<SearchResult> recipeList = new ArrayList<SearchResult>();
 
         SQLiteDatabase db = this.getReadableDatabase();
         String selectQuery = "SELECT * FROM " + TABLE_RECIPES;
@@ -253,15 +265,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // Loop through all rows and add to the list
         if (cursor.moveToFirst()) {
             do {
-                /** Get Constructor params first */
-                    //Recipe r = new Recipe();
-                    Recipe r = null;
-                    // Add Recipe to List
-                    recipeList.add(r);
-
+                SearchResult obj = new SearchResult(cursor.getString(1), cursor.getInt(0));
+                recipeList.add(obj);
             } while (cursor.moveToNext());
         }
+
         cursor.close();
+        db.close();
         return recipeList;
     }
 
@@ -270,11 +280,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.rawQuery(countQuery, null);
-        cursor.close();
+        int count = cursor.getCount();
 
-        return cursor.getCount();
+        cursor.close();
+        db.close();
+        return count;
     }
 
+    // TODO Fix this method
     public int updateRecipe(Recipe r) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -285,11 +298,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return db.update(TABLE_RECIPES, values, KEY_RECIPE_ID + " = ?", null);
     }
 
-    public void deleteRecipe(Recipe r) {
+    public void deleteRecipe(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
 
-        db.delete(TABLE_RECIPES, KEY_RECIPE_NAME + " =?",
-                new String[] {String.valueOf(r.getId())});
+        db.delete(TABLE_RECIPES, KEY_RECIPE_ID + " =?",
+                new String[] {String.valueOf(id)});
         db.close();
     }
 }
