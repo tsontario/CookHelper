@@ -1,7 +1,8 @@
 package com.example.caitlin.cookhelper.database;
 
 /**
- * Created by timothysmith on 2016-11-29.
+ * Lightweight class for displaying search results from database without having
+ * to load entire objects.
  */
 
 public class SearchResult {
