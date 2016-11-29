@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.caitlin.cookhelper.IngredientMeasure;
 import com.example.caitlin.cookhelper.Recipe;
 
 import org.json.JSONArray;
@@ -16,35 +17,35 @@ import java.util.List;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Database Version
-    private static final int DATABASE_VERSION           = 1;
+    private static final int DATABASE_VERSION               = 1;
 
     // Database Name
-    private static final String DATABASE_NAME           = "recipeDatabase.db";
+    private static final String DATABASE_NAME               = "recipeDatabase.db";
 
     // Table Names
-    private static final String TABLE_RECIPES           = "Recipes";
-    private static final String TABLE_INGREDIENTS       = "Ingredients";
-    private static final String TABLE_INGREDIENT_MEASURES = "Ingredient_Measures";
+    private static final String TABLE_RECIPES               = "Recipes";
+    private static final String TABLE_INGREDIENTS           = "Ingredients";
+    private static final String TABLE_INGREDIENT_MEASURES   = "Ingredient_Measures";
 
     // Recipes Table Columns
-    private static final String KEY_RECIPE_ID           = "_id";
-    private static final String KEY_RECIPE_NAME         = "name";
-    private static final String KEY_RECIPE_SERVINGS     = "numservings";
-    private static final String KEY_RECIPE_CALORIES     = "calories";
-    private static final String KEY_RECIPE_PREPTIME     = "preptime";
-    private static final String KEY_RECIPE_COOKTIME     = "cooktime";
-    private static final String KEY_RECIPE_TYPE         = "type";
-    private static final String KEY_RECIPE_CATEGORY     = "category";
-    private static final String KEY_RECIPE_DIRECTIONS   = "directions";
+    private static final String KEY_RECIPE_ID               = "_id";
+    private static final String KEY_RECIPE_NAME             = "name";
+    private static final String KEY_RECIPE_SERVINGS         = "numservings";
+    private static final String KEY_RECIPE_CALORIES         = "calories";
+    private static final String KEY_RECIPE_PREPTIME         = "preptime";
+    private static final String KEY_RECIPE_COOKTIME         = "cooktime";
+    private static final String KEY_RECIPE_TYPE             = "type";
+    private static final String KEY_RECIPE_CATEGORY         = "category";
+    private static final String KEY_RECIPE_DIRECTIONS       = "directions";
 
     // Ingredient Columns
-    private static final String KEY_INGREDIENT_NAME     = "name";
+    private static final String KEY_INGREDIENT_NAME         = "name";
 
     // IngredientMeasure Columns
-    private static final String KEY_INGREDIENT_MEASURE_RECIPE   = "recipe";
-    private static final String KEY_INGREDIENT_MEASURE_NAME     = "name";
-    private static final String KEY_INGREDIENT_MEASURE_QTY      = "quantity";
-    private static final String KEY_INGREDIENT_MEASURE_MEASUREMENT = "measurement";
+    private static final String KEY_INGREDIENT_MEASURE_RECIPE       = "recipe";
+    private static final String KEY_INGREDIENT_MEASURE_NAME         = "name";
+    private static final String KEY_INGREDIENT_MEASURE_QTY          = "quantity";
+    private static final String KEY_INGREDIENT_MEASURE_MEASUREMENT  = "measurement";
 
 
     public DatabaseHandler(Context context) {
@@ -55,7 +56,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_RECIPES_TABLE =
-                "CREATE TABLE "         + TABLE_RECIPES + "("
+                "CREATE TABLE "
+                + TABLE_RECIPES         + "("
                 + KEY_RECIPE_ID         + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, "
                 + KEY_RECIPE_NAME       + " TEXT, "
                 + KEY_RECIPE_SERVINGS   + " INTEGER, "
@@ -65,11 +67,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_RECIPE_TYPE       + " TEXT, "
                 + KEY_RECIPE_CATEGORY   + " TEXT, "
                 + KEY_RECIPE_DIRECTIONS + " TEXT, "
-                + KEY_RECIPE_CATEGORY   + " TEXT" + ")";
+                + KEY_RECIPE_CATEGORY   + " TEXT"
+                + ");";
 
         String CREATE_INGREDIENTS_TABLE =
                 "CREATE TABLE "         + TABLE_INGREDIENTS + "("
-                + KEY_INGREDIENT_NAME   + "TEXT PRIMARY KEY NOT NULL UNIQUE";
+                + KEY_INGREDIENT_NAME   + "TEXT PRIMARY KEY NOT NULL UNIQUE"
+                + ");";
 
         String CREATE_INGREDIENT_MEASURES_TABLE =
                 "CREATE TABLE " + TABLE_INGREDIENT_MEASURES         + "("
@@ -99,26 +103,43 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // CRUD OPERATIONS
     public void addRecipe(Recipe r) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
+        ContentValues recipeValues = new ContentValues();
 
-        values.put(KEY_RECIPE_NAME,         r.getName());
-        values.put(KEY_RECIPE_SERVINGS,     r.getNumServings());
-        values.put(KEY_RECIPE_CALORIES,     r.getNumCalories());
-        values.put(KEY_RECIPE_PREPTIME,     r.getPrepTime());
-        values.put(KEY_RECIPE_COOKTIME,     r.getCookTime());
-        values.put(KEY_RECIPE_TYPE,         r.getType());
-        values.put(KEY_RECIPE_CATEGORY,     r.getCategory());
+        recipeValues.put(KEY_RECIPE_NAME,         r.getName());
+        recipeValues.put(KEY_RECIPE_SERVINGS,     r.getNumServings());
+        recipeValues.put(KEY_RECIPE_CALORIES,     r.getNumCalories());
+        recipeValues.put(KEY_RECIPE_PREPTIME,     r.getPrepTime());
+        recipeValues.put(KEY_RECIPE_COOKTIME,     r.getCookTime());
+        recipeValues.put(KEY_RECIPE_TYPE,         r.getType());
+        recipeValues.put(KEY_RECIPE_CATEGORY,     r.getCategory());
         // Store variable # of directions as JSON string
         JSONArray directions = new JSONArray(r.getDirections());
-        values.put(KEY_RECIPE_DIRECTIONS,   directions.toString());
+        recipeValues.put(KEY_RECIPE_DIRECTIONS,   directions.toString());
 
         // Insert the row, create an id reference for recipe object
-        long _id = db.insert(TABLE_RECIPES, null, values); // will return value of primary key
+        long _id = db.insert(TABLE_RECIPES, null, recipeValues); // will return value of primary key
         r.setId(_id);
 
+        ArrayList<IngredientMeasure> iMeasures = r.getIngredientMeasures();
+        for (IngredientMeasure im: iMeasures) {
+            ContentValues ingredientValues = new ContentValues();
+            ContentValues ingredientMeasureValues = new ContentValues();
 
+            // Add Ingredient
+            ingredientValues.put(KEY_INGREDIENT_NAME, im.getIngredient().getName());
+            db.insertWithOnConflict(TABLE_INGREDIENTS, null,
+                    ingredientValues, db.CONFLICT_IGNORE);
 
-        // TODO Once we have the id we can create the IngredientMeasure table
+            // IngredientMeasure table
+            ingredientMeasureValues.put(KEY_INGREDIENT_MEASURE_NAME, im.getIngredient().getName());
+            ingredientMeasureValues.put(KEY_INGREDIENT_MEASURE_RECIPE, r.getId());
+            ingredientMeasureValues.put(KEY_INGREDIENT_MEASURE_QTY, im.getAmount());
+            ingredientMeasureValues.put(KEY_INGREDIENT_MEASURE_MEASUREMENT, im.getUnit());
+
+            db.insert(TABLE_INGREDIENT_MEASURES, null, ingredientMeasureValues);
+        }
+
+        // Updates done, close DB
         db.close();
     }
 
