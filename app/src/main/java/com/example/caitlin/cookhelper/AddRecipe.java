@@ -11,22 +11,12 @@ import android.widget.ImageButton;
 import java.util.ArrayList;
 
 public class AddRecipe extends AppCompatActivity {
-    /*
-    private LinearLayout instructionLL;
-    private EditText instructionET;
-    private ImageButton addInstructionB;
-    */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_recipe);
 
-        /*
-        instructionLL = (LinearLayout) findViewById(R.id.instructionLinearLayout);
-        instructionET = (EditText) findViewById(R.id.firstInstruction);
-        addInstructionB = (ImageButton) findViewById(R.id.addInstructionButton);
-        */
         //Onclick button methods for save and cancel buttons
         toSave();
         toCancel();
@@ -38,6 +28,7 @@ public class AddRecipe extends AppCompatActivity {
         toViewRecipe.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
+                Recipe newRecipe = createRecipe();
                 Intent intent = new Intent(getApplicationContext(), ViewRecipe.class);
                 intent.putExtra("recipe_name", receiveRecipeName());     //Sending added recipe name
                 startActivity(intent);
@@ -55,6 +46,25 @@ public class AddRecipe extends AppCompatActivity {
             }
         });
     }
+
+
+    private Recipe createRecipe() {
+        Recipe newRecipe = new RecipeBuilder().setName(receiveRecipeName())
+                .setNumServings(Integer.parseInt(receiveRecipeServings()))
+                .setNumCalories(Integer.parseInt(receiveRecipeCalories()))
+                .setPrepTime(receiveRecipePrepTime())
+                .setCookTime(receiveRecipeCookTime())
+                .setType(receiveRecipeType())
+                .setCategory(receiveRecipeCategory())
+                .setDirections(receiveRecipeInstructions())
+                .setIngredientMeasures(receiveIngredientQuantity(),
+                        receiveIngredientUnit(), receiveIngredientMeasure())
+                .createRecipe();
+
+        return newRecipe;
+    }
+
+
 
     //--------------------- Methods to get edittext text from textfields ---------------------------
     private String receiveRecipeName() {
@@ -168,24 +178,5 @@ public class AddRecipe extends AppCompatActivity {
         return recipeMeasure;
     }
     //----------------------------------------------------------------------------------------------
-
-    /*
-    public void onAddNewInstructionClick(View view) {
-        int index = instructionLL.indexOfChild(addInstructionB);
-        instructionLL.addView(createNewEditText(),index);
-    }
-*/
-    public void addRecipe(View v) {
-    }
-
-
-    private EditText createNewEditText(){
-        EditText newET = new EditText(this);
-        LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT,
-                LayoutParams.WRAP_CONTENT);
-        newET.setLayoutParams(params);
-        newET.setHint("Enter the next instruction");
-        return newET;
-    }
 
 }

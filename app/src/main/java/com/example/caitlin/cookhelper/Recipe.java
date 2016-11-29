@@ -12,15 +12,15 @@ public class Recipe {
     // ---------------
 
     // attributes
-    private long _id = -1;
+    private long _id;
     private String name;
     private int numServings;
     private int numCalories;
     private String prepTime;
     private String cookTime;
-    private ArrayList<String> directions;
     private String type;
     private String category;
+    private ArrayList<String> directions;
 
     // associations
     private RecipeBook recipeBook;
@@ -30,25 +30,20 @@ public class Recipe {
     // CONSTRUCTOR
     // ---------------
 
-    public Recipe(String aName, int aNumServings, int aNumCalories,String aPrepTime,
-                  String aCookTime, ArrayList<String> someDirections, String aType, String aCategory) {
+    public Recipe(String aName, int aNumServings, int aNumCalories, String aPrepTime,
+                  String aCookTime, String aType, String aCategory,ArrayList<String> someDirections,
+                  ArrayList<IngredientMeasure> someIngredientMeasures) {
 
+        recipeBook = RecipeBook.getInstance();
         name = aName;
         numServings = aNumServings;
         numCalories = aNumCalories;
         prepTime = aPrepTime;
         cookTime = aCookTime;
-        directions = someDirections;    // Q: Where will we add the end of direction symbols
-        type = aType;                   // for each line?
+        type = aType;
         category = aCategory;
-
-        // Q: In what form will the Ingredient names and
-        // IngredientMeasure units and amounts be sent to Recipe?
-
-        Ingredient ingredient;
-        // loop over Ingredient / Ingredient Measure information
-            ingredient = checkIngredientTable();    // pass ingredient String name as param
-            addIngredientMeasure(ingredient);       // pass String unit and int amount as params too
+        directions = someDirections;
+        ingredientMeasures = someIngredientMeasures;
     }
 
     // ---------------
@@ -60,43 +55,39 @@ public class Recipe {
     public int getNumCalories() { return numCalories; }
     public String getPrepTime() { return prepTime; }
     public String getCookTime() { return cookTime; }
-    public ArrayList<String> getDirections() { return directions; }
     public String getType() { return type; }
     public String getCategory() { return category; }
+    public ArrayList<String> getDirections() { return directions; }
+    public ArrayList<IngredientMeasure> getIngredientMeasures() { return ingredientMeasures; }
+    public long getId() {
+        return _id;
+    }
 
     public void setName(String aNewName) { name = aNewName; }
     public void setNumServings(int aNewNumServings) { numServings = aNewNumServings; }
     public void setNumCalories(int aNewNumCalories) { numCalories = aNewNumCalories; }
     public void setPrepTime(String aNewPrepTime) { prepTime = aNewPrepTime; }
     public void setCookTime(String aNewCookTime) { cookTime = aNewCookTime; }
-    public void setDirections(String someNewDirections) {directions = someNewDirections; }
     public void setType(String aNewType) { type = aNewType; }
     public void setCategory(String aNewCategory) { category = aNewCategory; }
+    public void setDirections(ArrayList<String> newDirections) {directions = newDirections; }
+    public void setIngredientMeasures(ArrayList<IngredientMeasure> newIngredientMeasures) {
+        ingredientMeasures = newIngredientMeasures;
+    }
+    public void setId(long id) {
+        _id = id;
+    }
+
 
     // ---------------
     // METHODS
     // ---------------
 
-    /**
-     * This method determines whether a particular Ingredient object already exists in the
-     * database. If the Ingredient object exists, it returns it; otherwise, it creates
-     * a new Ingredient object and returns it.
-     *
-     * @param anIngredientName
-     * @return
-     */
-    public Ingredient checkIngredientTable(String anIngredientName) {
+    // public void addDirection
+    // public void removeDirection
 
-        Ingredient ingredient;
-        boolean ingredientExists;
-
-        if (ingredientExists) {
-            // RETURN IT FROM DATABASE
-        } else {
-            ingredient = new Ingredient(anIngredientName);
-            return ingredient;
-        }
-    }
+    // public void addIngredientMeasure
+    // public void removeIngredientMeasure
 
     /**
      * This method creates a new IngredientMeasure object and adds it to the calling Recipe
@@ -110,7 +101,7 @@ public class Recipe {
             String unit, int amount) {
 
         IngredientMeasure newIngredientMeasure;
-        newIngredientMeasure = new IngredientMeasure(this, anIngredient, unit, amount);
+        newIngredientMeasure = new IngredientMeasure(anIngredient, unit, amount);
         ingredientMeasures.add(newIngredientMeasure);
     }
 
@@ -120,36 +111,13 @@ public class Recipe {
      */
     public void deleteRecipe() {
 
-        IngredientMeasure ingredientMeasure;
-        while (ingredientMeasures.size() > 0) {
-            ingredientMeasure = ingredientMeasures.get(0);
-            removeIngredientMeasure(ingredientMeasure);
-        }
-
-        // REMOVE RECIPE FROM DATABASE
-
-        // Q: Is the below code necessary or useful?
+        ingredientMeasures = null;
         name = null;
-        numServings = null;
-        numCalories = null;
         prepTime = null;
         cookTime = null;
         directions = null;
         type = null;
         category = null;
         // TODO db.delete(this._id) e.g.
-    }
-
-    /**
-     * This method removes a given IngredientMeasure object from the calling Recipe object's
-     * list, ingredientMeasures.
-     *
-     * @param ingredientMeasure
-     */
-    public void removeIngredientMeasure(IngredientMeasure ingredientMeasure) {
-
-        // Q: Does an Ingredient object see all of its associated IngredientMeasure objects?
-        ingredientMeasure.deleteLinks(); // Delete links to Recipe and Ingredient
-        ingredientMeasures.remove(ingredientMeasure);
     }
 }

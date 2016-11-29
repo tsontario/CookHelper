@@ -30,7 +30,7 @@ public class RecipeBook {
     public static RecipeBook getInstance(){
 
         if (theInstance == null) {
-            theInstance = RecipeBook();
+            theInstance = new RecipeBook();
         }
         return theInstance;
     }
@@ -38,31 +38,40 @@ public class RecipeBook {
     public int getNumRecipes() { return numRecipes; }
     public ArrayList<Recipe> getRecipes() {         // include some criteria as params
 
-        recipes = // search database and return ArrayList<Recipe>
-        setNumRecipes(recipes.size());
+//        recipes = // search database and return ArrayList<Recipe>
+//        setNumRecipes(recipes.size());
         return recipes;
     }
 
     private void setNumRecipes(int aNewNumber) { numRecipes = aNewNumber; }
-
-    // ---------------
-    // METHODS
-    // ---------------
-
-    public void addRecipe(String aName, int aNumServings, int aNumCalories,String aPrepTime,
-                          String aCookTime, String someDirections, String aType, String aCategory) {
-
-        new Recipe(aName, aNumServings, aNumCalories, aPrepTime,
-                aCookTime, someDirections, aType, aCategory);
-    }
 
     public void removeRecipe(Recipe recipe) {
 
         recipe.deleteRecipe();
     }
 
+    // ---------------
+    // METHODS
+    // ---------------
+
+    /**
+     *
+     * CF: Currently unused
+     *
+    public void addRecipe(String aName, int aNumServings, int aNumCalories,String aPrepTime,
+                          String aCookTime, String someDirections, String aType, String aCategory) {
+
+        new Recipe(aName, aNumServings, aNumCalories, aPrepTime,
+                aCookTime, someDirections, aType, aCategory);
+    }
+     */
+
+    /**
+     *
+     * CF: Currently unused
     public void getHelp() {
 
         // I'm not sure what goes here.
     }
+     */
 }

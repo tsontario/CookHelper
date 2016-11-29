@@ -13,10 +13,13 @@ public class IngredientMeasure {
     /*
     IngredientMeasure constructor
      */
-    public IngredientMeasure(String unit, int amount){
+    public IngredientMeasure(Ingredient ingredient, String unit, int amount) {
+        this.ingredient = ingredient;
         this.unit = unit;
         this.amount = amount;
     }
+
+
 
     /*
     IngredientMeasure getters
