@@ -6,10 +6,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.caitlin.cookhelper.Ingredient;
 import com.example.caitlin.cookhelper.IngredientMeasure;
 import com.example.caitlin.cookhelper.Recipe;
+import com.example.caitlin.cookhelper.RecipeBuilder;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,6 +89,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + TABLE_INGREDIENTS + "(" + KEY_INGREDIENT_NAME     + ")"
                 + ");";
 
+        // Create the tables
         db.execSQL(CREATE_RECIPES_TABLE);
         db.execSQL(CREATE_INGREDIENTS_TABLE);
         db.execSQL(CREATE_INGREDIENT_MEASURES_TABLE);
@@ -94,8 +98,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // Upgrading database
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Drop older table if existed
+        // Drop older tables if exists
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_RECIPES);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_INGREDIENTS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_INGREDIENT_MEASURES);
 
         // Create tables again
         onCreate(db);
@@ -104,24 +110,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // CRUD OPERATIONS
     public void addRecipe(Recipe r) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues recipeValues = new ContentValues();
 
-        recipeValues.put(KEY_RECIPE_NAME,         r.getName());
-        recipeValues.put(KEY_RECIPE_SERVINGS,     r.getNumServings());
-        recipeValues.put(KEY_RECIPE_CALORIES,     r.getNumCalories());
-        recipeValues.put(KEY_RECIPE_PREPTIME,     r.getPrepTime());
-        recipeValues.put(KEY_RECIPE_COOKTIME,     r.getCookTime());
-        recipeValues.put(KEY_RECIPE_TYPE,         r.getType());
-        recipeValues.put(KEY_RECIPE_CATEGORY,     r.getCategory());
-        // Store variable # of directions as JSON string
-        JSONArray directions = new JSONArray(r.getDirections());
-        recipeValues.put(KEY_RECIPE_DIRECTIONS,   directions.toString());
+        // add to Recipe table
+        addToRecipeTable(r, db);
 
-        // Insert the row, create an id reference for recipe object
-        long _id = db.insert(TABLE_RECIPES, null, recipeValues); // will return value of primary key
-        r.setId(_id);
-
+        // add to Ingredient and Ingredient_Measures tables
         ArrayList<IngredientMeasure> iMeasures = r.getIngredientMeasures();
+        addToIngredientTables(r.getId(), iMeasures, db);
+
+        // Updates done, close DB
+        db.close();
+    }
+
+    private void addToIngredientTables(long _id, ArrayList<IngredientMeasure> iMeasures,
+           SQLiteDatabase db) {
         for (IngredientMeasure im: iMeasures) {
             ContentValues ingredientValues = new ContentValues();
             ContentValues ingredientMeasureValues = new ContentValues();
@@ -133,35 +135,111 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
             // IngredientMeasure table
             ingredientMeasureValues.put(KEY_INGREDIENT_MEASURE_NAME, im.getIngredient().getName());
-            ingredientMeasureValues.put(KEY_INGREDIENT_MEASURE_RECIPE, r.getId());
+            ingredientMeasureValues.put(KEY_INGREDIENT_MEASURE_RECIPE, _id);
             ingredientMeasureValues.put(KEY_INGREDIENT_MEASURE_QTY, im.getAmount());
             ingredientMeasureValues.put(KEY_INGREDIENT_MEASURE_MEASUREMENT, im.getUnit());
 
             db.insert(TABLE_INGREDIENT_MEASURES, null, ingredientMeasureValues);
+            // DB closed in caller
         }
+    }
 
-        // Updates done, close DB
-        db.close();
+    private void addToRecipeTable(Recipe r, SQLiteDatabase db) {
+        ContentValues recipeValues = new ContentValues();
+
+        recipeValues.put(KEY_RECIPE_NAME,         r.getName());
+        recipeValues.put(KEY_RECIPE_SERVINGS,     r.getNumServings());
+        recipeValues.put(KEY_RECIPE_CALORIES,     r.getNumCalories());
+        recipeValues.put(KEY_RECIPE_PREPTIME,     r.getPrepTime());
+        recipeValues.put(KEY_RECIPE_COOKTIME,     r.getCookTime());
+        recipeValues.put(KEY_RECIPE_TYPE,         r.getType());
+        recipeValues.put(KEY_RECIPE_CATEGORY,     r.getCategory());
+
+        // Store variable # of directions as JSON string
+        JSONArray directions = new JSONArray(r.getDirections());
+        recipeValues.put(KEY_RECIPE_DIRECTIONS,   directions.toString());
+
+        // Insert the row, create an id reference for recipe object
+        long _id = db.insert(TABLE_RECIPES, null, recipeValues); // will return value of primary key
+        r.setId(_id);
+        // DB closed in caller
     }
 
     public Recipe getRecipe(int id) {
-        // TODO This doesn't search properly at all (total rewrite)
+        // Get the database row
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(TABLE_RECIPES,
-                new String[] {
-                        KEY_RECIPE_ID, KEY_RECIPE_NAME, KEY_RECIPE_CATEGORY},
-                KEY_RECIPE_ID + "=?",
-                new String[] {String.valueOf(id)},
+        Cursor cursor = db.query(TABLE_RECIPES, null,
+                String.valueOf(id),
                 null, null, null, null);
+
         if (cursor != null) {
             cursor.moveToFirst();
         }
 
-        Recipe recipe = new Recipe(null, 0, 0, null, null, null, null, null, null);
+        // Iterate through all columns
+        String name = cursor.getString(1);
+        int numServings = cursor.getInt(2);
+        int numCalories = cursor.getInt(3);
+        String prepTime = cursor.getString(4);
+        String cookTime = cursor.getString(5);
+        String type = cursor.getString(6);
+        String category = cursor.getString(7);
+
+        // Get directions as ArrayList (stored in DB as JSON string)
+        String directionsJSONString = cursor.getString(8);
+        ArrayList<String> directions = new ArrayList<>();
+        getDirections(directionsJSONString, directions);
+
+        // Get Ingredient Measures from separate table
+        ArrayList<IngredientMeasure> ingredientMeasures = new ArrayList<>();
+        getIngredientMeasures(id, ingredientMeasures, db);
+
+        // Now build the recipe
+        RecipeBuilder builder = new RecipeBuilder();
+        builder.setId(id)
+                .setName(name)
+                .setNumServings(numServings)
+                .setNumCalories(numCalories)
+                .setPrepTime(prepTime)
+                .setCookTime(cookTime)
+                .setType(type)
+                .setCategory(category)
+                .setDirections(directions)
+                .setIngredientMeasures(ingredientMeasures);
 
         // Return the recipe
-        return recipe;
+        return builder.createRecipe();
+    }
+
+    private void getDirections(String rawDirectionsString, ArrayList<String> directions) {
+        try {
+            JSONArray transform = new JSONArray(rawDirectionsString);
+            for (int i=0; i<transform.length(); i++) {
+                directions.add(transform.get(i).toString());
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getIngredientMeasures(int id, ArrayList<IngredientMeasure> ingredientMeasures,
+               SQLiteDatabase db) {
+        Cursor cursor;
+        cursor = db.query(TABLE_INGREDIENT_MEASURES, null, String.valueOf(id) + "=?",
+                new String[] {String.valueOf(id)},
+                null, null, null, null);
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+        while (!cursor.isAfterLast()) {
+            Ingredient i = new Ingredient(cursor.getString(0));
+            String unit = cursor.getString(1);
+            int amount = cursor.getInt(2);
+            IngredientMeasure iM = new IngredientMeasure(i, unit, amount);
+            ingredientMeasures.add(iM);
+        }
     }
 
     public List<Recipe> getAllRecipes() {
@@ -176,16 +254,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 /** Get Constructor params first */
-                //Recipe r = new Recipe();
-                Recipe r = null;
-                // Add Recipe to List
-                recipeList.add(r);
+                    //Recipe r = new Recipe();
+                    Recipe r = null;
+                    // Add Recipe to List
+                    recipeList.add(r);
+
             } while (cursor.moveToNext());
         }
         cursor.close();
         return recipeList;
-
-
     }
 
     public int getRecipesCount() {

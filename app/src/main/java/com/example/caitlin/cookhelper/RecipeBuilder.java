@@ -7,6 +7,7 @@ import java.util.ArrayList;
  */
 public class RecipeBuilder {
 
+    private long id;
     private String name;
     private int numServings;
     private int numCalories;
@@ -22,6 +23,11 @@ public class RecipeBuilder {
     // ---------------
 
     public RecipeBuilder() { }
+
+    public RecipeBuilder setId(long id) {
+        this.id = id;
+        return this;
+    }
 
     public RecipeBuilder setName(String aName) {
         name = aName;
@@ -79,6 +85,11 @@ public class RecipeBuilder {
             ingredientMeasures.add(newIngMeasure);
         }
 
+        return this;
+    }
+
+    public RecipeBuilder setIngredientMeasures(ArrayList<IngredientMeasure> iMeasures) {
+        ingredientMeasures = iMeasures;
         return this;
     }
 
