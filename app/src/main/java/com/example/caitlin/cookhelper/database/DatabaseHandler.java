@@ -66,13 +66,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_RECIPE_COOKTIME   + " TEXT, "
                 + KEY_RECIPE_TYPE       + " TEXT, "
                 + KEY_RECIPE_CATEGORY   + " TEXT, "
-                + KEY_RECIPE_DIRECTIONS + " TEXT, "
-                + KEY_RECIPE_CATEGORY   + " TEXT"
+                + KEY_RECIPE_DIRECTIONS + " TEXT "
                 + ");";
 
         String CREATE_INGREDIENTS_TABLE =
                 "CREATE TABLE "         + TABLE_INGREDIENTS + "("
-                + KEY_INGREDIENT_NAME   + "TEXT PRIMARY KEY NOT NULL UNIQUE"
+                + KEY_INGREDIENT_NAME   + " TEXT PRIMARY KEY NOT NULL UNIQUE"
                 + ");";
 
         String CREATE_INGREDIENT_MEASURES_TABLE =
@@ -88,6 +87,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + ");";
 
         db.execSQL(CREATE_RECIPES_TABLE);
+        db.execSQL(CREATE_INGREDIENTS_TABLE);
+        db.execSQL(CREATE_INGREDIENT_MEASURES_TABLE);
     }
 
     // Upgrading database
