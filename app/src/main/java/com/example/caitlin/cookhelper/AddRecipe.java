@@ -7,7 +7,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
+import android.widget.TextView;
+import android.view.Gravity;
 import java.util.ArrayList;
 
 public class AddRecipe extends AppCompatActivity {
@@ -21,6 +24,60 @@ public class AddRecipe extends AppCompatActivity {
         toSave();
         toCancel();
     }
+
+    public void addNewInstruction(View v) {
+
+        EditText instEditText = (EditText) findViewById(R.id.firstInstruction);
+        String instruction = instEditText.getText().toString();
+        instEditText.setText("");
+        instEditText.setHint("What's the next instruction?");
+        LinearLayout addedVertInstLL = (LinearLayout) findViewById(R.id.addedInstructionLL);
+
+        if ((instruction.trim().length() == 0) || (instruction == null)) { // if whitespace
+            return;
+        } else {
+
+            // prepare horizontal linear layout
+            LinearLayout horizLL = new LinearLayout(this);
+            LayoutParams paramsLL = new LayoutParams(LayoutParams.MATCH_PARENT,
+                    LayoutParams.WRAP_CONTENT);
+            horizLL.setLayoutParams(paramsLL);
+            horizLL.setOrientation(LinearLayout.HORIZONTAL);
+
+            // prepare text view
+            TextView addedInstTextView = new TextView(this);
+            LayoutParams paramsTV = new LayoutParams((int) getResources()
+                    .getDimension(R.dimen.zero_dp), LayoutParams.WRAP_CONTENT, 1f);
+            paramsTV.gravity = Gravity.END;
+            addedInstTextView.setLayoutParams(paramsTV); // set width, height, weight
+            addedInstTextView.setText(instruction);
+
+            // add the text view to the horizontal linear layout
+            horizLL.addView(addedInstTextView);
+
+            // prepare button
+            ImageButton deleteButton = new ImageButton(this);
+            deleteButton.setBackgroundResource(android.R.drawable.ic_delete);
+            deleteButton.setClickable(true);
+            deleteButton.setContentDescription("Click to delete instruction");
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    LinearLayout horizParent = (LinearLayout) v.getParent();
+                    LinearLayout vertParent = (LinearLayout) horizParent.getParent();
+                    vertParent.removeView(horizParent);
+                }
+            });
+
+            // add the button to the horizontal linear layout
+            horizLL.addView(deleteButton, 1);
+
+            // add the horizontal linear layout to the vertical linear layout for added instructions
+            addedVertInstLL.addView(horizLL);
+        }
+    }
+
+
 
     //Method to save recipe and go to final recipe view screen
     private void toSave() {
@@ -58,11 +115,12 @@ public class AddRecipe extends AppCompatActivity {
                 .setCategory(receiveRecipeCategory())
                 .setDirections(receiveRecipeInstructions())
                 .setIngredientMeasures(receiveIngredientQuantity(),
-                        receiveIngredientUnit(), receiveIngredientMeasure())
+                        receiveIngredientUnit(), receiveIngredientNames())
                 .createRecipe();
 
         return newRecipe;
     }
+
 
 
 
@@ -116,67 +174,69 @@ public class AddRecipe extends AppCompatActivity {
         return recipeCalories;
     }
 
-    //Getting recipe instrctions string on click
-    private void receiveRecipeInstructions() {
-        ImageButton instructionClick = (ImageButton) findViewById(R.id.addInstructionButton);
-        instructionClick.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
+    /**
+     * This method returns a list the instructions for making this recipe.
+     *
+     * @return a list of directions
+     */
+    private ArrayList<String> receiveRecipeInstructions() {
 
-                //Getting text in edit text
-                EditText edit =  (EditText) findViewById(R.id.firstInstruction);
-                String recipeInstruction = edit.getText().toString();
+        ArrayList<String> directions = new ArrayList<String>();
+        LinearLayout addedInstLL = (LinearLayout) findViewById(R.id.addedInstructionLL);
+        LinearLayout childLL;
+        TextView addedInstText;
+        String instruction;
 
-                //*** Insert method to save text to database
+        for (int i = 0; i < addedInstLL.getChildCount(); i++) {
 
-                //Clearing editText to ready for next entry
-                edit.setText("");
-            }
-        });
+            childLL = (LinearLayout) addedInstLL.getChildAt(i);
+            addedInstText = (TextView) childLL.getChildAt(0);
+            instruction = addedInstText.getText().toString();
+            directions.add(instruction);
+        }
+
+        return directions;
     }
 
-    private void receiveRecipeIngredients() {
+    private ArrayList<String> receiveRecipeIngredients() {
         ImageButton ingredientClick = (ImageButton) findViewById(R.id.addIngredientButton);
         ingredientClick.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //***ON Click for ingredients button
-                String ingredientName = receiveIngredientName();
+                String ingredientName = "";
 
                 //**METHOD to add ingredient name to database
 
                 //Clearing text for next entry
                 EditText edit =  (EditText) findViewById(R.id.firstIngredient);
                 edit.setText("");
+
             }
         });
+        return new ArrayList<String>();
     }
 
-    private String receiveIngredientName() {
+    private ArrayList<String> receiveIngredientNames() {
         //Getting edit text text
         EditText edit =  (EditText) findViewById(R.id.firstIngredient);
         String ingredient = edit.getText().toString();
-        return ingredient;
+        return new ArrayList<String>();
     }
 
-    private String receiveIngredientQuantity() {
+    private ArrayList<String> receiveIngredientQuantity() {
         //Getting edit text text
         EditText edit =  (EditText) findViewById(R.id.editTextQuantity);
         String recipeQuantity = edit.getText().toString();
-        return recipeQuantity;
+        return new ArrayList<String>();
     }
 
-    private String receiveIngredientUnit() {
+    private ArrayList<String> receiveIngredientUnit() {
         //Getting edit text text
         EditText edit =  (EditText) findViewById(R.id.editTextUnit);
         String recipeUnit = edit.getText().toString();
-        return recipeUnit;
+        return new ArrayList<String>();
     }
 
-    private String receiveIngredientMeasure() {
-        //Getting edit text text
-        EditText edit =  (EditText) findViewById(R.id.editTextMeasure);
-        String recipeMeasure = edit.getText().toString();
-        return recipeMeasure;
-    }
     //----------------------------------------------------------------------------------------------
 
 }

@@ -50,6 +50,9 @@ public class Recipe {
     // GETTERS & SETTERS
     // ---------------
 
+    public long getId() {
+        return _id;
+    }
     public String getName() { return name; }
     public int getNumServings() { return numServings; }
     public int getNumCalories() { return numCalories; }
@@ -59,10 +62,10 @@ public class Recipe {
     public String getCategory() { return category; }
     public ArrayList<String> getDirections() { return directions; }
     public ArrayList<IngredientMeasure> getIngredientMeasures() { return ingredientMeasures; }
-    public long getId() {
-        return _id;
-    }
 
+    public void setId(long id) {
+        _id = id;
+    }
     public void setName(String aNewName) { name = aNewName; }
     public void setNumServings(int aNewNumServings) { numServings = aNewNumServings; }
     public void setNumCalories(int aNewNumCalories) { numCalories = aNewNumCalories; }
@@ -74,35 +77,61 @@ public class Recipe {
     public void setIngredientMeasures(ArrayList<IngredientMeasure> newIngredientMeasures) {
         ingredientMeasures = newIngredientMeasures;
     }
-    public void setId(long id) {
-        _id = id;
-    }
-
 
     // ---------------
     // METHODS
     // ---------------
 
-    // public void addDirection
-    // public void removeDirection
+    /**
+     * This method adds a new IngredientMeasure object to the end of this recipe's
+     * ingredientMeasures list.
+     *
+     * @param amount
+     * @param unit
+     * @param ingredientName
+     */
+    public void addIngredientMeasure(String amount, String unit, String ingredientName) {
 
-    // public void addIngredientMeasure
-    // public void removeIngredientMeasure
+        Ingredient newIng = new Ingredient(ingredientName);
+        Number parsedAmount = Double.parseDouble(amount);
+        if (Math.ceil((Double)parsedAmount) == Math.floor((Double)parsedAmount)) {
+            parsedAmount = parsedAmount.intValue();
+        }
+        IngredientMeasure newIngMeasure = new IngredientMeasure(newIng, unit, parsedAmount);
+        ingredientMeasures.add(newIngMeasure);
+    }
 
     /**
-     * This method creates a new IngredientMeasure object and adds it to the calling Recipe
-     * object's list, ingredientMeasures.
+     * This method removes an IngredientMeasure object at the specified position from
+     * this recipe's ingredientMeasures list. It also deletes the IngredientMeasure object.
      *
-     * @param anIngredient
-     * @param unit
-     * @param amount
+     * @param index
      */
-    public void addIngredientMeasure(Ingredient anIngredient,
-            String unit, int amount) {
+    public void removeIngredientMeasure(int index) {
 
-        IngredientMeasure newIngredientMeasure;
-        newIngredientMeasure = new IngredientMeasure(anIngredient, unit, amount);
-        ingredientMeasures.add(newIngredientMeasure);
+        IngredientMeasure ingMeasureToRemove = ingredientMeasures.get(index);
+        ingMeasureToRemove.delete();
+        ingredientMeasures.remove(index);
+    }
+
+    /**
+     * This method adds a new recipe instruction to the end of this recipe's list of directions.
+     *
+     * @param aNewDirection
+     */
+    public void addDirection(String aNewDirection) {
+
+        directions.add(aNewDirection);
+    }
+
+    /**
+     * This method removes an instruction at the given index from this recipe's directions list.
+     *
+     * @param index
+     */
+    public void removeDirection(int index) {
+
+        directions.remove(index);
     }
 
     /**

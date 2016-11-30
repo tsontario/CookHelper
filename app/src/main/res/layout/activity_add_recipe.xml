@@ -260,7 +260,7 @@
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/innerInstructionLL">
+                    android:id="@+id/newInstructionLL">
 
                     <EditText
                         android:layout_width="0dp"
@@ -277,8 +277,16 @@
                         android:layout_gravity="bottom|end"
                         android:background="@android:drawable/ic_input_add"
                         android:clickable="true"
-                        android:contentDescription="@string/click_to_add_instructions" />
+                        android:contentDescription="@string/click_to_add_instructions"
+                        android:onClick="addNewInstruction"
+                        android:focusable="true" />
                 </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/addedInstructionLL"></LinearLayout>
 
             </LinearLayout>
 
@@ -391,8 +399,9 @@
                         android:layout_height="40dp"
                         android:id="@+id/addIngredientButton"
                         android:background="@android:drawable/ic_input_add"
-                        android:clickable="true"
-                        android:contentDescription="@string/button_to_add_the_ingredients" />
+                        android:contentDescription="@string/button_to_add_the_ingredients"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true" />
                 </LinearLayout>
             </LinearLayout>
 

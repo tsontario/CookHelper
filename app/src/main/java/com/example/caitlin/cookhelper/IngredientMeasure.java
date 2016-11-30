@@ -7,18 +7,17 @@ package com.example.caitlin.cookhelper;
 public class IngredientMeasure {
 
     private String unit;
-    private int amount;
+    private Number amount;
     private Ingredient ingredient;
 
     /*
     IngredientMeasure constructor
      */
-    public IngredientMeasure(Ingredient ingredient, String unit, int amount) {
+    public IngredientMeasure(Ingredient ingredient, String unit, Number amount) {
         this.ingredient = ingredient;
         this.unit = unit;
         this.amount = amount;
     }
-
 
 
     /*
@@ -28,17 +27,17 @@ public class IngredientMeasure {
         return unit;
     }
 
-    public int getAmount(){
+    public Number getAmount(){
         return amount;
     }
 
     /*
-IngredientMeasure setters
- */
+    IngredientMeasure setters
+    */
     public void setUnit(String unit){this.unit = unit;
     }
 
-    public void setAmount(int amount){
+    public void setAmount(Number amount){
         this.amount = amount;
     }
 
@@ -51,6 +50,16 @@ IngredientMeasure setters
 
     public Ingredient getIngredient(){
         return ingredient;
+    }
+
+    /**
+     * This method deletes the calling IngredientMeasure object and removes it from the databse.
+     */
+    public void delete() {
+        ingredient = null;
+        unit = null;
+        amount = null;
+        // TO DO delete from database
     }
 
 }
