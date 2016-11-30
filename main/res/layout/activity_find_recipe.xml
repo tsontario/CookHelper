@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.caitlin.cookhelper.FindRecipe">
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView3" >
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Space
+                android:layout_width="10dp"
+                android:layout_height="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/cookhelper"
+                android:id="@+id/FindTitle"
+                android:layout_gravity="center_horizontal"
+                android:textStyle="bold"
+                android:textColor="@android:color/black" />
+
+            <Space
+                android:layout_width="10dp"
+                android:layout_height="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/find_a_recipe"
+                android:id="@+id/FindSubTitle"
+                android:textStyle="bold"
+                android:textIsSelectable="false"
+                android:textColor="@android:color/black"
+                android:layout_gravity="center_horizontal" />
+
+            <Space
+                android:layout_width="fill_parent"
+                android:layout_height="20dp" />
+
+            <ImageView
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:id="@+id/FindLogo"
+                android:layout_gravity="center"
+                android:background="@drawable/cooking_chef_icon" />
+
+            <Space
+                android:layout_width="fill_parent"
+                android:layout_height="20dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/type"
+                android:id="@+id/txtviewFindType"
+                android:layout_gravity="start"
+                android:textStyle="bold"
+                android:textIsSelectable="false"
+                android:textColor="@android:color/black" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+                <Spinner
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/typeSpinner"
+                    android:layout_weight="1"
+                    android:spinnerMode="dropdown" />
+
+                <Space
+                    android:layout_width="205dp"
+                    android:layout_height="5dp"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <Space
+                android:layout_width="20dp"
+                android:layout_height="20dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/category"
+                android:id="@+id/txtviewFindCategory"
+                android:layout_gravity="start"
+                android:textStyle="bold"
+                android:textIsSelectable="false"
+                android:textColor="@android:color/black" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+                <Spinner
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/categorySpinner"
+                    android:layout_weight="1"
+                    android:spinnerMode="dropdown" />
+
+                <Space
+                    android:layout_width="205dp"
+                    android:layout_height="5dp"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <Space
+                android:layout_width="20dp"
+                android:layout_height="20dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/ingredients"
+                android:id="@+id/txtviewFindIngredient"
+                android:layout_gravity="start"
+                android:textStyle="bold"
+                android:textIsSelectable="false"
+                android:textColor="@android:color/black" />
+
+            <Space
+                android:layout_width="10dp"
+                android:layout_height="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/search_ingredients_instructions1"
+                android:id="@+id/txtviewFindInstruction1" />
+
+            <Space
+                android:layout_width="10dp"
+                android:layout_height="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/search_ingredients_instructions2"
+                android:id="@+id/txtviewFindInstruction2" />
+
+            <Space
+                android:layout_width="10dp"
+                android:layout_height="10dp" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:id="@+id/FindSearchImage"
+                    android:background="@android:drawable/ic_menu_search" />
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editTextFind"
+                    android:layout_gravity="start"
+                    android:hint="@string/enter_search_ingredients"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <Space
+                android:layout_width="20dp"
+                android:layout_height="20dp" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/search"
+                    android:id="@+id/findRecipeButton"
+                    android:layout_weight="1"
+                    android:background="@drawable/custombutton"/>
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.1" />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@android:string/cancel"
+                    android:id="@+id/cancelFindButton"
+                    android:layout_weight="1"
+                    android:background="@drawable/custombutton"/>
+            </LinearLayout>
+
+            <Space
+                android:layout_width="10dp"
+                android:layout_height="10dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>
