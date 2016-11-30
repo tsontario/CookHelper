@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.widget.Toast;
 
 import com.example.caitlin.cookhelper.Ingredient;
 import com.example.caitlin.cookhelper.IngredientMeasure;
@@ -188,7 +189,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return r;
     }
 
-
     /**
      * Returns a list of all recipes in the database. Does *NOT* return Recipe objects. Returns
      * SearchResult objects that contain (name, id). Useful for populating lists in the UI.
@@ -282,6 +282,29 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
+    /** Searches for recipes based on the given criteria. Returns a list of SearchResult objects
+     *
+     */
+    public List<SearchResult> findRecipes(String category, String type, String ingredientQuery) {
+
+        // Join the Recipe and IngredientMeasure tables
+        String SEARCH_QUERY =  "SELECT " + KEY_RECIPE_ID + ", "
+                                + KEY_RECIPE_NAME + " FROM " + TABLE_INGREDIENT_MEASURES
+                                + " INNER JOIN " + TABLE_RECIPES + " ON "
+                                + TABLE_RECIPES + "." + KEY_RECIPE_ID + " = "
+                                + TABLE_INGREDIENT_MEASURES + "." + KEY_INGREDIENT_MEASURE_RECIPE
+                                + " ";
+        // Create the custom query
+        SEARCH_QUERY +=         "WHERE " + KEY_RECIPE_CATEGORY + " = " + category
+                                + " AND " + KEY_RECIPE_TYPE + " = " + type + " ";
+
+        ingredientQuery = generateSQLQuery(ingredientQuery);
+
+
+
+
+    }
+
     /************** PRIVATE UTILITY / HELPER METHODS *******************/
 
     /** Helper methods for getRecipe(int id) */
@@ -292,12 +315,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 directions.add(transform.get(i).toString());
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            directions.add("Error reading file. Please try again");
         }
     }
 
     private void getIngredientMeasures(int id, ArrayList<IngredientMeasure> ingredientMeasures,
-                                       SQLiteDatabase db) {
+                                         SQLiteDatabase db) {
         Cursor cursor;
         cursor = db.query(TABLE_INGREDIENT_MEASURES, null, String.valueOf(id) + " =?",
                 new String[] {String.valueOf(id)},
@@ -332,7 +355,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     /** Helper methods for addRecipe(Recipe r) */
     private void addToIngredientTables(long _id, ArrayList<IngredientMeasure> iMeasures,
-                                       SQLiteDatabase db) {
+                                        SQLiteDatabase db) {
         for (IngredientMeasure im: iMeasures) {
             ContentValues ingredientValues = new ContentValues();
             ContentValues ingredientMeasureValues = new ContentValues();
@@ -374,4 +397,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // DB closed in caller
     }
     /** End of helper methods for addRecipe(Recipe r) */
+
+    private String generateSQLQuery(String q) {
+        //Melted Butter AND Flour OR Honey
+        q = "Melted Butter AND Flour OR Honey";
+        String[] tokens = q.split(" ");
+        List<String> operators = new ArrayList<String>;
+        operators.add("AND");
+        operators.add("OR");
+        operators.add("NOT");
+
+        // [Melted Butter, AND, Flour, OR, Honey]
+        for (int i=0; i<tokens.length; i++) {
+
+        }
+        String result = "";
+
+    }
 }
