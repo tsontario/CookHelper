@@ -172,5 +172,4 @@ public class Edit extends AppCompatActivity {
         String recipeMeasure = edit.getText().toString();
         return recipeMeasure;
     }
-    //-------------------------------------------------------
 }

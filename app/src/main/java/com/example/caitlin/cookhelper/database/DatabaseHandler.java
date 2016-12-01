@@ -135,7 +135,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * @param id ID of the recipe, can be accessed via a SearchResult object
      * @return a Recipe object
      * */
-    public Recipe getRecipe(int id) {
+    public Recipe getRecipe(long id) {
         // Get the database row
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_RECIPES, null,
@@ -284,16 +284,33 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     /** Searches for recipes based on the given criteria. Returns a list of SearchResult objects
      *
      */
-    public List<SearchResult> findRecipes(String category, String type, String ingredientQuery) {
+    public ArrayList<SearchResult> findRecipes(String category, String type, String ingredientQuery) {
 
-        // Join the Recipe and IngredientMeasure tables
-        String SEARCH_QUERY =  "SELECT " + KEY_RECIPE_ID + ", "
-                                + KEY_RECIPE_NAME + " FROM " + TABLE_INGREDIENT_MEASURES
-                                + " INNER JOIN " + TABLE_RECIPES + " ON "
-                                + TABLE_RECIPES + "." + KEY_RECIPE_ID + " = "
-                                + TABLE_INGREDIENT_MEASURES + "." + KEY_INGREDIENT_MEASURE_RECIPE
-                                + " ";
+        SQLiteDatabase db = this.getWritableDatabase();
+        String searchQuery = "";
+        // Recipes ids point to String of all ingredients
+        String createTempTable = "CREATE TEMPORARY TABLE search( "
+                                + KEY_RECIPE_ID + "INTEGER, "
+                                + KEY_INGREDIENT_NAME + " TEXT"
+                                + ");";
+
+        // Populate the search table
+        db.execSQL("INSERT INTO search SELECT Ingredient_Measures.recipe, group_concat(Ingredient_Measures.name, \"\")" +
+        "FROM Ingredient_Measures  GROUP BY Ingredient_Measures.recipe");
         // Create the custom query
+        if (category != null && category.length() > 0) {
+            searchQuery +=
+        }
+        if (type != null && type.length() > 0) {
+
+        }
+
+        SEARCH_QUERY =  "SELECT " + KEY_RECIPE_ID + ", "
+                + KEY_RECIPE_NAME + " FROM " + TABLE_INGREDIENT_MEASURES
+                + " INNER JOIN " + TABLE_RECIPES + " ON "
+                + TABLE_RECIPES + "." + KEY_RECIPE_ID + " = "
+                + TABLE_INGREDIENT_MEASURES + "." + KEY_INGREDIENT_MEASURE_RECIPE
+                + " ";
         SEARCH_QUERY +=         "WHERE " + KEY_RECIPE_CATEGORY + " = " + category
                                 + " AND " + KEY_RECIPE_TYPE + " = " + type + " ";
 
@@ -318,7 +335,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
     }
 
-    private void getIngredientMeasures(int id, ArrayList<IngredientMeasure> ingredientMeasures,
+    private void getIngredientMeasures(long id, ArrayList<IngredientMeasure> ingredientMeasures,
                                          SQLiteDatabase db) {
         Cursor cursor;
         cursor = db.query(TABLE_INGREDIENT_MEASURES, null, String.valueOf(id) + " =?",
@@ -331,7 +348,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         while (!cursor.isAfterLast()) {
             Ingredient i = new Ingredient(cursor.getString(0));
             String unit = cursor.getString(1);
-            int amount = cursor.getInt(2);
+            String amount = cursor.getString(2);
             IngredientMeasure iM = new IngredientMeasure(i, unit, amount);
             ingredientMeasures.add(iM);
         }
@@ -412,5 +429,28 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         String result = "";
         return null;
+    }
+
+    public ArrayList<String> getCategories() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<String> categories = new ArrayList<>();
+        String query = "SELECT " + KEY_RECIPE_CATEGORY + " FROM "
+                        + TABLE_RECIPES;
+
+        db.execSQL(query);
+
+    }
+
+    public ArrayList<String> getTypes() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<String> types = new ArrayList<>();
+
+        Cursor cursor = db.query(TABLE_RECIPES, null, KEY_RECIPE_TYPE + " =?",
+                new String[] {"*"}, null, null, null, null);
+        String query = "SELECT " + KEY_RECIPE_TYPE + " FROM "
+                + TABLE_RECIPES;
+
+        db.execSQL(query);
+
     }
 }

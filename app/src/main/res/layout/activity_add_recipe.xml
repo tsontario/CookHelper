@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -316,19 +317,11 @@
                     android:textIsSelectable="false"
                     android:textColor="@android:color/black" />
 
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:id="@+id/firstIngredient"
-                    android:layout_gravity="start"
-                    android:hint="@string/enter_first_ingredient_here"
-                    android:layout_weight="1" />
-
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/linearLayout" >
+                    android:id="@+id/ingredientHeadingLL" >
 
                     <TextView
                         android:layout_width="0dp"
@@ -353,7 +346,7 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:text="@string/ingredient_name"
-                        android:id="@+id/txtviewMeasure"
+                        android:id="@+id/txtviewIngredientName"
                         android:layout_weight="1"
                         android:textAlignment="center" />
 
@@ -372,16 +365,15 @@
                     <EditText
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:id="@+id/editTextQuantity"
+                        android:id="@+id/eTextAmount"
                         android:layout_weight=".4"
-                        android:inputType="number|numberDecimal"
                         android:hint="@string/quantity_hint"
                         android:textAlignment="center" />
 
                     <EditText
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:id="@+id/editTextUnit"
+                        android:id="@+id/eTextUnit"
                         android:layout_weight=".6"
                         android:hint="@string/measure_hint"
                         android:textAlignment="center" />
@@ -389,7 +381,7 @@
                     <EditText
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:id="@+id/editTextMeasure"
+                        android:id="@+id/eTextIngredientName"
                         android:layout_weight="1"
                         android:hint="@string/ingredient_name_hint"
                         android:textAlignment="center" />
@@ -401,9 +393,16 @@
                         android:background="@android:drawable/ic_input_add"
                         android:contentDescription="@string/button_to_add_the_ingredients"
                         android:focusable="true"
-                        android:focusableInTouchMode="true" />
+                        android:focusableInTouchMode="true"
+                        android:onClick="addNewIngredientMeasure"/>
                 </LinearLayout>
             </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/addedIMLL"></LinearLayout>
 
             <Space
                 android:layout_width="20dp"

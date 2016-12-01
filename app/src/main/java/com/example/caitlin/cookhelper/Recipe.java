@@ -14,8 +14,8 @@ public class Recipe {
     // attributes
     private long _id;
     private String name;
-    private int numServings;
-    private int numCalories;
+    private String numServings;
+    private String numCalories;
     private String prepTime;
     private String cookTime;
     private String type;
@@ -30,7 +30,7 @@ public class Recipe {
     // CONSTRUCTOR
     // ---------------
 
-    public Recipe(String aName, int aNumServings, int aNumCalories, String aPrepTime,
+    public Recipe(String aName, String aNumServings, String aNumCalories, String aPrepTime,
                   String aCookTime, String aType, String aCategory,ArrayList<String> someDirections,
                   ArrayList<IngredientMeasure> someIngredientMeasures) {
 
@@ -54,8 +54,8 @@ public class Recipe {
         return _id;
     }
     public String getName() { return name; }
-    public int getNumServings() { return numServings; }
-    public int getNumCalories() { return numCalories; }
+    public String getNumServings() { return numServings; }
+    public String getNumCalories() { return numCalories; }
     public String getPrepTime() { return prepTime; }
     public String getCookTime() { return cookTime; }
     public String getType() { return type; }
@@ -67,8 +67,8 @@ public class Recipe {
         _id = id;
     }
     public void setName(String aNewName) { name = aNewName; }
-    public void setNumServings(int aNewNumServings) { numServings = aNewNumServings; }
-    public void setNumCalories(int aNewNumCalories) { numCalories = aNewNumCalories; }
+    public void setNumServings(String aNewNumServings) { numServings = aNewNumServings; }
+    public void setNumCalories(String aNewNumCalories) { numCalories = aNewNumCalories; }
     public void setPrepTime(String aNewPrepTime) { prepTime = aNewPrepTime; }
     public void setCookTime(String aNewCookTime) { cookTime = aNewCookTime; }
     public void setType(String aNewType) { type = aNewType; }
@@ -93,11 +93,7 @@ public class Recipe {
     public void addIngredientMeasure(String amount, String unit, String ingredientName) {
 
         Ingredient newIng = new Ingredient(ingredientName);
-        Number parsedAmount = Double.parseDouble(amount);
-        if (Math.ceil((Double)parsedAmount) == Math.floor((Double)parsedAmount)) {
-            parsedAmount = parsedAmount.intValue();
-        }
-        IngredientMeasure newIngMeasure = new IngredientMeasure(newIng, unit, parsedAmount);
+        IngredientMeasure newIngMeasure = new IngredientMeasure(newIng, unit, amount);
         ingredientMeasures.add(newIngMeasure);
     }
 

@@ -31,8 +31,7 @@ public class FindRecipe extends AppCompatActivity {
         toSearch.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //Getting the edit text for search criteria
-                EditText edit =  (EditText) findViewById(R.id.editTextFind);
-                String findCriteria = edit.getText().toString();
+                String findCriteria = ingredientCriteria();
 
                 Intent intent = new Intent(getApplicationContext(), Results.class);
                 intent.putExtra("search_type", "Find");     //Sending selected recipe name
@@ -40,6 +39,13 @@ public class FindRecipe extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    private String ingredientCriteria() {
+        EditText edit =  (EditText) findViewById(R.id.editTextFind);
+        String findCriteria = edit.getText().toString();
+
+        return findCriteria;
     }
 
     private void populateTypeSpinner() {
@@ -68,5 +74,21 @@ public class FindRecipe extends AppCompatActivity {
                 onBackPressed();
             }
         });
+    }
+
+    //Will return the selected item from the "category" spinner
+    private String getSpinnerCategory() {
+        Spinner spinner = (Spinner)findViewById(R.id.categorySpinner);
+        String selectedText = spinner.getSelectedItem().toString();
+
+        return selectedText;
+    }
+
+    //Will return the selected item from the "type" spinner
+    private String getSpinnerType() {
+        Spinner spinner = (Spinner)findViewById(R.id.typeSpinner);
+        String selectedText = spinner.getSelectedItem().toString();
+
+        return selectedText;
     }
 }

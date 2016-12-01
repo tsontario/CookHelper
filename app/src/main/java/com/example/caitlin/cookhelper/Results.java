@@ -10,6 +10,8 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.caitlin.cookhelper.database.SearchResult;
+
 import static com.example.caitlin.cookhelper.R.id.txtviewSearchCriteria;
 import static com.example.caitlin.cookhelper.R.id.txtviewSearchCriteriaInfo;
 import static java.lang.String.valueOf;
@@ -31,7 +33,7 @@ public class Results extends AppCompatActivity {
         setContentView(R.layout.activity_results);
 
         //List View list population
-        ListAdapter theAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, recipes);
+        ListAdapter theAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, new String[] {new SearchResult("", 1).getName()});
         ListView theListView = (ListView) findViewById(R.id.recipesListView);
         theListView.setAdapter(theAdapter);
 

@@ -8,8 +8,8 @@ import java.util.ArrayList;
 public class RecipeBuilder {
 
     private String name;
-    private int numServings;
-    private int numCalories;
+    private String numServings;
+    private String numCalories;
     private String prepTime;
     private String cookTime;
     private String type;
@@ -28,12 +28,12 @@ public class RecipeBuilder {
         return this;
     }
 
-    public RecipeBuilder setNumServings(int aNumServings) {
+    public RecipeBuilder setNumServings(String aNumServings) {
         numServings = aNumServings;
         return this;
     }
 
-    public RecipeBuilder setNumCalories(int aNumCalories) {
+    public RecipeBuilder setNumCalories(String aNumCalories) {
         numCalories = aNumCalories;
         return this;
     }
@@ -74,7 +74,7 @@ public class RecipeBuilder {
             newIng = new Ingredient(ingredients.get(i));
 
             newIngMeasure = new IngredientMeasure(newIng, units.get(i),
-                    Integer.parseInt(amounts.get(i)));
+                    amounts.get(i));
 
             ingredientMeasures.add(newIngMeasure);
         }

@@ -7,13 +7,13 @@ package com.example.caitlin.cookhelper;
 public class IngredientMeasure {
 
     private String unit;
-    private Number amount;
+    private String amount;
     private Ingredient ingredient;
 
     /*
     IngredientMeasure constructor
      */
-    public IngredientMeasure(Ingredient ingredient, String unit, Number amount) {
+    public IngredientMeasure(Ingredient ingredient, String unit, String amount) {
         this.ingredient = ingredient;
         this.unit = unit;
         this.amount = amount;
@@ -27,7 +27,7 @@ public class IngredientMeasure {
         return unit;
     }
 
-    public Number getAmount(){
+    public String getAmount(){
         return amount;
     }
 
@@ -37,7 +37,7 @@ public class IngredientMeasure {
     public void setUnit(String unit){this.unit = unit;
     }
 
-    public void setAmount(Number amount){
+    public void setAmount(String amount){
         this.amount = amount;
     }
 
@@ -52,6 +52,7 @@ public class IngredientMeasure {
         return ingredient;
     }
 
+
     /**
      * This method deletes the calling IngredientMeasure object and removes it from the databse.
      */
@@ -60,6 +61,11 @@ public class IngredientMeasure {
         unit = null;
         amount = null;
         // TO DO delete from database
+    }
+
+    @Override
+    public String toString(){
+        return( amount.toString() + " " + unit + " " + ingredient.toString());
     }
 
 }
