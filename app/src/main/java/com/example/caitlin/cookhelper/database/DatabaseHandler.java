@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.widget.Toast;
 
 import com.example.caitlin.cookhelper.Ingredient;
 import com.example.caitlin.cookhelper.IngredientMeasure;
@@ -84,7 +83,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 "CREATE TABLE " + TABLE_INGREDIENT_MEASURES         + "("
                 + KEY_INGREDIENT_MEASURE_RECIPE                     + " INTEGER, "
                 + KEY_INGREDIENT_MEASURE_NAME                       + " TEXT, "
-                + KEY_INGREDIENT_MEASURE_QTY                        + " REAL, "
+                + KEY_INGREDIENT_MEASURE_QTY                        + " TEXT, "
                 + KEY_INGREDIENT_MEASURE_MEASUREMENT                + " TEXT, "
                 + "FOREIGN KEY(" + KEY_INGREDIENT_MEASURE_RECIPE    + ") REFERENCES "
                 + TABLE_RECIPES + "(" + KEY_RECIPE_ID               + "),"
@@ -301,7 +300,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ingredientQuery = generateSQLQuery(ingredientQuery);
 
 
-
+        return null;
 
     }
 
@@ -402,7 +401,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         //Melted Butter AND Flour OR Honey
         q = "Melted Butter AND Flour OR Honey";
         String[] tokens = q.split(" ");
-        List<String> operators = new ArrayList<String>;
+        List<String> operators = new ArrayList<String>();
         operators.add("AND");
         operators.add("OR");
         operators.add("NOT");
@@ -412,6 +411,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         }
         String result = "";
-
+        return null;
     }
 }
