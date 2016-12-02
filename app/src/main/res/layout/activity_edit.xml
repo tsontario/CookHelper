@@ -366,7 +366,6 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/eTextQuantityEdit"
                         android:layout_weight=".4"
-                        android:inputType="number|numberDecimal"
                         android:hint="@string/quantity_hint"
                         android:textAlignment="center" />
 

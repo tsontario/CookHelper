@@ -35,66 +35,13 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <LinearLayout
-                android:paddingTop="15dp"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal">
-
-                <TextView
-                    android:text="@string/servings"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/txtviewRecipeServings"
-                    android:layout_weight="1"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/txtviewRecipeServingsNumber"
-                    android:layout_weight="1"/>
-
-                <TextView
-                    android:text="@string/prep_time_viewrecipe"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/txtviewRecipePrep"
-                    android:layout_weight="1"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/txtviewRecipePrepNumber"
-                    android:layout_weight="1" />
-
-                <TextView
-                    android:text="@string/cook_time_viewrecipe"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/txtviewCookTime"
-                    android:layout_weight="1"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/txtviewCookTimeNumber"
-                    android:layout_weight="1" />
-            </LinearLayout>
-
-            <LinearLayout
                 android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
+                android:paddingBottom="9dp">
                 <TextView
                     android:text="@string/typeRecipe"
                     android:layout_width="wrap_content"
@@ -114,16 +61,13 @@
                     android:paddingStart="4dp"
                     android:paddingRight="0dp"
                     android:paddingEnd="0dp"/>
+            </LinearLayout>
 
-                <TextView
-                    android:text="@string/Line"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/Line"
-                    android:layout_weight="0.1"
-                    android:textColor="@android:color/black"
-                    android:gravity="center"/>
-
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="9dp">
                 <TextView
                     android:text="Category:"
                     android:layout_width="wrap_content"
@@ -139,17 +83,93 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/viewRecipeCategoryInfo"
                     android:layout_weight="1"
-                    android:paddingLeft="4dp"
-                    android:paddingStart="4dp"
+                    android:paddingLeft="5dp"
+                    android:paddingStart="5dp"
+                    android:paddingRight="0dp"
+                    android:paddingEnd="0dp"/>
+            </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="9dp">
+                <TextView
+                    android:text="@string/prep_time_viewrecipe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txtviewRecipePrep"
+                    android:layout_weight="1"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/black"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txtviewRecipePrepNumber"
+                    android:layout_weight="1"
+                    android:paddingLeft="5dp"
+                    android:paddingStart="5dp"
+                    android:paddingRight="0dp"
+                    android:paddingEnd="0dp"/>
+        </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="9dp">
+                <TextView
+                    android:text="@string/cook_time_viewrecipe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txtviewCookTime"
+                    android:layout_weight="1"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/black"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txtviewCookTimeNumber"
+                    android:layout_weight="1"
+                    android:paddingLeft="5dp"
+                    android:paddingStart="5dp"
+                    android:paddingRight="0dp"
+                    android:paddingEnd="0dp"/>
+        </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="9dp">
+                <TextView
+                    android:text="@string/servings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txtviewRecipeServings"
+                    android:layout_weight="1"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/black"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txtviewRecipeServingsNumber"
+                    android:layout_weight="1"
+                    android:paddingLeft="5dp"
+                    android:paddingStart="5dp"
                     android:paddingRight="0dp"
                     android:paddingEnd="0dp"/>
             </LinearLayout>
 
             <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
+                android:paddingBottom="9dp">
                 <TextView
                     android:text="@string/calories"
                     android:layout_width="wrap_content"
@@ -172,20 +192,10 @@
                     android:gravity="start"/>
             </LinearLayout>
 
-            <TextView
-                android:text="Ingredients:"
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/viewRecipeIngredients"
-                android:textStyle="bold"
-                android:textColor="@android:color/black"
-                android:paddingTop="20dp"/>
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/viewRecipeIngredientsInfo"></LinearLayout>
+                android:layout_height="2dp"
+                android:background="@color/colorAccent" />
 
             <TextView
                 android:text="@string/directionsView"
@@ -201,6 +211,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/viewRecipeDirectionsInfo"></LinearLayout>
+
+            <TextView
+                android:text="Ingredients:"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/viewRecipeIngredients"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:paddingTop="20dp"/>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/viewRecipeIngredientsInfo"></LinearLayout>
+
 
             <LinearLayout
                 android:paddingTop="25dp"
