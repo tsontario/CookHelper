@@ -21,7 +21,6 @@
         android:textSize="27sp"
         android:textStyle="bold"
         android:textColor="@android:color/black"
-        android:text="recipeName"
         android:ellipsize="end"/>
 
     <View
@@ -55,7 +54,6 @@
                     android:textColor="@android:color/black"/>
 
                 <TextView
-                    android:text="4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/txtviewRecipeServingsNumber"
@@ -71,7 +69,6 @@
                     android:textColor="@android:color/black"/>
 
                 <TextView
-                    android:text="10min"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/txtviewRecipePrepNumber"
@@ -87,7 +84,6 @@
                     android:textColor="@android:color/black"/>
 
                 <TextView
-                    android:text="10min"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/txtviewCookTimeNumber"
@@ -110,7 +106,6 @@
                     android:gravity="end" />
 
                 <TextView
-                    android:text="French"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/viewRecipeTypeInfo"
@@ -140,7 +135,6 @@
                     android:gravity="end" />
 
                 <TextView
-                    android:text="Dessert"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/viewRecipeCategoryInfo"
@@ -171,7 +165,6 @@
                     android:paddingLeft="0dp"/>
 
                 <TextView
-                    android:text="500"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/viewRecipeCaloriesInfo"

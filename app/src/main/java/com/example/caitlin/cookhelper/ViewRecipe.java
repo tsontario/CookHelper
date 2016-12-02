@@ -139,7 +139,7 @@ public class ViewRecipe extends AppCompatActivity {
         ArrayList<IngredientMeasure> recipeIngredients = recipe.getIngredientMeasures();
         LinearLayout ll = (LinearLayout) findViewById(R.id.viewRecipeIngredientsInfo);
 
-        for(int i = 0; i < recipeIngredients.size()-1; i++){
+        for(int i = 0; i < recipeIngredients.size(); i++){
             TextView tv = new TextView(this);
             tv.setText(recipeIngredients.get(i).toString());
             ll.addView(tv);
@@ -150,7 +150,7 @@ public class ViewRecipe extends AppCompatActivity {
         ArrayList<String> recipeDirections = recipe.getDirections();
         LinearLayout ll = (LinearLayout) findViewById(R.id.viewRecipeDirectionsInfo);
 
-        for(int i = 0; i < recipeDirections.size()-1; i++){
+        for(int i = 0; i < recipeDirections.size(); i++){
             TextView tv = new TextView(this);
             tv.setText(recipeDirections.get(i));
             ll.addView(tv);
@@ -168,5 +168,4 @@ public class ViewRecipe extends AppCompatActivity {
         setIngredients(recipe);
         setDirections(recipe);
     }
-
 }
