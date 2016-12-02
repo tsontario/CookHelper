@@ -56,6 +56,12 @@ public class RecipeBook {
         new DatabaseHandler(context).updateRecipe(r);
     }
 
+    public void deleteRecipe(Context context, long id){
+
+        new DatabaseHandler(context).deleteIngredientMeasures(id);
+        new DatabaseHandler(context).deleteRecipe(id);
+    }
+
 
     public ArrayList<SearchResult> searchWithCriteria(Context context, String category, String type,
                                    String ingredientCriteria) {
@@ -64,6 +70,8 @@ public class RecipeBook {
     }
 
 
+    public ArrayList<SearchResult> browseAllRecipes(Context context){
 
-
+        return (ArrayList<SearchResult>) new DatabaseHandler(context).getAllRecipes();
+    }
 }

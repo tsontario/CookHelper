@@ -65,7 +65,7 @@ public class IngredientMeasure {
 
     @Override
     public String toString(){
-        return( amount.toString() + " " + unit + " " + ingredient.toString());
+        return( amount + " " + unit + " " + ingredient.getName());
     }
 
 }

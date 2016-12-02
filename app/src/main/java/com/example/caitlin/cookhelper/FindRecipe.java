@@ -41,7 +41,7 @@ public class FindRecipe extends AppCompatActivity {
 
                 Intent intent = new Intent(getApplicationContext(), Results.class);
                 intent.putStringArrayListExtra("criteria", allCriteria);
-                intent.putExtra("search_type", "Find_with_criteria");
+                intent.putExtra("search_type", "Criteria");
                 startActivity(intent);
             }
         });

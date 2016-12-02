@@ -57,7 +57,6 @@ public class ViewRecipe extends AppCompatActivity {
         Button toDelete = (Button) findViewById(R.id.btnDelete);
         toDelete.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
                 createAlert();
             }
         });
@@ -130,6 +129,12 @@ public class ViewRecipe extends AppCompatActivity {
         resultsCalories.setText(recipeCalories);
     }
 
+    private void setCategory(Recipe recipe){
+        String recipeCategory = recipe.getCategory();
+        TextView resultsCategory = (TextView) findViewById(R.id.viewRecipeCategoryInfo);
+        resultsCategory.setText(recipeCategory);
+    }
+
     private void setIngredients(Recipe recipe){
         ArrayList<IngredientMeasure> recipeIngredients = recipe.getIngredientMeasures();
         LinearLayout ll = (LinearLayout) findViewById(R.id.viewRecipeIngredientsInfo);
@@ -159,6 +164,7 @@ public class ViewRecipe extends AppCompatActivity {
         setCookTime(recipe);
         setType(recipe);
         setCalories(recipe);
+        setCategory(recipe);
         setIngredients(recipe);
         setDirections(recipe);
     }

@@ -18,10 +18,12 @@ public class Results extends AppCompatActivity {
 
     // associations
     RecipeBook rBook;
+    ArrayList<SearchResult> results;
 
     // ---------------
     // ON CREATE
     // ---------------
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -29,46 +31,49 @@ public class Results extends AppCompatActivity {
         setContentView(R.layout.activity_results);
 
         rBook = RecipeBook.getInstance();
-        ArrayList<String> criteria = getIntent().getExtras().getStringArrayList("criteria");
-        final ArrayList<SearchResult> results = rBook.searchWithCriteria(getApplicationContext(),
-                criteria.get(0), criteria.get(1), criteria.get(2));
 
+        // determine the type of search: search with criteria or browse all recipes
+        Intent intent = getIntent();
+        String searchType = intent.getExtras().getString("search_type");
 
-        //List View list population
+        // references to TextViews
+        TextView kindOfSearch = (TextView) findViewById(R.id.txtviewSearchCriteria);
+        TextView inputtedIngInfo = (TextView) findViewById(R.id.txtviewSearchCriteriaInfo);
+
+        results = new ArrayList<SearchResult>();
+
+        if (searchType.equals("Browse")) {
+
+            kindOfSearch.setText("Browse All Recipes");
+            results = rBook.browseAllRecipes(getApplicationContext());
+        } else { // searchType.equals("Criteria")
+
+            kindOfSearch.setText("Showing results for:");
+            ArrayList<String> allCriteria = intent.getExtras().getStringArrayList("criteria");
+            inputtedIngInfo.setText("Category: " + allCriteria.get(0) +
+                    ", Type: " + allCriteria.get(1) +
+                    "\n" + "Ingredients: " + allCriteria.get(2));
+            results = rBook.searchWithCriteria(getApplicationContext(),
+                    allCriteria.get(0), allCriteria.get(1), allCriteria.get(2));
+        }
+
+        // ListView population
         IngredientAdapter adapter = new IngredientAdapter(this, results);
         ListView listView = (ListView) findViewById(R.id.recipesListView);
         listView.setAdapter(adapter);
 
-        //Receiving sent search type from previous activity
-        Bundle bundle = getIntent().getExtras();
-        String searchType = bundle.getString("search_type");
-
-        //setting sent search type name as sub title
-        TextView recipeNameToChange = (TextView) findViewById(R.id.txtviewSearchCriteria);
-        if (searchType.equals("Browse")) {
-            recipeNameToChange.setText(getString(R.string.resultsSubtitleBrowse));
-        }
-        else if (searchType.equals("Find")) {
-            recipeNameToChange.setText(getString(R.string.resultsSubtitleFind));
-
-            //receiving find criteria
-            Bundle find = getIntent().getExtras();
-            String searchCriteria = find.getString("search_criteria");
-            //setting find criteria text
-            TextView recipeSubtitleNameToChange = (TextView) findViewById(R.id.txtviewSearchCriteriaInfo);
-            recipeSubtitleNameToChange.setText(searchCriteria);
-        }
-
-        //Intent to go to recipe view screen
+        // intent to go to recipe view screen
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
                 SearchResult selectedRecipeSearch = results.get(position);
-                //Intent to go to the next screen
                 Intent intent = new Intent(getApplicationContext(), ViewRecipe.class);
-                intent.putExtra("recipe_id", selectedRecipeSearch.getId());     //Sending selected recipe name
+                intent.putExtra("recipe_id", selectedRecipeSearch.getId());
                 startActivity(intent);
             }
         });
     }
+
 }
