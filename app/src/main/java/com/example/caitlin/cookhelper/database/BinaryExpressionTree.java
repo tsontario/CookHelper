@@ -1,5 +1,5 @@
 package com.example.caitlin.cookhelper.database;
-public class Tree<V> {
+public class BinaryExpressionTree<V> {
 
     class Node<V> {
         private Node right;
@@ -42,14 +42,26 @@ public class Tree<V> {
         public Node(V element) {
             this.element = element;
         }
+
+        public boolean isLeftChild() {
+            return parent != null && parent.left == this;
+        }
+
+        public boolean isRightChild() {
+            return parent != null && parent.right == this;
+        }
+
+        public boolean isLeaf() {
+            return (left == null);
+        }
     }
     private Node<V> root;
 
-    public Tree() {
+    public BinaryExpressionTree() {
         root = null;
     }
 
-    public Tree(V v) {
+    public BinaryExpressionTree(V v) {
         root = new Node(v);
     }
 
@@ -61,11 +73,12 @@ public class Tree<V> {
         this.root = root;
     }
 
-    public void appendLeft(Tree tree) {
+    public void appendLeft(BinaryExpressionTree tree) {
         root.left = tree.root;
     }
 
-    public void appendRight(Tree tree) {
+    public void appendRight(BinaryExpressionTree tree) {
         root.right = tree.root;
     }
+
 }

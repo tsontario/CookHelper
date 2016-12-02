@@ -43,7 +43,7 @@
 
     <!--EditRecipe-->
     <string name="edit_recipe">Edit Recipe</string>
-    <string name="any_new_instructions">Enter a new instruction</string>
+    <string name="any_new_instructions">Any new instructions?</string>
 
     <!--Home-->
     <string name="tarjeta_roja">By Tarjeta Roja</string>
