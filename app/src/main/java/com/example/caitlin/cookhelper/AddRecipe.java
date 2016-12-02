@@ -11,18 +11,22 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
-import android.view.Gravity;
 import java.util.ArrayList;
 
+
+
 public class AddRecipe extends AppCompatActivity {
+
+    RecipeBook rBook;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_recipe);
+
+        rBook = RecipeBook.getInstance();
 
         //Onclick button methods for save and cancel buttons
         toSave();
@@ -52,8 +56,8 @@ public class AddRecipe extends AppCompatActivity {
             TextView addedInstTextView = new TextView(this);
             LayoutParams paramsTV = new LayoutParams((int) getResources()
                     .getDimension(R.dimen.zero_dp), LayoutParams.WRAP_CONTENT, 1f);
-            paramsTV.gravity = Gravity.END;
             addedInstTextView.setLayoutParams(paramsTV); // set width, height, weight
+            addedInstTextView.setGravity(Gravity.RIGHT);
             addedInstTextView.setText(instruction);
 
             // add the text view to the horizontal linear layout
@@ -97,14 +101,13 @@ public class AddRecipe extends AppCompatActivity {
         unitET.setText("");
         ingNameET.setText("");
 
-        amountET.setHint("4");
-        unitET.setHint("bottles");
+        amountET.setHint("1");
+        unitET.setHint("cup");
         ingNameET.setHint("red wine");
-    }
-        /**
-        LinearLayout addedVertInstLL = (LinearLayout) findViewById(R.id.addedInstructionLL);
 
-        if ((instruction.trim().length() == 0) || (instruction == null)) { // if whitespace
+        LinearLayout addedVertInstLL = (LinearLayout) findViewById(R.id.addedIMLL);
+
+        if ((ingNameStr.trim().length() == 0) || (ingNameStr == null)) { // if no ingredient given
             return;
         } else {
 
@@ -115,16 +118,39 @@ public class AddRecipe extends AppCompatActivity {
             horizLL.setLayoutParams(paramsLL);
             horizLL.setOrientation(LinearLayout.HORIZONTAL);
 
-            // prepare text view
-            TextView addedInstTextView = new TextView(this);
-            LayoutParams paramsTV = new LayoutParams((int) getResources()
-                    .getDimension(R.dimen.zero_dp), LayoutParams.WRAP_CONTENT, 1f);
-            paramsTV.gravity = Gravity.END;
-            addedInstTextView.setLayoutParams(paramsTV); // set width, height, weight
-            addedInstTextView.setText(instruction);
+            // prepare text views
+            TextView addedIMTextView1 = new TextView(this);
+            TextView addedIMTextView2 = new TextView(this);
+            TextView addedIMTextView3 = new TextView(this);
+            TextView addedIMTextView4 = new TextView(this);
+            addedIMTextView4.setGravity(Gravity.RIGHT);
 
-            // add the text view to the horizontal linear layout
-            horizLL.addView(addedInstTextView);
+            LayoutParams paramsTV1 = new LayoutParams((int) getResources()
+                    .getDimension(R.dimen.zero_dp), LayoutParams.WRAP_CONTENT, .1f);
+
+            LayoutParams paramsTV2 = new LayoutParams((int) getResources()
+                    .getDimension(R.dimen.zero_dp), LayoutParams.WRAP_CONTENT, 1f);
+
+
+            addedIMTextView1.setLayoutParams(paramsTV1); // set width, height, weight
+            addedIMTextView2.setLayoutParams(paramsTV1);
+            addedIMTextView3.setLayoutParams(paramsTV1);
+            addedIMTextView4.setLayoutParams(paramsTV2);
+
+            addedIMTextView1.setText(amountStr);
+            addedIMTextView2.setText(unitStr);
+            addedIMTextView3.setText(ingNameStr);
+            addedIMTextView4.setText(amountStr + " " + unitStr + " " + ingNameStr);
+
+            addedIMTextView1.setVisibility(View.INVISIBLE);
+            addedIMTextView2.setVisibility(View.INVISIBLE);
+            addedIMTextView3.setVisibility(View.INVISIBLE);
+
+            // add the text views to the horizontal linear layout
+            horizLL.addView(addedIMTextView1, 0);
+            horizLL.addView(addedIMTextView2, 1);
+            horizLL.addView(addedIMTextView3, 2);
+            horizLL.addView(addedIMTextView4, 3);
 
             // prepare button
             ImageButton deleteButton = new ImageButton(this);
@@ -142,13 +168,13 @@ public class AddRecipe extends AppCompatActivity {
             });
 
             // add the button to the horizontal linear layout
-            horizLL.addView(deleteButton, 1);
+            horizLL.addView(deleteButton, 4);
+
 
             // add the horizontal linear layout to the vertical linear layout for added instructions
             addedVertInstLL.addView(horizLL);
         }
-         */
-
+    }
 
 
     //Method to save recipe and go to final recipe view screen
@@ -171,8 +197,6 @@ public class AddRecipe extends AppCompatActivity {
             }
         });
     }
-
-
 
     private Recipe createRecipe() {
         Recipe newRecipe = new RecipeBuilder().setName(getRecipeName())
@@ -273,24 +297,63 @@ public class AddRecipe extends AppCompatActivity {
     }
 
     private ArrayList<String> getIngredientAmounts() {
+        ArrayList<String> amountsList = new ArrayList<String>();
+        LinearLayout addedIngLL = (LinearLayout) findViewById(R.id.addedIMLL);
+        LinearLayout childLL;
+        TextView addedIngAmount;
+        String ingredientAmount;
 
+        for (int i = 0; i < addedIngLL.getChildCount(); i++) {
 
-        return new ArrayList<String>();
+            childLL = (LinearLayout) addedIngLL.getChildAt(i);
+            addedIngAmount = (TextView) childLL.getChildAt(0);
+            ingredientAmount = addedIngAmount.getText().toString();
+            amountsList.add(ingredientAmount);
+        }
+
+        return amountsList;
     }
 
 
     private ArrayList<String> getIngredientUnits() {
 
-        return new ArrayList<String>();
+        ArrayList<String> unitsList = new ArrayList<String>();
+        LinearLayout addedIngLL = (LinearLayout) findViewById(R.id.addedIMLL);
+        LinearLayout childLL;
+        TextView addedIngUnit;
+        String ingredientUnit;
+
+        for (int i = 0; i < addedIngLL.getChildCount(); i++) {
+
+            childLL = (LinearLayout) addedIngLL.getChildAt(i);
+            addedIngUnit = (TextView) childLL.getChildAt(1);
+            ingredientUnit = addedIngUnit.getText().toString();
+            unitsList.add(ingredientUnit);
+        }
+
+        return unitsList;
     }
 
 
 
     private ArrayList<String> getIngredientNames() {
 
-        return new ArrayList<String>();
-    }
+        ArrayList<String> namesList = new ArrayList<String>();
+        LinearLayout addedIngLL = (LinearLayout) findViewById(R.id.addedIMLL);
+        LinearLayout childLL;
+        TextView addedIngName;
+        String ingredientName;
 
+        for (int i = 0; i < addedIngLL.getChildCount(); i++) {
+
+            childLL = (LinearLayout) addedIngLL.getChildAt(i);
+            addedIngName = (TextView) childLL.getChildAt(2);
+            ingredientName = addedIngName.getText().toString();
+            namesList.add(ingredientName);
+        }
+
+        return namesList;
+    }
 
 
     //Creating "Are you sure you want to save alert"
@@ -312,10 +375,11 @@ public class AddRecipe extends AppCompatActivity {
                     @Override
                     //If "Yes clicked"
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        //****To implement: saving the recipe from database method
-                        //    Recipe newRecipe = createRecipe();
+
+                        Recipe r = createRecipe();
+                        rBook.addRecipe(getApplicationContext(), r);
                         Intent intent = new Intent(getApplicationContext(), ViewRecipe.class);
-                        intent.putExtra("recipe_name", getRecipeName());     //Sending added recipe name
+                        intent.putExtra("recipe_id", r.getId());     //Sending added recipe name
                         startActivity(intent);
                         finish();
                     }
@@ -327,43 +391,3 @@ public class AddRecipe extends AppCompatActivity {
     }
 }
 
-    /**
-    //Method to add the ingredient horizontal layout
-    public void addIngredientLayout() {
-        //Getting id of parent layout to add the inner horizontal layout to
-        LinearLayout layoutToAdd = (LinearLayout) findViewById(R.id.LayoutToAddIngredients);
-
-        //add LinearLayout Horizontal
-        LinearLayout myLInearLayout = new LinearLayout(this);
-        //add LayoutParams
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        myLInearLayout.setOrientation(LinearLayout.HORIZONTAL);
-        myLInearLayout.setLayoutParams(params);
-
-        //add TextView for ingredient name
-        LinearLayout.LayoutParams lparms = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        lparms.weight = 1.0f;
-        lparms.gravity = Gravity.CENTER;
-        TextView ingredientName = new TextView(this);
-        ingredientName.setLayoutParams(lparms);
-        EditText edit =  (EditText) findViewById(R.id.editTextIngredientName);
-        String ingredientNameAdded = edit.getText().toString();
-        ingredientName.setText(ingredientNameAdded);
-
-        //add Textview for measure
-        TextView ingredientMeasure = new TextView(this);
-        ingredientMeasure.setLayoutParams(lparms);
-        EditText editQuantity =  (EditText) findViewById(R.id.editTextQuantity);
-        String ingredientQuantity = editQuantity.getText().toString();
-        EditText editMeasure =  (EditText) findViewById(R.id.editTextUnit);
-        String ingredientUnit = editMeasure.getText().toString();
-        ingredientMeasure.setText(ingredientQuantity+" "+ingredientUnit);
-
-
-        //Add textviews to horizontal layout
-        myLInearLayout.addView(ingredientName);
-        myLInearLayout.addView(ingredientMeasure);
-        //add horizontal layout to parent linear layout
-        layoutToAdd.addView(myLInearLayout);
-    }
-    */

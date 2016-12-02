@@ -5,43 +5,41 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.caitlin.cookhelper.database.SearchResult;
 
+import java.util.ArrayList;
+
 import static com.example.caitlin.cookhelper.R.id.txtviewSearchCriteria;
 import static com.example.caitlin.cookhelper.R.id.txtviewSearchCriteriaInfo;
-import static java.lang.String.valueOf;
 
 public class Results extends AppCompatActivity {
 
-    //String to store the selected recipe's name (To send to view activity)
-    String selectedRecipe;
-
-    //Temporary filler string to be used for demo purposes **NOT ACTUAL RECIPES**
-    String[] recipes = {"Lasagna","Poutine","Orange chicken","Chicken Noodle Soup","Chicken Pot Pie","Tuna Salad",
-            "Butternut Squash Soup","Alphabet Soup","Duck Soup","Cinnamon Toast Crunch cereal","Cheesy Sauce Pasta",
-            "Cheese Pizza","General Tao Chicken","Rice wraps","Breaded shrimp","Beef Pho","Spicy Beef strips",
-            "Breaded Chicken","Buttermilk biscuit"};
+    //SearchResult object to store the selected searchResult object
+    SearchResult selectedRecipeSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
 
-        //List View list population
-        ListAdapter theAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, new String[] {new SearchResult("", 1).getName()});
-        ListView theListView = (ListView) findViewById(R.id.recipesListView);
-        theListView.setAdapter(theAdapter);
+        final ArrayList<SearchResult> results = new ArrayList<SearchResult>();
+        results.add(new SearchResult("Pasta",1));
+        results.add(new SearchResult("Soup",2));
+        results.add(new SearchResult("Chicken Dish",3));
 
-        //Receiving sent recipe name from previous activity
+        //List View list population
+        IngredientAdapter adapter = new IngredientAdapter(this, results);
+        ListView listView = (ListView) findViewById(R.id.recipesListView);
+        listView.setAdapter(adapter);
+
+        //Receiving sent search type from previous activity
         Bundle bundle = getIntent().getExtras();
         String searchType = bundle.getString("search_type");
 
-        //setting sent recipe name as title
+        //setting sent search type name as sub title
         TextView recipeNameToChange = (TextView) findViewById(txtviewSearchCriteria);
         if (searchType.equals("Browse")) {
             recipeNameToChange.setText(getString(R.string.resultsSubtitleBrowse));
@@ -58,13 +56,13 @@ public class Results extends AppCompatActivity {
         }
 
         //Intent to go to recipe view screen
-        theListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                selectedRecipe = valueOf(adapterView.getItemAtPosition(position));
+                selectedRecipeSearch = results.get(position);
                 //Intent to go to the next screen
                 Intent intent = new Intent(getApplicationContext(), ViewRecipe.class);
-                intent.putExtra("recipe_name", selectedRecipe);     //Sending selected recipe name
+                intent.putExtra("recipe_id", selectedRecipeSearch.getId());     //Sending selected recipe name
                 startActivity(intent);
             }
         });

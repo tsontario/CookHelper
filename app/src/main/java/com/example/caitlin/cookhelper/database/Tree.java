@@ -1,6 +1,4 @@
-/**
- * Created by timothysmith on 2016-11-29.
- */
+package com.example.caitlin.cookhelper.database;
 public class Tree<V> {
 
     class Node<V> {

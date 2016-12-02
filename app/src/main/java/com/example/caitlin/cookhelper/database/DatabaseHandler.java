@@ -151,8 +151,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         // Iterate through all columns
         String name = cursor.getString(1);
-        int numServings = cursor.getInt(2);
-        int numCalories = cursor.getInt(3);
+        String numServings = cursor.getString(2);
+        String numCalories = cursor.getString(3);
         String prepTime = cursor.getString(4);
         String cookTime = cursor.getString(5);
         String type = cursor.getString(6);
@@ -285,34 +285,46 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      *
      */
     public ArrayList<SearchResult> findRecipes(String category, String type, String ingredientQuery) {
-
         SQLiteDatabase db = this.getWritableDatabase();
-        String searchQuery = "";
-        // Recipes ids point to String of all ingredients
-        String createTempTable = "CREATE TEMPORARY TABLE search( "
-                                + KEY_RECIPE_ID + "INTEGER, "
+        // Make a temporary search table
+        String TABLE_SEARCH = "search";
+        String createTempTable = "CREATE TEMPORARY TABLE " + TABLE_SEARCH +"("
+                                + KEY_RECIPE_ID + " INTEGER, "
+                                + KEY_RECIPE_CATEGORY + " TEXT, "
+                                + KEY_RECIPE_TYPE + " TEXT, "
                                 + KEY_INGREDIENT_NAME + " TEXT"
                                 + ");";
 
-        // Populate the search table
-        db.execSQL("INSERT INTO search SELECT Ingredient_Measures.recipe, group_concat(Ingredient_Measures.name, \"\")" +
-        "FROM Ingredient_Measures  GROUP BY Ingredient_Measures.recipe");
+        // Create and populate the search table
+        String dropTable = "DROP TABLE IF EXISTS " + TABLE_SEARCH;
+        db.execSQL(dropTable);
+        db.execSQL(createTempTable);
+        db.execSQL(  "INSERT INTO search ("
+                    + KEY_RECIPE_ID + ", " + KEY_RECIPE_CATEGORY + ", "
+                    + KEY_RECIPE_TYPE + ", " + KEY_INGREDIENT_MEASURE_NAME + ") SELECT "
+                    + TABLE_INGREDIENT_MEASURES + "." + KEY_INGREDIENT_MEASURE_RECIPE + ", "
+                    + TABLE_RECIPES + "." + KEY_RECIPE_CATEGORY + ", "
+                    + TABLE_RECIPES + "." + KEY_RECIPE_TYPE + ", "
+                    + "group_concat( " + TABLE_INGREDIENT_MEASURES + "." + KEY_INGREDIENT_MEASURE_NAME + ",\"\") "
+                    + "FROM " + TABLE_RECIPES + " LEFT JOIN " + TABLE_INGREDIENT_MEASURES
+                    + " ON " + TABLE_RECIPES + "." + KEY_RECIPE_ID + " = "
+                    + TABLE_INGREDIENT_MEASURES + "." + KEY_INGREDIENT_MEASURE_RECIPE
+                    + " GROUP BY " + TABLE_INGREDIENT_MEASURES + "." + KEY_INGREDIENT_MEASURE_RECIPE + ";");
+
         // Create the custom query
+        String searchQuery = "";
+        // TODO deal with category and type filter for search
         if (category != null && category.length() > 0) {
-            searchQuery +=
+            searchQuery += "";
         }
         if (type != null && type.length() > 0) {
-
+            searchQuery += "";
         }
 
-        SEARCH_QUERY =  "SELECT " + KEY_RECIPE_ID + ", "
-                + KEY_RECIPE_NAME + " FROM " + TABLE_INGREDIENT_MEASURES
-                + " INNER JOIN " + TABLE_RECIPES + " ON "
-                + TABLE_RECIPES + "." + KEY_RECIPE_ID + " = "
-                + TABLE_INGREDIENT_MEASURES + "." + KEY_INGREDIENT_MEASURE_RECIPE
-                + " ";
-        SEARCH_QUERY +=         "WHERE " + KEY_RECIPE_CATEGORY + " = " + category
-                                + " AND " + KEY_RECIPE_TYPE + " = " + type + " ";
+        searchQuery +=
+
+
+        Cursor cursor = db.rawQuery("", null);
 
         ingredientQuery = generateSQLQuery(ingredientQuery);
 
@@ -439,6 +451,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         db.execSQL(query);
 
+        return new ArrayList<>();
     }
 
     public ArrayList<String> getTypes() {
@@ -452,5 +465,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         db.execSQL(query);
 
+        return new ArrayList<>();
     }
 }

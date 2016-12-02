@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import java.util.ArrayList;
+
 public class FindRecipe extends AppCompatActivity {
 
     @Override
@@ -90,5 +92,28 @@ public class FindRecipe extends AppCompatActivity {
         String selectedText = spinner.getSelectedItem().toString();
 
         return selectedText;
+    }
+
+    //Method to change the database returned ArrayList
+    private String[] receiveSpinnerInfo(ArrayList<String> databaseList) {
+        //New arraylist with removed white/nullspaces
+        ArrayList<String> filteredList = new ArrayList<String>();
+
+        //Check for white spaces and null spaces and remove
+        for (int i=0; i<databaseList.size(); i++) {
+            if ((databaseList.get(i)!="")&&(databaseList.get(i)!=null)) {
+                filteredList.add(databaseList.get(i));
+            }
+        }
+
+        //Creating a string array to store the filtered list values into
+        String[] filteredString = new String[filteredList.size()];
+
+        //Copying filtered list values to the String array
+        for (int i=0; i<filteredList.size();i++) {
+            filteredString[i] = filteredList.get(i);
+        }
+
+        return filteredString;
     }
 }

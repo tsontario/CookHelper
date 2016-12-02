@@ -39,6 +39,7 @@
     <string name="ingredient_name_hint">Cinnamon</string>
     <string name="button_to_add_the_ingredients">Click to add the ingredients</string>
     <string name="click_to_add_instructions">Click to add instructions</string>
+    <string name="saveQuestion">Are you sure you want to save?</string>
 
     <!--EditRecipe-->
     <string name="edit_recipe">Edit Recipe</string>
@@ -88,12 +89,14 @@
     <string name="cookhelper_logo_content_description">CookHelper logo</string>
     <!--FindRecipe temprary strings to populate spinner **NOT ACTUAL VALUES(For test only)**-->
     <string-array name="types">
+        <item> </item>
         <item>Appetizer</item>
         <item>Dessert</item>
         <item>Lunch</item>
         <item>Snack</item>
     </string-array>
     <string-array name="Category">
+        <item> </item>
         <item>Chinese</item>
         <item>Pakistani</item>
         <item>Italian</item>
@@ -114,5 +117,6 @@
     <string name="Line">|</string>
     <string name="directionsView">Directions:</string>
     <string name="delete">Delete</string>
+    <string name="deleteQuestion">Are you sure you want to delete?</string>
 
 </resources>

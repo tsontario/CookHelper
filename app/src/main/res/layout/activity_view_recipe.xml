@@ -188,11 +188,11 @@
                 android:textColor="@android:color/black"
                 android:paddingTop="20dp"/>
 
-            <TextView
-                android:text=" - Ingredient 1 \n - ingredient 2 \n - ingredient 3 \n - ingredient 4 \n - ingredient 5 \n - ingredient 6 \n - ingredient 7 \n - ingredient 8"
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/viewRecipeIngredientsInfo" />
+                android:layout_height="match_parent"
+                android:id="@+id/viewRecipeIngredientsInfo"></LinearLayout>
 
             <TextView
                 android:text="@string/directionsView"
@@ -203,11 +203,11 @@
                 android:textColor="@android:color/black"
                 android:paddingTop="20dp"/>
 
-            <TextView
-                android:text=" - direction 1 \n - direction 2 \n - direction 3 \n - direction 4 \n - direction 5 \n - direction 6"
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/viewRecipeDirectionsInfo" />
+                android:layout_height="match_parent"
+                android:id="@+id/viewRecipeDirectionsInfo"></LinearLayout>
 
             <LinearLayout
                 android:paddingTop="25dp"

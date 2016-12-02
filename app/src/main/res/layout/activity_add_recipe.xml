@@ -278,9 +278,9 @@
                         android:layout_gravity="bottom|end"
                         android:background="@android:drawable/ic_input_add"
                         android:clickable="true"
+                        android:focusable="true"
                         android:contentDescription="@string/click_to_add_instructions"
-                        android:onClick="addNewInstruction"
-                        android:focusable="true" />
+                        android:onClick="addNewInstruction"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -393,7 +393,6 @@
                         android:background="@android:drawable/ic_input_add"
                         android:contentDescription="@string/button_to_add_the_ingredients"
                         android:focusable="true"
-                        android:focusableInTouchMode="true"
                         android:onClick="addNewIngredientMeasure"/>
                 </LinearLayout>
             </LinearLayout>

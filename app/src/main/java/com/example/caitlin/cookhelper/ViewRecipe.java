@@ -1,6 +1,8 @@
 package com.example.caitlin.cookhelper;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -10,20 +12,27 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class ViewRecipe extends AppCompatActivity {
-    String recipeName;
+
+    RecipeBook rBook;
+    Recipe r;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_recipe);
 
+        rBook = RecipeBook.getInstance();
+
         //Receiving sent recipe name from previous activity
-        Bundle bundle = getIntent().getExtras();
-        recipeName = bundle.getString("recipe_name");
+        Intent intent = getIntent();
+        long recipe_id = intent.getLongExtra("recipe_id", 0l);
+
+        r = rBook.getRecipe(getApplicationContext(), recipe_id);
+
 
         //setting sent recipe name as title
         TextView recipeNameToChange = (TextView) findViewById(R.id.recipeName);
-        recipeNameToChange.setText(recipeName);
+        // recipeNameToChange.setText(recipeName);
 
         //Button clicking methods
         toEdit();
@@ -36,7 +45,7 @@ public class ViewRecipe extends AppCompatActivity {
             public void onClick(View v) {
 
                 Intent intent = new Intent(getApplicationContext(), Edit.class);
-                intent.putExtra("recipe_name", recipeName);     //Sending selected recipe name
+                intent.putExtra("recipe_id", r.getId());     //Sending selected recipe name
                 startActivity(intent);
                 finish();
             }
@@ -48,12 +57,38 @@ public class ViewRecipe extends AppCompatActivity {
         toDelete.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-
-                //****To implement: Deleting the recipe
-                onBackPressed();
+                createAlert();
             }
         });
     }
+
+
+    private void createAlert () {
+        onPause();
+        AlertDialog.Builder a_builder = new AlertDialog.Builder(this);
+        a_builder.setMessage(getResources().getString(R.string.deleteQuestion)).setCancelable(false).setPositiveButton(getResources().getString(R.string.no),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    //If "No clicked"
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                        onResume();
+                    }
+                })
+                .setNegativeButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    @Override
+                    //If "Yes clicked"
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //****To implement: Deleting the recipe from database method
+                        onBackPressed();
+                    }
+                });
+
+        AlertDialog alert = a_builder.create();
+        alert.setTitle(getResources().getString(R.string.delete));
+        alert.show();
+    }
+
 
     /*
     View setters
@@ -95,6 +130,7 @@ public class ViewRecipe extends AppCompatActivity {
         resultsCalories.setText(recipeCalories);
     }
 
+    /**
     private void setIngredients(Recipe recipe){
         ArrayList<IngredientMeasure> recipeIngredients = recipe.getIngredientMeasures();
         TextView resultsIngredients = (TextView) findViewById(R.id.viewRecipeIngredientsInfo);
@@ -108,7 +144,6 @@ public class ViewRecipe extends AppCompatActivity {
         for(String i : recipeDirections)
             resultsDirections.append(i + "\n");
     }
-
-
+     */
 
 }

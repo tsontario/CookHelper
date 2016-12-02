@@ -1,3 +1,5 @@
+package com.example.caitlin.cookhelper.database;
+
 import java.util.LinkedList;
 import java.util.Stack;
 
@@ -71,15 +73,16 @@ public class SQLTree {
          *
          */
 
-//        String result = "";
-//        while (!operandStack.isEmpty()) {
-//            result += operandStack.removeLast() + " ";
-//        }
-//        System.out.println(result);
+        String result = "";
+        while (!operandStack.isEmpty()) {
+            result += operandStack.removeLast() + " ";
+        }
+        System.out.println(result);
 
         Tree.Node element1;
         Tree.Node element2;
         Tree<String> newTree;
+
 
         // Now make the Tree Stack
         Stack<Tree> stack = new Stack<>();
@@ -91,7 +94,7 @@ public class SQLTree {
                 element2 = stack.pop().getRoot();
                 // TODO Need to change left, right, parent, AND root references... yikes
                 stack.push(newTree);
-                newTree.appendLeft();
+                newTree.appendLeft(null);
                 newTree.getRoot().setRight(element2);
                 element1.setParent(newTree.getRoot());
                 element2.setParent(newTree.getRoot());
