@@ -21,7 +21,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     /** SCHEMA DEFINITIONS */
     // Database Version
-    private static final int DATABASE_VERSION               = 1;
+    private static final int DATABASE_VERSION               = 2;
 
     // Database Name
     private static final String DATABASE_NAME               = "recipeDatabase.db";
@@ -365,7 +365,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private void getIngredientMeasures(long id, ArrayList<IngredientMeasure> ingredientMeasures,
                                          SQLiteDatabase db) {
         Cursor cursor;
-        cursor = db.query(TABLE_INGREDIENT_MEASURES, null, String.valueOf(id) + " =?",
+        cursor = db.query(TABLE_INGREDIENT_MEASURES, null, KEY_INGREDIENT_MEASURE_RECIPE + " =?",
                 new String[] {String.valueOf(id)},
                 null, null, null, null);
 
