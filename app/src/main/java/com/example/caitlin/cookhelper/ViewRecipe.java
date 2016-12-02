@@ -83,7 +83,6 @@ public class ViewRecipe extends AppCompatActivity {
                         //Calls on method in façade class RecipeBook to delete the selected recipe by ID
                         rBook.deleteRecipe(getApplicationContext(), r.getId());
                         onBackPressed();
-
                     }
                 });
 
