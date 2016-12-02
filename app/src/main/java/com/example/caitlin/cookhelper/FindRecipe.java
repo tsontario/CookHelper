@@ -1,17 +1,20 @@
 package com.example.caitlin.cookhelper;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import com.example.caitlin.cookhelper.database.SearchResult;
+
+import com.example.caitlin.cookhelper.database.DatabaseHandler;
+
 import java.util.ArrayList;
 
 public class FindRecipe extends AppCompatActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +44,7 @@ public class FindRecipe extends AppCompatActivity {
 
                 Intent intent = new Intent(getApplicationContext(), Results.class);
                 intent.putStringArrayListExtra("criteria", allCriteria);
-                intent.putExtra("search_type", "Criteria");
+                intent.putExtra("search_type", "Find_with_criteria");
                 startActivity(intent);
             }
         });
@@ -55,19 +58,25 @@ public class FindRecipe extends AppCompatActivity {
     }
 
     private void populateTypeSpinner() {
+        DatabaseHandler db = new DatabaseHandler(this);
+        String[] categories = receiveSpinnerInfo(db.getCategories());
+
         //Populating category spinner
         Spinner spinnerType = (Spinner) findViewById(R.id.typeSpinner);
-        ArrayAdapter<CharSequence> adapterCategory = ArrayAdapter.createFromResource(this,
-                R.array.types, android.R.layout.simple_spinner_item);
-        adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerType.setAdapter(adapterCategory);
+        ArrayAdapter<String> adapterType=
+                new ArrayAdapter<String>(FindRecipe.this,android.R.layout.simple_spinner_item, categories);
+        adapterType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerType.setAdapter(adapterType);
     }
 
     private void populateCategorySpinner() {
+        DatabaseHandler db = new DatabaseHandler(this);
+        String[] types = receiveSpinnerInfo(db.getTypes());
+
         //Populating category spinner
         Spinner spinnerCategory = (Spinner) findViewById(R.id.categorySpinner);
-        ArrayAdapter<CharSequence> adapterCategory = ArrayAdapter.createFromResource(this,
-                R.array.Category, android.R.layout.simple_spinner_item);
+        ArrayAdapter<String> adapterCategory=
+                new ArrayAdapter<String>(FindRecipe.this,android.R.layout.simple_spinner_item, types);
         adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCategory.setAdapter(adapterCategory);
     }
@@ -100,22 +109,13 @@ public class FindRecipe extends AppCompatActivity {
 
     //Method to change the database returned ArrayList
     private String[] receiveSpinnerInfo(ArrayList<String> databaseList) {
-        //New arraylist with removed white/nullspaces
-        ArrayList<String> filteredList = new ArrayList<String>();
-
-        //Check for white spaces and null spaces and remove
-        for (int i=0; i<databaseList.size(); i++) {
-            if ((databaseList.get(i)!="")&&(databaseList.get(i)!=null)) {
-                filteredList.add(databaseList.get(i));
-            }
-        }
 
         //Creating a string array to store the filtered list values into
-        String[] filteredString = new String[filteredList.size()];
+        String[] filteredString = new String[databaseList.size()];
 
         //Copying filtered list values to the String array
-        for (int i=0; i<filteredList.size();i++) {
-            filteredString[i] = filteredList.get(i);
+        for (int i=0; i<databaseList.size();i++) {
+            filteredString[i] = databaseList.get(i);
         }
 
         return filteredString;

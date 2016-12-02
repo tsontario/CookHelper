@@ -280,8 +280,8 @@ public class Edit extends AppCompatActivity {
             TextView addedIMTextView3 = new TextView(this);
             TextView addedIMTextView4 = new TextView(this);
             addedIMTextView4.setGravity(Gravity.RIGHT);
-            LayoutParams paramsTV1 = new LayoutParams((int) getResources()
-                    .getDimension(R.dimen.zero_dp), LayoutParams.WRAP_CONTENT, .1f);
+            LayoutParams paramsTV1 = new LayoutParams((int) getResources().getDimension(R.dimen.zero_dp),
+                    (int) getResources().getDimension(R.dimen.zero_dp), .1f);
             LayoutParams paramsTV2 = new LayoutParams((int) getResources()
                     .getDimension(R.dimen.zero_dp), LayoutParams.WRAP_CONTENT, 1f);
 

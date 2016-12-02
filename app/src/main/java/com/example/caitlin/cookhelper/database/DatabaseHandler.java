@@ -296,8 +296,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                                 + KEY_RECIPE_ID + " INTEGER, "
                                 + KEY_RECIPE_CATEGORY + " TEXT, "
                                 + KEY_RECIPE_TYPE + " TEXT, "
-                                + "ings" + " TEXT, "
-                                + KEY_RECIPE_NAME + " TEXT"
+                                + KEY_RECIPE_NAME + " TEXT, "
+                                + "ings" + " TEXT"
                                 + ");";
 
         // Create and populate the search table
@@ -306,19 +306,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(createTempTable);
         db.execSQL(  "INSERT INTO search ("
                     + KEY_RECIPE_ID + ", " + KEY_RECIPE_CATEGORY + ", "
-                    + KEY_RECIPE_TYPE + ", " + KEY_RECIPE_NAME + ", " + KEY_INGREDIENT_MEASURE_NAME +") SELECT "
+                    + KEY_RECIPE_TYPE + ", " + KEY_RECIPE_NAME +  ", ings) SELECT "
                     + TABLE_INGREDIENT_MEASURES + "." + KEY_INGREDIENT_MEASURE_RECIPE + ", "
                     + TABLE_RECIPES + "." + KEY_RECIPE_CATEGORY + ", "
                     + TABLE_RECIPES + "." + KEY_RECIPE_TYPE + ", "
                     + TABLE_RECIPES + "." + KEY_RECIPE_NAME + ", "
-                    + "group_concat( " + TABLE_INGREDIENT_MEASURES + "." + KEY_INGREDIENT_MEASURE_NAME + ",\"\") "
+                    + "group_concat( " + TABLE_INGREDIENT_MEASURES + "." + KEY_INGREDIENT_MEASURE_NAME + ",\"!\") "
                     + "FROM " + TABLE_RECIPES + " LEFT JOIN " + TABLE_INGREDIENT_MEASURES
                     + " ON " + TABLE_RECIPES + "." + KEY_RECIPE_ID + " = "
                     + TABLE_INGREDIENT_MEASURES + "." + KEY_INGREDIENT_MEASURE_RECIPE
                     + " GROUP BY " + TABLE_RECIPES + "." + KEY_RECIPE_ID + ";");
 
         // Create the custom query
-        String searchQuery =    "SELECT " + KEY_RECIPE_ID + ", " + KEY_RECIPE_NAME + " FROM "
+        String searchQuery =    "SELECT " + KEY_RECIPE_ID + ", " + KEY_RECIPE_NAME + ", "
+                                + "ings" + " FROM "
                                 + TABLE_SEARCH + " WHERE ";
 
         if (category != null && category.length() > 0) {
@@ -328,10 +329,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             searchQuery += KEY_RECIPE_TYPE + " = " + type + " AND ";
         }
 
-        String prefix = KEY_INGREDIENT_MEASURE_NAME;
+        String prefix = "ings";
         Map<String, String> rankArgs = new HashMap<>();
 
         searchQuery += generateSQLQuery(ingredientQuery, prefix, rankArgs);
+        System.out.println(searchQuery);
         Cursor cursor = db.rawQuery(searchQuery, null);
         if (cursor != null) {
             cursor.moveToFirst();
@@ -343,9 +345,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         while (!cursor.isAfterLast()) {
             String r_name = cursor.getString(1);
             long r_id = cursor.getInt(0);
+            String s = cursor.getString(2);
             SearchResult result = new SearchResult(r_name, r_id);
+            setRank(result, rankArgs, s);
             results.add(result);
             cursor.moveToNext();
+            System.out.println(s);
+            System.out.println("RANK IS: " + result.getRank());
         }
 
 
@@ -513,5 +519,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return types;
+    }
+
+    public void setRank(SearchResult result, Map<String, String> criteria, String ings) {
+        String[] ingList = ings.split("!");
+        int rank = 0;
+        for (String i: ingList) {
+            for (String el : criteria.keySet()) {
+                if (el.equalsIgnoreCase(i)) {
+                    rank++;
+                }
+            }
+        }
+        result.setRank(rank);
     }
 }

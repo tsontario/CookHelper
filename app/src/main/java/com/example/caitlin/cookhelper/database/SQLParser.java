@@ -27,7 +27,7 @@ public class SQLParser {
 
         //Traverse the Expression Tree
         BinaryExpressionTree root = stack.pop();
-        rankArgs = leafOrder(root, rankArgs);
+        leafOrder(root, rankArgs);
         return inOrder(root, prefix);
     }
 
@@ -199,6 +199,9 @@ public class SQLParser {
     }
     private static void leafOrder(BinaryExpressionTree.Node node, Map<String, String> rankArgs) {
 
+        if (node == null) {
+            return;
+        }
         if (node.getParent() != null && isUnaryOperator((String)node.getParent().getElement())) {
             return;
         }
