@@ -292,7 +292,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                                 + KEY_RECIPE_ID + " INTEGER, "
                                 + KEY_RECIPE_CATEGORY + " TEXT, "
                                 + KEY_RECIPE_TYPE + " TEXT, "
-                                + KEY_INGREDIENT_NAME + " TEXT"
+                                + "ings" + " TEXT, "
+                                + KEY_RECIPE_NAME + " TEXT"
                                 + ");";
 
         // Create and populate the search table
@@ -301,18 +302,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(createTempTable);
         db.execSQL(  "INSERT INTO search ("
                     + KEY_RECIPE_ID + ", " + KEY_RECIPE_CATEGORY + ", "
-                    + KEY_RECIPE_TYPE + ", " + KEY_INGREDIENT_MEASURE_NAME + ") SELECT "
+                    + KEY_RECIPE_TYPE + ", " + KEY_RECIPE_NAME + ", " + KEY_INGREDIENT_MEASURE_NAME +") SELECT "
                     + TABLE_INGREDIENT_MEASURES + "." + KEY_INGREDIENT_MEASURE_RECIPE + ", "
                     + TABLE_RECIPES + "." + KEY_RECIPE_CATEGORY + ", "
                     + TABLE_RECIPES + "." + KEY_RECIPE_TYPE + ", "
+                    + TABLE_RECIPES + "." + KEY_RECIPE_NAME + ", "
                     + "group_concat( " + TABLE_INGREDIENT_MEASURES + "." + KEY_INGREDIENT_MEASURE_NAME + ",\"\") "
                     + "FROM " + TABLE_RECIPES + " LEFT JOIN " + TABLE_INGREDIENT_MEASURES
                     + " ON " + TABLE_RECIPES + "." + KEY_RECIPE_ID + " = "
                     + TABLE_INGREDIENT_MEASURES + "." + KEY_INGREDIENT_MEASURE_RECIPE
-                    + " GROUP BY " + TABLE_INGREDIENT_MEASURES + "." + KEY_INGREDIENT_MEASURE_RECIPE + ";");
+                    + " GROUP BY " + TABLE_RECIPES + "." + KEY_RECIPE_ID + ";");
 
         // Create the custom query
-        String searchQuery =    "SELECT " + KEY_RECIPE_ID + ", " + KEY_INGREDIENT_MEASURE_NAME + " FROM "
+        String searchQuery =    "SELECT " + KEY_RECIPE_ID + ", " + KEY_RECIPE_NAME + " FROM "
                                 + TABLE_SEARCH + " WHERE ";
         if (category != null && category.length() > 0) {
             searchQuery += "";
@@ -335,10 +337,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         ArrayList<SearchResult> results = new ArrayList<>();
         while (!cursor.isAfterLast()) {
-            String r_name = "Stuf";
+            String r_name = cursor.getString(1);
             long r_id = cursor.getInt(0);
             SearchResult result = new SearchResult(r_name, r_id);
             results.add(result);
+            cursor.moveToNext();
         }
         cursor.close();
         db.close();
