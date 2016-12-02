@@ -325,8 +325,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         String prefix = KEY_INGREDIENT_MEASURE_NAME;
         searchQuery += generateSQLQuery(ingredientQuery, prefix);
-        System.out.println(searchQuery);
-
 
         Cursor cursor = db.rawQuery(searchQuery, null);
         if (cursor != null) {
@@ -446,49 +444,66 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     /** End of helper methods for addRecipe(Recipe r) */
 
     private String generateSQLQuery(String q, String prefix) {
-        String result = SQLParser.generateSQLQuery(q, prefix);
-        return result;
+        return SQLParser.generateSQLQuery(q, prefix);
     }
 
     public ArrayList<String> getCategories() {
         SQLiteDatabase db = this.getReadableDatabase();
         ArrayList<String> categories = new ArrayList<>();
+        categories.add("");  // default empty value
 
-        Cursor cursor = db.query(TABLE_RECIPES, null, KEY_RECIPE_CATEGORY + " =?",
-                new String[]{}, null, null, null, null);
+        String queryString = "SELECT " + KEY_RECIPE_CATEGORY + " FROM " + TABLE_RECIPES;
+        Cursor cursor = db.rawQuery(queryString, null);
 
         if (cursor != null) {
             cursor.moveToFirst();
         } else {
-            return new ArrayList<>();
+            cursor.close();
+            db.close();
+            return categories;
         }
 
+        System.out.println(cursor.getString(0));
         while (!cursor.isAfterLast()) {
-            categories.add(cursor.getString(0));
+            String category = cursor.getString(0);
+            if (!category.isEmpty()) {
+                categories.add(category);
+            }
             cursor.moveToNext();
         }
 
+        cursor.close();
+        db.close();
         return categories;
     }
 
     public ArrayList<String> getTypes() {
         SQLiteDatabase db = this.getReadableDatabase();
         ArrayList<String> types = new ArrayList<>();
+        types.add("");  // default empty value
 
-        Cursor cursor = db.query(TABLE_RECIPES, null, KEY_RECIPE_TYPE + " =?",
-                new String[]{}, null, null, null, null);
+        String queryString = "SELECT " + KEY_RECIPE_TYPE + " FROM " + TABLE_RECIPES;
+        Cursor cursor = db.rawQuery(queryString, null);
 
         if (cursor != null) {
             cursor.moveToFirst();
         } else {
-            return new ArrayList<>();
+            cursor.close();
+            db.close();
+            return types;
         }
 
+        System.out.println(cursor.getString(0));
         while (!cursor.isAfterLast()) {
-            types.add(cursor.getString(0));
+            String type = cursor.getString(0);
+            if (!type.isEmpty()) {
+                types.add(type);
+            }
             cursor.moveToNext();
         }
 
+        cursor.close();
+        db.close();
         return types;
     }
 }
