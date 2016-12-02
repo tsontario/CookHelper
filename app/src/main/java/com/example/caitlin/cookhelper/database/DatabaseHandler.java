@@ -15,6 +15,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +54,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_INGREDIENT_MEASURE_NAME         = "name";
     private static final String KEY_INGREDIENT_MEASURE_QTY          = "quantity";
     private static final String KEY_INGREDIENT_MEASURE_MEASUREMENT  = "measurement";
+    // Temp column
+    public static final String INGS                                 = "ings";
 
 
     /** Constructor */
@@ -194,6 +198,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     /**
      * Returns a list of all recipes in the database. Does *NOT* return Recipe objects. Returns
      * SearchResult objects that contain (name, id). Useful for populating lists in the UI.
+     *
      * @return A List of type SearchResult
      */
     public List<SearchResult> getAllRecipes() {
@@ -219,7 +224,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     /** Counts total number of recipes in the database
      *
-     * @return the number of recipes in db.
+     * @return the number of recipes in the DB.
      */
     public int getRecipesCount() {
         String countQuery = "SELECT * FROM " + TABLE_RECIPES;
@@ -297,7 +302,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                                 + KEY_RECIPE_CATEGORY + " TEXT, "
                                 + KEY_RECIPE_TYPE + " TEXT, "
                                 + KEY_RECIPE_NAME + " TEXT, "
-                                + "ings" + " TEXT"
+                                + INGS + " TEXT"
                                 + ");";
 
         // Create and populate the search table
@@ -318,8 +323,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     + " GROUP BY " + TABLE_RECIPES + "." + KEY_RECIPE_ID + ";");
 
         // Create the custom query
+        Map<String, String> rankArgs = new HashMap<>(); // For ranking results later
+
         String searchQuery =    "SELECT " + KEY_RECIPE_ID + ", " + KEY_RECIPE_NAME + ", "
-                                + "ings" + " FROM "
+                                + INGS + " FROM "
                                 + TABLE_SEARCH + " WHERE ";
 
         if (category != null && category.length() > 0) {
@@ -329,11 +336,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             searchQuery += KEY_RECIPE_TYPE + " = " + type + " AND ";
         }
 
-        String prefix = "ings";
-        Map<String, String> rankArgs = new HashMap<>();
-
-        searchQuery += generateSQLQuery(ingredientQuery, prefix, rankArgs);
-        System.out.println(searchQuery);
+        searchQuery += generateSQLQuery(ingredientQuery, INGS, rankArgs);
         Cursor cursor = db.rawQuery(searchQuery, null);
         if (cursor != null) {
             cursor.moveToFirst();
@@ -341,6 +344,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             return null;
         }
 
+        // Gather all results, ranking as we go.
         ArrayList<SearchResult> results = new ArrayList<>();
         while (!cursor.isAfterLast()) {
             String r_name = cursor.getString(1);
@@ -350,10 +354,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             setRank(result, rankArgs, s);
             results.add(result);
             cursor.moveToNext();
-            System.out.println(s);
-            System.out.println("RANK IS: " + result.getRank());
         }
 
+        // Now sort the results according to ranking
+        Collections.sort(results, new Comparator<SearchResult>() {
+            public int compare(SearchResult o1, SearchResult o2) {
+                if (o1.getRank() > o2.getRank()) {
+                    return -1;
+                }
+                else if (o1.getRank() < o2.getRank()) {
+                    return 1;
+                }
+                return 0;
+            }
+        });
 
         cursor.close();
         db.close();
@@ -457,10 +471,24 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
     /** End of helper methods for addRecipe(Recipe r) */
 
+    /**
+     * Delegated call to static helper method for parsing text input into a legal SQLite statement
+     * @param q The raw query string
+     * @param prefix The name of the column to search over
+     * @param rankArgs when generateSQLQuery returns, this will contain a 1-1 mapping of each atomic
+     *                 query value (e.g. one ingredient). This wil be used for ranking results.
+     * @return A legally formatted SQLite string that can execute a query on the DB.
+     */
     private String generateSQLQuery(String q, String prefix, Map<String, String> rankArgs) {
         return SQLParser.generateSQLQuery(q, prefix, rankArgs);
     }
 
+
+    /**
+     * Fetches a list of all the categories of recipes in the database. Also includes an empty string
+     * to denote when no type is specified.
+     * @return An ArrayList containing all the categories in the DB.
+     */
     public ArrayList<String> getCategories() {
         SQLiteDatabase db = this.getReadableDatabase();
         ArrayList<String> categories = new ArrayList<>();
@@ -491,6 +519,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return categories;
     }
 
+    /**
+     * Fetches a list of all the types of recipes in the database. Also includes an empty string
+     * to denote when no type is specified
+     * @return An ArrayList containing all the types in the DB.
+     */
     public ArrayList<String> getTypes() {
         SQLiteDatabase db = this.getReadableDatabase();
         ArrayList<String> types = new ArrayList<>();
@@ -521,16 +554,23 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return types;
     }
 
+    /**
+     * Iterates over search results and ranks them according to how many of their terms
+     * match the search criteria. Only ranks over ingredients, not type and category.
+     * @param result A SearchResult object
+     * @param criteria A mapping of the ingredients from the query
+     * @param ings The ingredients in the actual recipe being ranked (to be compared to 'criteria'
+     */
     public void setRank(SearchResult result, Map<String, String> criteria, String ings) {
         String[] ingList = ings.split("!");
-        int rank = 0;
         for (String i: ingList) {
+            int rank = 0;
             for (String el : criteria.keySet()) {
                 if (el.equalsIgnoreCase(i)) {
                     rank++;
                 }
             }
+            result.setRank(rank);
         }
-        result.setRank(rank);
     }
 }

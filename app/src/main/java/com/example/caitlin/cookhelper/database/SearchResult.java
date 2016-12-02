@@ -5,7 +5,7 @@ package com.example.caitlin.cookhelper.database;
  * to load entire objects.
  */
 
-public class SearchResult {
+public class SearchResult{
     private String name;
     private int rank;
     private long id;
@@ -42,4 +42,5 @@ public class SearchResult {
         result += "Name: " + name + ", id: " + id;
         return result;
     }
+
 }
