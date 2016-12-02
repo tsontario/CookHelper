@@ -14,17 +14,17 @@ public class RecipeBook {
     // VARIABLES
     // ---------------
 
-    // attributes
-    private int numRecipes;
+    // association
     private static RecipeBook theInstance;
 
     // ---------------
     // CONSTRUCTOR
     // ---------------
+
     private RecipeBook() { }
 
     // ---------------
-    // GETTERS & SETTERS
+    // GETTER
     // ---------------
 
     public static RecipeBook getInstance(){
@@ -35,24 +35,6 @@ public class RecipeBook {
         return theInstance;
     }
 
-    /**
-    public int getNumRecipes() { return numRecipes; }
-
-    public ArrayList<Recipe> getRecipes() {         // include some criteria as params
-
-//        recipes = // search database and return ArrayList<Recipe>
-//        setNumRecipes(recipes.size());
-        return recipes;
-    }
-
-    private void setNumRecipes(int aNewNumber) { numRecipes = aNewNumber; }
-
-    public void removeRecipe(Recipe recipe) {
-
-        recipe.deleteRecipe();
-    }
-     */
-
     // ---------------
     // METHODS
     // ---------------
@@ -62,9 +44,26 @@ public class RecipeBook {
         new DatabaseHandler(context).addRecipe(r);
     }
 
+
     public Recipe getRecipe(Context context, long id){
+
         return new DatabaseHandler(context).getRecipe((int) id);
     }
+
+
+    public void updateRecipe(Context context, Recipe r){
+
+        new DatabaseHandler(context).updateRecipe(r);
+    }
+
+
+    public ArrayList<SearchResult> searchWithCriteria(Context context, String category, String type,
+                                   String ingredientCriteria) {
+
+        return new DatabaseHandler(context).findRecipes(category, type, ingredientCriteria);
+    }
+
+
 
 
 }

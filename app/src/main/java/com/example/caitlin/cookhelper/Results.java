@@ -7,28 +7,34 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import com.example.caitlin.cookhelper.database.SearchResult;
-
 import java.util.ArrayList;
-
-import static com.example.caitlin.cookhelper.R.id.txtviewSearchCriteria;
-import static com.example.caitlin.cookhelper.R.id.txtviewSearchCriteriaInfo;
 
 public class Results extends AppCompatActivity {
 
-    //SearchResult object to store the selected searchResult object
-    SearchResult selectedRecipeSearch;
+    // ---------------
+    // VARIABLES
+    // ---------------
 
+    // associations
+    RecipeBook rBook;
+    private SearchResult selectedRecipeSearch;
+
+    // ---------------
+    // ON CREATE
+    // ---------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
 
-        final ArrayList<SearchResult> results = new ArrayList<SearchResult>();
-        results.add(new SearchResult("Pasta",1));
-        results.add(new SearchResult("Soup",2));
-        results.add(new SearchResult("Chicken Dish",3));
+        rBook = RecipeBook.getInstance();
+        ArrayList<String> criteria = getIntent().getExtras().getStringArrayList("criteria");
+
+        final ArrayList<SearchResult> results = rBook.searchWithCriteria(getApplicationContext(),
+                criteria.get(0), criteria.get(1), criteria.get(2));
+
 
         //List View list population
         IngredientAdapter adapter = new IngredientAdapter(this, results);
@@ -40,7 +46,7 @@ public class Results extends AppCompatActivity {
         String searchType = bundle.getString("search_type");
 
         //setting sent search type name as sub title
-        TextView recipeNameToChange = (TextView) findViewById(txtviewSearchCriteria);
+        TextView recipeNameToChange = (TextView) findViewById(R.id.txtviewSearchCriteria);
         if (searchType.equals("Browse")) {
             recipeNameToChange.setText(getString(R.string.resultsSubtitleBrowse));
         }
@@ -51,7 +57,7 @@ public class Results extends AppCompatActivity {
             Bundle find = getIntent().getExtras();
             String searchCriteria = find.getString("search_criteria");
             //setting find criteria text
-            TextView recipeSubtitleNameToChange = (TextView) findViewById(txtviewSearchCriteriaInfo);
+            TextView recipeSubtitleNameToChange = (TextView) findViewById(R.id.txtviewSearchCriteriaInfo);
             recipeSubtitleNameToChange.setText(searchCriteria);
         }
 
