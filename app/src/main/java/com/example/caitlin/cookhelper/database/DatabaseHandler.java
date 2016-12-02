@@ -420,8 +420,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         db.delete(TABLE_INGREDIENT_MEASURES, KEY_INGREDIENT_MEASURE_RECIPE + " =?",
                 new String[] {String.valueOf(id)});
-
-        db.close();
+        // DB closed in caller
     }
 
     /** Helper methods for addRecipe(Recipe r) */
