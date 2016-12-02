@@ -30,7 +30,6 @@ public class Results extends AppCompatActivity {
 
         rBook = RecipeBook.getInstance();
         ArrayList<String> criteria = getIntent().getExtras().getStringArrayList("criteria");
-        criteria.add("Eggs");
         final ArrayList<SearchResult> results = rBook.searchWithCriteria(getApplicationContext(),
                 criteria.get(0), criteria.get(1), criteria.get(2));
 
