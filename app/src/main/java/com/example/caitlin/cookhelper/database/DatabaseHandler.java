@@ -467,7 +467,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         System.out.println(cursor.getString(0));
         while (!cursor.isAfterLast()) {
             String category = cursor.getString(0);
-            if (!category.isEmpty()) {
+            if (category != null && !category.isEmpty()) {
                 categories.add(category);
             }
             cursor.moveToNext();
@@ -497,7 +497,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         System.out.println(cursor.getString(0));
         while (!cursor.isAfterLast()) {
             String type = cursor.getString(0);
-            if (!type.isEmpty()) {
+            if (type != null && !type.isEmpty()) {
                 types.add(type);
             }
             cursor.moveToNext();
