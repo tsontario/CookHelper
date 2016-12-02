@@ -7,6 +7,11 @@ import java.util.ArrayList;
  */
 public class RecipeBuilder {
 
+    // ---------------
+    // VARIABLES
+    // ---------------
+
+    // attributes
     private String name;
     private String numServings;
     private String numCalories;
@@ -22,6 +27,10 @@ public class RecipeBuilder {
     // ---------------
 
     public RecipeBuilder() { }
+
+    // ---------------
+    // SETTERS
+    // ---------------
 
     public RecipeBuilder setName(String aName) {
         name = aName;
@@ -87,6 +96,16 @@ public class RecipeBuilder {
         return this;
     }
 
+    // ---------------
+    // METHOD
+    // ---------------
+
+    /**
+     * This method passes references of its attributes to the Recipe constructor and returns
+     * a reference to the new Recipe.
+     *
+     * @return a new Recipe
+     */
     public Recipe createRecipe() {
         return new Recipe(name, numServings, numCalories, prepTime, cookTime, type, category,
                 directions, ingredientMeasures);

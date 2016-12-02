@@ -268,7 +268,7 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/firstInstructionEdit"
                         android:layout_gravity="end"
-                        android:hint="@string/enter_first_instruction_here"
+                        android:hint="@string/any_new_instructions"
                         android:layout_weight="1" />
 
 
@@ -280,7 +280,14 @@
                         android:background="@android:drawable/ic_input_add"
                         android:clickable="true"
                         android:contentDescription="@string/click_to_add_instructions" />
+
                 </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/addedInstructionLLEdit"></LinearLayout>
 
             </LinearLayout>
 
@@ -357,7 +364,7 @@
                     <EditText
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:id="@+id/editTextQuantityEdit"
+                        android:id="@+id/eTextQuantityEdit"
                         android:layout_weight=".4"
                         android:inputType="number|numberDecimal"
                         android:hint="@string/quantity_hint"
@@ -366,7 +373,7 @@
                     <EditText
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:id="@+id/editTextUnitEdit"
+                        android:id="@+id/eTextUnitEdit"
                         android:layout_weight=".6"
                         android:hint="@string/measure_hint"
                         android:textAlignment="center" />
@@ -374,7 +381,7 @@
                     <EditText
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:id="@+id/editTextIngredientNameEdit"
+                        android:id="@+id/eTextIngredientNameEdit"
                         android:layout_weight="1"
                         android:hint="@string/ingredient_name_hint"
                         android:textAlignment="center" />
@@ -395,17 +402,14 @@
                         android:clickable="true"
                         android:contentDescription="@string/button_to_add_the_ingredients" />
                 </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/addedIMLLEdit"></LinearLayout>
+
             </LinearLayout>
-
-            <Space
-                android:layout_width="10dp"
-                android:layout_height="10dp" />
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/LayoutToAddIngredientsEdit"></LinearLayout>
 
             <Space
                 android:layout_width="20dp"

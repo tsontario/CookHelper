@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-
+import com.example.caitlin.cookhelper.database.SearchResult;
 import java.util.ArrayList;
 
 public class FindRecipe extends AppCompatActivity {
@@ -32,12 +32,16 @@ public class FindRecipe extends AppCompatActivity {
         Button toSearch = (Button) findViewById(R.id.findRecipeButton);
         toSearch.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //Getting the edit text for search criteria
-                String findCriteria = ingredientCriteria();
+
+
+                ArrayList<String> allCriteria = new ArrayList<String>();
+                allCriteria.add(getSpinnerCategory());
+                allCriteria.add(getSpinnerType());
+                allCriteria.add(ingredientCriteria());
 
                 Intent intent = new Intent(getApplicationContext(), Results.class);
-                intent.putExtra("search_type", "Find");     //Sending selected recipe name
-                intent.putExtra("search_criteria", findCriteria);     //Sending find criteria
+                intent.putStringArrayListExtra("criteria", allCriteria);
+                intent.putExtra("search_type", "Find_with_criteria");
                 startActivity(intent);
             }
         });
