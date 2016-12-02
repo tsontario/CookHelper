@@ -174,7 +174,7 @@ public class SQLParser {
         }
         else {
             result += inOrder(node.getLeft(), cond);
-            result += " \"" + node.getElement() + " \"";
+            result += " " + node.getElement() + " ";
             result += inOrder(node.getRight(), cond);
         }
         return result ;

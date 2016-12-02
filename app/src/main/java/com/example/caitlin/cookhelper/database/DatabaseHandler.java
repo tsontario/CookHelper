@@ -317,6 +317,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // Create the custom query
         String searchQuery =    "SELECT " + KEY_RECIPE_ID + ", " + KEY_RECIPE_NAME + " FROM "
                                 + TABLE_SEARCH + " WHERE ";
+
         if (category != null && category.length() > 0) {
             searchQuery += "";
         }
@@ -326,7 +327,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         String prefix = KEY_INGREDIENT_MEASURE_NAME;
         searchQuery += generateSQLQuery(ingredientQuery, prefix);
-
         Cursor cursor = db.rawQuery(searchQuery, null);
         if (cursor != null) {
             cursor.moveToFirst();
@@ -342,6 +342,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             results.add(result);
             cursor.moveToNext();
         }
+
         cursor.close();
         db.close();
 
