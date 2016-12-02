@@ -58,6 +58,7 @@ public class ViewRecipe extends AppCompatActivity {
         toDelete.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 createAlert();
+                rBook.deleteRecipe(getApplicationContext(), r.getId());
             }
         });
     }
@@ -91,7 +92,6 @@ public class ViewRecipe extends AppCompatActivity {
 
     /*
     View setters
-    ********** public or private? ************
      */
     private void setTitle(Recipe recipe){
         String recipeTitle = recipe.getName();

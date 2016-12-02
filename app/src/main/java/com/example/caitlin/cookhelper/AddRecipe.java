@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
+
 import java.util.ArrayList;
 
 
@@ -373,7 +374,15 @@ public class AddRecipe extends AppCompatActivity {
         toViewRecipe.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                createAlert();
+                // create the updated Recipe and add it to the database
+                Recipe r = createRecipe();
+                rBook.addRecipe(getApplicationContext(), r);
+
+                // start the next activity by passing the intent
+                Intent intent = new Intent(getApplicationContext(), ViewRecipe.class);
+                intent.putExtra("recipe_id", r.getId());
+                startActivity(intent);
+                finish();
             }
         });
     }
@@ -389,7 +398,7 @@ public class AddRecipe extends AppCompatActivity {
         Button toViewRecipe = (Button) findViewById(R.id.cancelAddButton);
         toViewRecipe.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                onBackPressed();
+                createAlert();
             }
         });
     }
@@ -402,7 +411,7 @@ public class AddRecipe extends AppCompatActivity {
 
         onPause();
         AlertDialog.Builder a_builder = new AlertDialog.Builder(this);
-        a_builder.setMessage(getResources().getString(R.string.saveQuestion))
+        a_builder.setMessage(getResources().getString(R.string.cancelQuestion))
                 .setCancelable(false).setPositiveButton(getResources().getString(R.string.no),
                 new DialogInterface.OnClickListener() {
                     @Override
@@ -420,21 +429,12 @@ public class AddRecipe extends AppCompatActivity {
 
                     // if "Yes" clicked
                     public void onClick(DialogInterface dialogInterface, int i) {
-
-                        // create the updated Recipe and add it to the database
-                        Recipe r = createRecipe();
-                        rBook.addRecipe(getApplicationContext(), r);
-
-                        // start the next activity by passing the intent
-                        Intent intent = new Intent(getApplicationContext(), ViewRecipe.class);
-                        intent.putExtra("recipe_id", r.getId());
-                        startActivity(intent);
-                        finish();
+                        onBackPressed();
                     }
                 });
 
         AlertDialog alert = a_builder.create();
-        alert.setTitle(getResources().getString(R.string.save));
+        alert.setTitle(getResources().getString(R.string.cancel));
         alert.show();
     }
 

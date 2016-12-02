@@ -44,6 +44,12 @@ public class Edit extends AppCompatActivity {
 
         toSave();
         toCancel();
+
+        masterView(r);
+
+        toAddInstruction();
+        toAddIngredient();
+
     }
 
     // ---------------
@@ -248,35 +254,139 @@ public class Edit extends AppCompatActivity {
     }
 
     private void setIngredients(Recipe recipe){
-        ArrayList<IngredientMeasure> recipeIngredients = recipe.getIngredientMeasures();
-        LinearLayout ll = (LinearLayout) findViewById(R.id.viewRecipeIngredientsInfo);
+        LinearLayout ll = (LinearLayout) findViewById(R.id.addedIMLLEdit);
 
-        for(int i = 0; i < recipeIngredients.size()-1; i++){
-            TextView tv = new TextView(this);
-            tv.setText(recipeIngredients.get(i).toString());
-            ll.addView(tv);
+        ArrayList<IngredientMeasure> recipeIngredientMeasures = recipe.getIngredientMeasures();
+
+
+        for(int i = 0; i < recipeIngredientMeasures.size(); i++){
+            // prepare horizontal LinearLayout for the newest ingredient information
+            LinearLayout horizLL = new LinearLayout(this);
+            LayoutParams paramsLL = new LayoutParams(LayoutParams.MATCH_PARENT,
+                    LayoutParams.WRAP_CONTENT);
+            horizLL.setLayoutParams(paramsLL);
+            horizLL.setOrientation(LinearLayout.HORIZONTAL);
+
+            // prepare TextViews to store (TextViews 1-3) and
+            // to display (TextView4) ingredient information
+            TextView addedIMTextView1 = new TextView(this);
+            TextView addedIMTextView2 = new TextView(this);
+            TextView addedIMTextView3 = new TextView(this);
+            TextView addedIMTextView4 = new TextView(this);
+            addedIMTextView4.setGravity(Gravity.RIGHT);
+            LayoutParams paramsTV1 = new LayoutParams((int) getResources()
+                    .getDimension(R.dimen.zero_dp), LayoutParams.WRAP_CONTENT, .1f);
+            LayoutParams paramsTV2 = new LayoutParams((int) getResources()
+                    .getDimension(R.dimen.zero_dp), LayoutParams.WRAP_CONTENT, 1f);
+
+            addedIMTextView1.setLayoutParams(paramsTV1); // set width, height, weight
+            addedIMTextView2.setLayoutParams(paramsTV1);
+            addedIMTextView3.setLayoutParams(paramsTV1);
+            addedIMTextView4.setLayoutParams(paramsTV2);
+
+            String amountStr = recipeIngredientMeasures.get(i).getAmount();
+            String unitStr = recipeIngredientMeasures.get(i).getUnit();
+            String ingNameStr = recipeIngredientMeasures.get(i).getIngredient().getName();
+
+            addedIMTextView1.setText(amountStr);
+            addedIMTextView2.setText(unitStr);
+            addedIMTextView3.setText(ingNameStr);
+            addedIMTextView4.setText(amountStr + " " + unitStr + " " + ingNameStr);
+
+            // TextViews 1-3 are for storing, but not displaying, String information
+            // about quantities, units, and ingredient names
+            addedIMTextView1.setVisibility(View.INVISIBLE);
+            addedIMTextView2.setVisibility(View.INVISIBLE);
+            addedIMTextView3.setVisibility(View.INVISIBLE);
+
+            // add the TextViews to the horizontal LinearLayout
+            horizLL.addView(addedIMTextView1, 0);
+            horizLL.addView(addedIMTextView2, 1);
+            horizLL.addView(addedIMTextView3, 2);
+            horizLL.addView(addedIMTextView4, 3);
+
+            // prepare Button to delete previously added ingredient details
+            ImageButton deleteButton = new ImageButton(this);
+            deleteButton.setBackgroundResource(android.R.drawable.ic_delete);
+            deleteButton.setClickable(true);
+            deleteButton.setContentDescription("Click to delete instruction");
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    LinearLayout horizParent = (LinearLayout) v.getParent();
+                    LinearLayout vertParent = (LinearLayout) horizParent.getParent();
+                    vertParent.removeView(horizParent);
+                }
+            });
+
+            // add the button to the horizontal LinearLayout
+            horizLL.addView(deleteButton, 4);
+
+            ll.addView(horizLL);
         }
+
+
     }
 
     private void setDirections(Recipe recipe){
         ArrayList<String> recipeDirections = recipe.getDirections();
-        LinearLayout ll = (LinearLayout) findViewById(R.id.viewRecipeDirectionsInfo);
+        LinearLayout ll = (LinearLayout) findViewById(R.id.addedInstructionLLEdit);
 
-        for(int i = 0; i < recipeDirections.size()-1; i++){
-            TextView tv = new TextView(this);
-            tv.setText(recipeDirections.get(i));
-            ll.addView(tv);
+        for(int i = 0; i < recipeDirections.size(); i++){
+
+            // get a reference to the LinearLayout for inputted instructions
+            LinearLayout addedVertInstLL = (LinearLayout) findViewById(R.id.addedInstructionLL);
+
+            // prepare horizontal LinearLayout for the most recently entered instruction
+            LinearLayout horizLL = new LinearLayout(this);
+            LayoutParams paramsLL = new LayoutParams(LayoutParams.MATCH_PARENT,
+                    LayoutParams.WRAP_CONTENT);
+            horizLL.setLayoutParams(paramsLL);
+            horizLL.setOrientation(LinearLayout.HORIZONTAL);
+
+            // prepare TextView, which displays the newest instruction
+            TextView addedInstTextView = new TextView(this);
+            LayoutParams paramsTV = new LayoutParams((int) getResources()
+                    .getDimension(R.dimen.zero_dp), LayoutParams.WRAP_CONTENT, 1f);
+            addedInstTextView.setLayoutParams(paramsTV); // set width, height, weight
+            addedInstTextView.setGravity(Gravity.RIGHT);
+            addedInstTextView.setText(recipeDirections.get(i));
+
+            // add the TextView to the horizontal LinearLayout
+            horizLL.addView(addedInstTextView);
+
+            // prepare Button to delete previously added instructions
+            ImageButton deleteButton = new ImageButton(this);
+            deleteButton.setBackgroundResource(android.R.drawable.ic_delete);
+            deleteButton.setClickable(true);
+            deleteButton.setContentDescription("Click to delete instruction");
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    LinearLayout horizParent = (LinearLayout) v.getParent();
+                    LinearLayout vertParent = (LinearLayout) horizParent.getParent();
+                    vertParent.removeView(horizParent);
+                }
+            });
+
+            // add the Button to the horizontal LinearLayout
+            horizLL.addView(deleteButton, 1);
+
+            // add the horizontal LinearLayout to the vertical LinearLayout for added instructions
+            ll.addView(horizLL);
         }
     }
 
     private void masterView(Recipe recipe){
-        setTitle(recipe);
-        setServing(recipe);
-        setPrep(recipe);
-        setCookTime(recipe);
-        setType(recipe);
-        setCalories(recipe);
-        setIngredients(recipe);
+        //setTitle(recipe);
+        //setServing(recipe);
+        //setPrep(recipe);
+        //setCookTime(recipe);
+        //setType(recipe);
+        //setCalories(recipe);
+        //setIngredients(recipe);
         setDirections(recipe);
     }
 
@@ -284,14 +394,16 @@ public class Edit extends AppCompatActivity {
     // METHODS
     // ---------------
 
+
+
     /**
      * This method clears the EditText object into which users input their instructions.
      * It also adds the most recently entered instruction to an LinearLayout reserved
      * for inputted instructions.
      *
-     * @param v
+     *
      */
-    public void addNewInstruction(View v) {
+    public void addNewInstructionEdit() {
 
         EditText instEditText = (EditText) findViewById(R.id.firstInstructionEdit);
         String instruction = instEditText.getText().toString();
@@ -354,9 +466,8 @@ public class Edit extends AppCompatActivity {
      * and names of a recipe's ingredients. It also adds the most recently entered ingredient
      * information to an LinearLayout reserved for inputted ingredients.
      *
-     * @param v
      */
-    public void addNewIngredientMeasure(View v) {
+    public void addNewIngredientMeasureEdit() {
 
         EditText amountET = (EditText) findViewById(R.id.eTextQuantityEdit);
         EditText unitET = (EditText) findViewById(R.id.eTextUnitEdit);
@@ -477,6 +588,24 @@ public class Edit extends AppCompatActivity {
             public void onClick(View v) {
 
                 createAlertEditCancel();
+            }
+        });
+    }
+
+    private void toAddInstruction() {
+        ImageButton toViewRecipe = (ImageButton) findViewById(R.id.addInstructionButtonEdit);
+        toViewRecipe.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                addNewInstructionEdit();
+            }
+        });
+    }
+
+    private void toAddIngredient() {
+        ImageButton toViewRecipe = (ImageButton) findViewById(R.id.addIngredientButtonEdit);
+        toViewRecipe.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                addNewIngredientMeasureEdit();
             }
         });
     }
