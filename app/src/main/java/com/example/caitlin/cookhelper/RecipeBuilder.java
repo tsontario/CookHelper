@@ -26,7 +26,10 @@ public class RecipeBuilder {
     // CONSTRUCTOR
     // ---------------
 
-    public RecipeBuilder() { }
+    public RecipeBuilder() {
+        directions = new ArrayList<String>();
+        ingredientMeasures = new ArrayList<IngredientMeasure>();
+    }
 
     // ---------------
     // SETTERS
