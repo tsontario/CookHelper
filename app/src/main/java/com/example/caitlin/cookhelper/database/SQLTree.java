@@ -12,7 +12,7 @@ public class SQLTree {
     private static String generateSQLQuery(String q) throws IllegalArgumentException {
 
         // This regex tokenizes our String properly (but still needs trimming).
-        String tokenizer = "(?=AND)|(?<=AND )|(?=OR)|(?<=OR)|(?= NOT)|(?<=NOT )|(?=\\()|(?<=\\()|(?=\\))|(?<=\\) )";
+        String tokenizer = "(?=AND)|(?<=AND )|(?=OR)|(?<=OR )|(?=NOT)|(?<=NOT )|(?=\\()|(?<=\\()|(?=\\))|(?<=\\) )";
         String[] elements = q.split(tokenizer);
         for (int i=0; i<elements.length; i++) {
             elements[i] = elements[i].trim();
@@ -22,7 +22,6 @@ public class SQLTree {
         LinkedList<String> operandStack = new LinkedList<>();
         Stack<String> operatorStack = new Stack<>();
         String operator;
-
 
         boolean unaryFlag = false;
 
@@ -73,14 +72,18 @@ public class SQLTree {
          *
          */
 
-        String result = "";
-        while (!operandStack.isEmpty()) {
-            result += operandStack.removeLast() + " ";
-        }
-        System.out.println(result);
+//        String result = "";
+//        LinkedList<String> copyStack = new LinkedList<>(operandStack);
+//        while (!operandStack.isEmpty()) {
+//            result += copyStack.removeLast() + ", ";
+//        }
+//        System.out.println(result);
 
-        Tree.Node element1;
-        Tree.Node element2;
+        Tree tree1;
+        Tree tree2;
+
+        Tree.Node node1;
+        Tree.Node node2;
         Tree<String> newTree;
 
 
@@ -89,23 +92,25 @@ public class SQLTree {
         while (!operandStack.isEmpty()) {
             String element = operandStack.removeLast();
             if (isBinaryOperator(element)) {
+                // Pop two operands
                 newTree = new Tree<>(element);
-                element1 = stack.pop().getRoot();
-                element2 = stack.pop().getRoot();
-                // TODO Need to change left, right, parent, AND root references... yikes
+                tree1 = stack.pop();
+                tree2 = stack.pop();
+                node1 = tree1.getRoot();
+                node2 = tree2.getRoot();
+
+                // Make a new tree with operator at root
+                newTree.getRoot().setLeft(node1);
+                node1.setParent(newTree.getRoot());
+
+                newTree.getRoot().setRight(node2);
+                node2.setParent(newTree.getRoot());
                 stack.push(newTree);
-                newTree.appendLeft(null);
-                newTree.getRoot().setRight(element2);
-                element1.setParent(newTree.getRoot());
-                element2.setParent(newTree.getRoot());
 
             }
             else if (isUnaryOperator(element)) {
                 newTree = new Tree<>(element);
-                element1 = stack.pop().getRoot();
-                stack.push(newTree);
-                newTree.getRoot().setLeft(element1);
-                element1.setParent(newTree.getRoot());
+
             }
             else {
                 stack.push(new Tree<>(element));
@@ -113,8 +118,6 @@ public class SQLTree {
         }
 
 
-
-        inOrder(stack.pop().getRoot());
         /** Once you have a tree, do an inOrder traversal, and at every operand that is a left child, place a left parens,
          * and at every operand that is a right child, place a right parens. worry about unary operator later (NOT)
          *
@@ -124,7 +127,7 @@ public class SQLTree {
     }
 
     private static boolean isBinaryOperator(String s) {
-        return (s.equals("AND") || s.equals("OR") || s.equals("NOT"));
+        return (s.equals("AND") || s.equals("OR"));
     }
 
     private static boolean hasPrecedence(String s1) {

@@ -312,8 +312,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     + " GROUP BY " + TABLE_INGREDIENT_MEASURES + "." + KEY_INGREDIENT_MEASURE_RECIPE + ";");
 
         // Create the custom query
-        String searchQuery = "";
-        // TODO deal with category and type filter for search
+        String searchQuery =    "SELECT " + KEY_RECIPE_ID + ", " + KEY_INGREDIENT_MEASURE_NAME + " FROM "
+                                + TABLE_SEARCH + " WHERE ";
         if (category != null && category.length() > 0) {
             searchQuery += "";
         }
@@ -321,10 +321,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             searchQuery += "";
         }
 
-        searchQuery +=
+        searchQuery += "";
 
 
-        Cursor cursor = db.rawQuery("", null);
+        Cursor cursor = db.rawQuery(searchQuery, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+        } else {
+            return null;
+        }
 
         ingredientQuery = generateSQLQuery(ingredientQuery);
 
