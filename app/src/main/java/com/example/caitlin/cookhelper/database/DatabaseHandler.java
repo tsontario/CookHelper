@@ -373,8 +373,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             cursor.moveToFirst();
         }
         while (!cursor.isAfterLast()) {
-            Ingredient i = new Ingredient(cursor.getString(0));
-            String unit = cursor.getString(1);
+            Ingredient i = new Ingredient(cursor.getString(1));
+            String unit = cursor.getString(3);
             String amount = cursor.getString(2);
             IngredientMeasure iM = new IngredientMeasure(i, unit, amount);
             ingredientMeasures.add(iM);
