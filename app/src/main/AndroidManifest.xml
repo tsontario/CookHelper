@@ -8,19 +8,29 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Home">
+        <activity android:name=".Home"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddRecipe" />
-        <activity android:name=".Help" />
-        <activity android:name=".FindRecipe" />
-        <activity android:name=".Results" />
-        <activity android:name=".ViewRecipe" />
-        <activity android:name=".Edit"></activity>
+        <activity android:name=".AddRecipe"
+            android:windowSoftInputMode="stateHidden|adjustResize"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Help"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".FindRecipe"
+            android:windowSoftInputMode="stateHidden|adjustResize"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Results"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ViewRecipe"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Edit"
+            android:windowSoftInputMode="stateHidden|adjustResize"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>
