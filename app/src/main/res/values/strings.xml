@@ -111,8 +111,8 @@
 
     <!--ViewRecipe-->
     <string name="servings">Servings:</string>
-    <string name="cook_time_viewrecipe">| Cook Time:</string>
-    <string name="prep_time_viewrecipe">| Prep Time:</string>
+    <string name="cook_time_viewrecipe">Cook Time:</string>
+    <string name="prep_time_viewrecipe">Prep Time:</string>
     <string name="calories">Calories:</string>
     <string name="edit">Edit</string>
     <string name="typeRecipe">Type:</string>
