@@ -1,11 +1,17 @@
 package com.example.caitlin.cookhelper.database;
 
+import android.support.annotation.NonNull;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Stack;
 
 public class SQLParser {
 
-    public static String generateSQLQuery(String q, String prefix) throws IllegalArgumentException {
+    public static String generateSQLQuery(String q, String prefix, Map<String, String> rankArgs)
+            throws IllegalArgumentException {
 
         // This regex tokenizes our String properly (but still needs trimming).
         String tokenizer = "(?=AND)|(?<=AND )|(?=OR)|(?<=OR )|(?=NOT)|(?<=NOT )|(?=\\()|(?<=\\()|(?=\\))|(?<=\\) )";
@@ -15,6 +21,65 @@ public class SQLParser {
         }
 
         // Convert to Postfix expression
+        LinkedList<String>postFixTree = convertToPostfix(elements);
+        // Create Binary Expression Tree
+        Stack<BinaryExpressionTree> stack = getBinaryExpressionTree(postFixTree);
+
+        //Traverse the Expression Tree
+        BinaryExpressionTree root = stack.pop();
+        rankArgs = leafOrder(root, rankArgs);
+        return inOrder(root, prefix);
+    }
+
+    public static Stack<BinaryExpressionTree> getBinaryExpressionTree(LinkedList<String> inFixList) {
+        BinaryExpressionTree binaryExpressionTree1;
+        BinaryExpressionTree binaryExpressionTree2;
+
+        BinaryExpressionTree.Node node1;
+        BinaryExpressionTree.Node node2;
+        BinaryExpressionTree<String> newBinaryExpressionTree;
+
+
+        // Now make the BinaryExpressionTree Stack
+        Stack<BinaryExpressionTree> stack = new Stack<>();
+        while (!inFixList.isEmpty()) {
+            String element = inFixList.removeLast();
+            if (isBinaryOperator(element)) {
+                // Pop two operands
+                newBinaryExpressionTree = new BinaryExpressionTree<>(element);
+                binaryExpressionTree1 = stack.pop();
+                binaryExpressionTree2 = stack.pop();
+                node1 = binaryExpressionTree1.getRoot();
+                node2 = binaryExpressionTree2.getRoot();
+
+                // Make a new tree with operator at root
+                newBinaryExpressionTree.getRoot().setLeft(node1);
+                node1.setParent(newBinaryExpressionTree.getRoot());
+
+                newBinaryExpressionTree.getRoot().setRight(node2);
+                node2.setParent(newBinaryExpressionTree.getRoot());
+                stack.push(newBinaryExpressionTree);
+
+            }
+            else if (isUnaryOperator(element)) {
+                newBinaryExpressionTree = new BinaryExpressionTree<>(element);
+                binaryExpressionTree1 = stack.pop();
+                node1 = binaryExpressionTree1.getRoot();
+
+                newBinaryExpressionTree.getRoot().setRight(node1);
+                node1.setParent(newBinaryExpressionTree.getRoot());
+
+                stack.push(newBinaryExpressionTree);
+            }
+            else {
+                stack.push(new BinaryExpressionTree<>(element));
+            }
+        }
+        return stack;
+    }
+
+
+    private static LinkedList<String> convertToPostfix(String[] elements) {
         LinkedList<String> operandStack = new LinkedList<>();
         Stack<String> operatorStack = new Stack<>();
         String operator;
@@ -63,65 +128,7 @@ public class SQLParser {
         while (!operatorStack.empty()) {
             operandStack.push(operatorStack.pop());
         }
-
-        /** COMMENTED OUT --- CHECKS POSTFIX CONVERSION ALGORITHM
-         *
-         */
-
-        String result = "";
-        LinkedList<String> copyStack = new LinkedList<>(operandStack);
-        while (!copyStack.isEmpty()) {
-            result += copyStack.removeLast() + ", ";
-        }
-        System.out.println(result);
-
-        BinaryExpressionTree binaryExpressionTree1;
-        BinaryExpressionTree binaryExpressionTree2;
-
-        BinaryExpressionTree.Node node1;
-        BinaryExpressionTree.Node node2;
-        BinaryExpressionTree<String> newBinaryExpressionTree;
-
-
-        // Now make the BinaryExpressionTree Stack
-        Stack<BinaryExpressionTree> stack = new Stack<>();
-        while (!operandStack.isEmpty()) {
-            String element = operandStack.removeLast();
-            if (isBinaryOperator(element)) {
-                // Pop two operands
-                newBinaryExpressionTree = new BinaryExpressionTree<>(element);
-                binaryExpressionTree1 = stack.pop();
-                binaryExpressionTree2 = stack.pop();
-                node1 = binaryExpressionTree1.getRoot();
-                node2 = binaryExpressionTree2.getRoot();
-
-                // Make a new tree with operator at root
-                newBinaryExpressionTree.getRoot().setLeft(node1);
-                node1.setParent(newBinaryExpressionTree.getRoot());
-
-                newBinaryExpressionTree.getRoot().setRight(node2);
-                node2.setParent(newBinaryExpressionTree.getRoot());
-                stack.push(newBinaryExpressionTree);
-
-            }
-            else if (isUnaryOperator(element)) {
-                newBinaryExpressionTree = new BinaryExpressionTree<>(element);
-                binaryExpressionTree1 = stack.pop();
-                node1 = binaryExpressionTree1.getRoot();
-
-                newBinaryExpressionTree.getRoot().setRight(node1);
-                node1.setParent(newBinaryExpressionTree.getRoot());
-
-                stack.push(newBinaryExpressionTree);
-            }
-            else {
-                stack.push(new BinaryExpressionTree<>(element));
-            }
-        }
-
-
-        BinaryExpressionTree root = stack.pop();
-        return inOrder(root, prefix);
+        return operandStack;
     }
 
     private static boolean isBinaryOperator(String s) {
@@ -178,6 +185,32 @@ public class SQLParser {
             result += inOrder(node.getRight(), cond);
         }
         return result ;
+    }
+
+    private static Map<String, String> leafOrder(BinaryExpressionTree binaryExpressionTree,
+                                                 Map<String, String> rankArgs) {
+        BinaryExpressionTree.Node root = binaryExpressionTree.getRoot();
+        if (root.getLeft() == null && root.getRight() == null) {
+            rankArgs.put("", "");
+        }
+
+        leafOrder(root, rankArgs);
+        return rankArgs;
+    }
+    private static void leafOrder(BinaryExpressionTree.Node node, Map<String, String> rankArgs) {
+
+        if (node.getParent() != null && isUnaryOperator((String)node.getParent().getElement())) {
+            return;
+        }
+        else if ((node.isLeftChild() || node.isRightChild()) && node.isLeaf()) {
+            rankArgs.put(""+node.getElement(), ""+node.getElement());
+            return;
+        }
+        else {
+            leafOrder(node.getLeft(), rankArgs);
+            leafOrder(node.getRight(), rankArgs);
+        }
+        return;
     }
 
 }

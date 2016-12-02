@@ -15,7 +15,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
@@ -287,6 +289,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      */
     public ArrayList<SearchResult> findRecipes(String category, String type, String ingredientQuery) {
         SQLiteDatabase db = this.getReadableDatabase();
+
         // Make a temporary search table
         String TABLE_SEARCH = "search";
         String createTempTable = "CREATE TEMPORARY TABLE " + TABLE_SEARCH +"("
@@ -319,14 +322,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                                 + TABLE_SEARCH + " WHERE ";
 
         if (category != null && category.length() > 0) {
-            searchQuery += "";
+            searchQuery += KEY_RECIPE_CATEGORY + " = " + category + " AND ";
         }
         if (type != null && type.length() > 0) {
-            searchQuery += "";
+            searchQuery += KEY_RECIPE_TYPE + " = " + type + " AND ";
         }
 
         String prefix = KEY_INGREDIENT_MEASURE_NAME;
-        searchQuery += generateSQLQuery(ingredientQuery, prefix);
+        Map<String, String> rankArgs = new HashMap<>();
+
+        searchQuery += generateSQLQuery(ingredientQuery, prefix, rankArgs);
         Cursor cursor = db.rawQuery(searchQuery, null);
         if (cursor != null) {
             cursor.moveToFirst();
@@ -342,6 +347,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             results.add(result);
             cursor.moveToNext();
         }
+
 
         cursor.close();
         db.close();
@@ -445,8 +451,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
     /** End of helper methods for addRecipe(Recipe r) */
 
-    private String generateSQLQuery(String q, String prefix) {
-        return SQLParser.generateSQLQuery(q, prefix);
+    private String generateSQLQuery(String q, String prefix, Map<String, String> rankArgs) {
+        return SQLParser.generateSQLQuery(q, prefix, rankArgs);
     }
 
     public ArrayList<String> getCategories() {

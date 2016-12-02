@@ -7,10 +7,17 @@ package com.example.caitlin.cookhelper.database;
 
 public class SearchResult {
     private String name;
+    private int rank;
     private long id;
 
     public SearchResult(String name, long id) {
         this.name = name;
+        this.id = id;
+    }
+
+    public SearchResult(String name, int rank, long id) {
+        this.name = name;
+        this.rank = rank;
         this.id = id;
     }
 
@@ -20,6 +27,14 @@ public class SearchResult {
 
     public long getId() {
         return id;
+    }
+
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
     }
 
     public String toString() {
