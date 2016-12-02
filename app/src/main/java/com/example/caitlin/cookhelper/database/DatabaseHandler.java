@@ -285,7 +285,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      *
      */
     public ArrayList<SearchResult> findRecipes(String category, String type, String ingredientQuery) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase();
         // Make a temporary search table
         String TABLE_SEARCH = "search";
         String createTempTable = "CREATE TEMPORARY TABLE " + TABLE_SEARCH +"("
@@ -333,8 +333,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             return null;
         }
 
-        return null;
+        ArrayList<SearchResult> results = new ArrayList<>();
+        while (!cursor.isAfterLast()) {
+            String r_name = "Stuf";
+            long r_id = cursor.getInt(0);
+            SearchResult result = new SearchResult(r_name, r_id);
+            results.add(result);
+        }
+        cursor.close();
+        db.close();
 
+        return results;
     }
 
     /************** PRIVATE UTILITY / HELPER METHODS *******************/
@@ -367,6 +376,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             String amount = cursor.getString(2);
             IngredientMeasure iM = new IngredientMeasure(i, unit, amount);
             ingredientMeasures.add(iM);
+            cursor.moveToNext();
         }
         cursor.close();
     }
@@ -440,12 +450,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public ArrayList<String> getCategories() {
         SQLiteDatabase db = this.getReadableDatabase();
         ArrayList<String> categories = new ArrayList<>();
-        String query = "SELECT " + KEY_RECIPE_CATEGORY + " FROM "
-                        + TABLE_RECIPES;
 
-        db.execSQL(query);
+        Cursor cursor = db.query(TABLE_RECIPES, null, KEY_RECIPE_CATEGORY + " =?",
+                new String[]{}, null, null, null, null);
 
-        return new ArrayList<>();
+        if (cursor != null) {
+            cursor.moveToFirst();
+        } else {
+            return new ArrayList<>();
+        }
+
+        while (!cursor.isAfterLast()) {
+            categories.add(cursor.getString(0));
+            cursor.moveToNext();
+        }
+
+        return categories;
     }
 
     public ArrayList<String> getTypes() {
@@ -453,12 +473,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ArrayList<String> types = new ArrayList<>();
 
         Cursor cursor = db.query(TABLE_RECIPES, null, KEY_RECIPE_TYPE + " =?",
-                new String[] {"*"}, null, null, null, null);
-        String query = "SELECT " + KEY_RECIPE_TYPE + " FROM "
-                + TABLE_RECIPES;
+                new String[]{}, null, null, null, null);
 
-        db.execSQL(query);
+        if (cursor != null) {
+            cursor.moveToFirst();
+        } else {
+            return new ArrayList<>();
+        }
 
-        return new ArrayList<>();
+        while (!cursor.isAfterLast()) {
+            types.add(cursor.getString(0));
+            cursor.moveToNext();
+        }
+
+        return types;
     }
 }
