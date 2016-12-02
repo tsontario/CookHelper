@@ -139,8 +139,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // Get the database row
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_RECIPES, null,
-                String.valueOf(id),
-                null, null, null, null);
+                KEY_RECIPE_ID + " =?",
+                new String[] {String.valueOf(id)}, null, null, null);
 
         // Get row if exists
         if (cursor != null) {
@@ -149,6 +149,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         else {
             return null;
         }
+
         // Iterate through all columns
         String name = cursor.getString(1);
         String numServings = cursor.getString(2);
