@@ -11,9 +11,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-import java.util.ArrayList;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.TextView;
+
+import java.util.ArrayList;
 
 public class Edit extends AppCompatActivity {
 
@@ -475,15 +476,49 @@ public class Edit extends AppCompatActivity {
         toEdit.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                //Sending original text name to view activity, and then starting viewRecipe
-                Intent intent = new Intent(getApplicationContext(), ViewRecipe.class);
-                intent.putExtra("recipe_id", r.getId());     //Sending added recipe name
-                startActivity(intent);
-                finish();   //Ending edit activity
+                createAlertEditCancel();
             }
         });
     }
 
+    /**
+     * This method creates a dialog that allows the user to either cancel his or her recipe edits
+     * and then return back to the viewRecipe screen without making the edited changes
+     */
+    private void createAlertEditCancel() {
+        onPause();
+        AlertDialog.Builder a_builder = new AlertDialog.Builder(this);
+        a_builder.setMessage(getResources().getString(R.string.cancelQuestion))
+                .setCancelable(false).setPositiveButton(getResources().getString(R.string.no),
+                new DialogInterface.OnClickListener() {
+
+                    @Override
+                    // if "No" clicked
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        dialogInterface.cancel();
+                        onResume();
+                    }
+                })
+                .setNegativeButton(getResources().getString(R.string.yes),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+
+                            // if "Yes" clicked
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                                //Sending original text name to view activity, and then starting viewRecipe
+                                Intent intent = new Intent(getApplicationContext(), ViewRecipe.class);
+                                intent.putExtra("recipe_id", r.getId());     //Sending added recipe name
+                                startActivity(intent);
+                                finish();   //Ending edit activity
+                            }
+                        });
+
+        AlertDialog alert = a_builder.create();
+        alert.setTitle(getResources().getString(R.string.cancel));
+        alert.show();
+    }
 
     /**
      * This method creates a dialog that allows the user to either save his or her recipe or to
