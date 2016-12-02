@@ -321,7 +321,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             searchQuery += "";
         }
 
-        searchQuery += "";
+        String prefix = TABLE_SEARCH + "." + KEY_INGREDIENT_MEASURE_NAME;
+        searchQuery += generateSQLQuery(ingredientQuery, prefix);
 
 
         Cursor cursor = db.rawQuery(searchQuery, null);
@@ -330,9 +331,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         } else {
             return null;
         }
-
-        ingredientQuery = generateSQLQuery(ingredientQuery);
-
 
         return null;
 
@@ -431,21 +429,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
     /** End of helper methods for addRecipe(Recipe r) */
 
-    private String generateSQLQuery(String q) {
-        //Melted Butter AND Flour OR Honey
-        q = "Melted Butter AND Flour OR Honey";
-        String[] tokens = q.split(" ");
-        List<String> operators = new ArrayList<String>();
-        operators.add("AND");
-        operators.add("OR");
-        operators.add("NOT");
-
-        // [Melted Butter, AND, Flour, OR, Honey]
-        for (int i=0; i<tokens.length; i++) {
-
-        }
-        String result = "";
-        return null;
+    private String generateSQLQuery(String q, String prefix) {
+        String result = SQLParser.generateSQLQuery(q, prefix);
+        return result;
     }
 
     public ArrayList<String> getCategories() {

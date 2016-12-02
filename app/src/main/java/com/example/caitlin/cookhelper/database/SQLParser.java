@@ -3,13 +3,9 @@ package com.example.caitlin.cookhelper.database;
 import java.util.LinkedList;
 import java.util.Stack;
 
-public class SQLTree {
+public class SQLParser {
 
-    public static void main(String[] args) {
-        generateSQLQuery("a OR (b AND c) OR d");
-    }
-
-    private static String generateSQLQuery(String q) throws IllegalArgumentException {
+    public static String generateSQLQuery(String q, String prefix) throws IllegalArgumentException {
 
         // This regex tokenizes our String properly (but still needs trimming).
         String tokenizer = "(?=AND)|(?<=AND )|(?=OR)|(?<=OR )|(?=NOT)|(?<=NOT )|(?=\\()|(?<=\\()|(?=\\))|(?<=\\) )";
@@ -72,51 +68,61 @@ public class SQLTree {
          *
          */
 
-//        String result = "";
-//        LinkedList<String> copyStack = new LinkedList<>(operandStack);
-//        while (!operandStack.isEmpty()) {
-//            result += copyStack.removeLast() + ", ";
-//        }
-//        System.out.println(result);
+        String result = "";
+        LinkedList<String> copyStack = new LinkedList<>(operandStack);
+        while (!copyStack.isEmpty()) {
+            result += copyStack.removeLast() + ", ";
+        }
+        System.out.println(result);
 
-        Tree tree1;
-        Tree tree2;
+        BinaryExpressionTree binaryExpressionTree1;
+        BinaryExpressionTree binaryExpressionTree2;
 
-        Tree.Node node1;
-        Tree.Node node2;
-        Tree<String> newTree;
+        BinaryExpressionTree.Node node1;
+        BinaryExpressionTree.Node node2;
+        BinaryExpressionTree<String> newBinaryExpressionTree;
 
 
-        // Now make the Tree Stack
-        Stack<Tree> stack = new Stack<>();
+        // Now make the BinaryExpressionTree Stack
+        Stack<BinaryExpressionTree> stack = new Stack<>();
         while (!operandStack.isEmpty()) {
             String element = operandStack.removeLast();
             if (isBinaryOperator(element)) {
                 // Pop two operands
-                newTree = new Tree<>(element);
-                tree1 = stack.pop();
-                tree2 = stack.pop();
-                node1 = tree1.getRoot();
-                node2 = tree2.getRoot();
+                newBinaryExpressionTree = new BinaryExpressionTree<>(element);
+                binaryExpressionTree1 = stack.pop();
+                binaryExpressionTree2 = stack.pop();
+                node1 = binaryExpressionTree1.getRoot();
+                node2 = binaryExpressionTree2.getRoot();
 
                 // Make a new tree with operator at root
-                newTree.getRoot().setLeft(node1);
-                node1.setParent(newTree.getRoot());
+                newBinaryExpressionTree.getRoot().setLeft(node1);
+                node1.setParent(newBinaryExpressionTree.getRoot());
 
-                newTree.getRoot().setRight(node2);
-                node2.setParent(newTree.getRoot());
-                stack.push(newTree);
+                newBinaryExpressionTree.getRoot().setRight(node2);
+                node2.setParent(newBinaryExpressionTree.getRoot());
+                stack.push(newBinaryExpressionTree);
 
             }
             else if (isUnaryOperator(element)) {
-                newTree = new Tree<>(element);
+                newBinaryExpressionTree = new BinaryExpressionTree<>(element);
+                binaryExpressionTree1 = stack.pop();
+                node1 = binaryExpressionTree1.getRoot();
 
+                newBinaryExpressionTree.getRoot().setRight(node1);
+                node1.setParent(newBinaryExpressionTree.getRoot());
+
+                stack.push(newBinaryExpressionTree);
             }
             else {
-                stack.push(new Tree<>(element));
+                stack.push(new BinaryExpressionTree<>(element));
             }
         }
 
+
+        BinaryExpressionTree root = stack.pop();
+
+        System.out.println(inOrder(root, prefix));
 
         /** Once you have a tree, do an inOrder traversal, and at every operand that is a left child, place a left parens,
          * and at every operand that is a right child, place a right parens. worry about unary operator later (NOT)
@@ -147,13 +153,41 @@ public class SQLTree {
         return s.equals(")");
     }
 
-    private static void inOrder(Tree.Node node) {
-        if (node == null) {
-            return;
-        }
-        inOrder(node.getLeft());
-        System.out.print(" " + node.getElement());
-        inOrder(node.getRight());
 
+    private static String inOrder(BinaryExpressionTree binaryExpressionTree, String cond) {
+        String result = "";
+        BinaryExpressionTree.Node root = binaryExpressionTree.getRoot();
+        if (root.getLeft() == null && root.getRight() == null) {
+            return cond + " LIKE " + root.getElement();
+        }
+
+        return result + inOrder(root, cond);
     }
+    private static String inOrder(BinaryExpressionTree.Node node, String cond) {
+        String result = "";
+
+        if (node.getParent() != null && isUnaryOperator((String)node.getParent().getElement())) {
+            return "%" + node.getElement() + "%";
+        }
+        else if (isUnaryOperator((String) node.getElement())) {
+            return cond + " NOT LIKE " + inOrder(node.getRight(), cond);
+        }
+        else if (node.isLeftChild() && node.isLeaf()) {
+            result = cond + " LIKE \"%" + node.getElement() + "%\"";
+            return result;
+        }
+        else if (node.isRightChild() && node.isLeaf()) {
+            result = cond + " LIKE " + "\"%" + node.getElement() + "%\"";
+            return result;
+        }
+        else {
+            result += inOrder(node.getLeft(), cond);
+            result += " " + node.getElement() + " ";
+            result += inOrder(node.getRight(), cond);
+        }
+        return result ;
+    }
+
 }
+
+
