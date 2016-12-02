@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -28,18 +29,16 @@ public class ViewRecipe extends AppCompatActivity {
         long recipe_id = intent.getLongExtra("recipe_id", 0l);
 
         r = rBook.getRecipe(getApplicationContext(), recipe_id);
-
+        masterView(r);
 
         //setting sent recipe name as title
-        TextView recipeNameToChange = (TextView) findViewById(R.id.recipeName);
-        // recipeNameToChange.setText(recipeName);
+        //TextView recipeNameToChange = (TextView) findViewById(R.id.recipeName);
+        //recipeNameToChange.setText(recipeName);
 
         //Button clicking methods
         toEdit();
         toDelete();
     }
-
-
 
     private void toEdit() {
         Button toEdit = (Button) findViewById(R.id.btnEdit);
@@ -63,7 +62,6 @@ public class ViewRecipe extends AppCompatActivity {
             }
         });
     }
-
 
     private void createAlert () {
         onPause();
@@ -91,10 +89,11 @@ public class ViewRecipe extends AppCompatActivity {
         alert.show();
     }
 
-    // ---------------
-    // SETTERS FOR TEXTVIEWS
-    // ---------------
 
+    /*
+    View setters
+    ********** public or private? ************
+     */
     private void setTitle(Recipe recipe){
         String recipeTitle = recipe.getName();
         TextView resultsTitle = (TextView) findViewById(R.id.recipeName);
@@ -131,20 +130,37 @@ public class ViewRecipe extends AppCompatActivity {
         resultsCalories.setText(recipeCalories);
     }
 
-    /**
     private void setIngredients(Recipe recipe){
         ArrayList<IngredientMeasure> recipeIngredients = recipe.getIngredientMeasures();
-        TextView resultsIngredients = (TextView) findViewById(R.id.viewRecipeIngredientsInfo);
-        for(IngredientMeasure i : recipeIngredients)
-            resultsIngredients.append(i.toString() + "\n");
+        LinearLayout ll = (LinearLayout) findViewById(R.id.viewRecipeIngredientsInfo);
+
+        for(int i = 0; i < recipeIngredients.size()-1; i++){
+            TextView tv = new TextView(this);
+            tv.setText(recipeIngredients.get(i).toString());
+            ll.addView(tv);
+        }
     }
 
     private void setDirections(Recipe recipe){
         ArrayList<String> recipeDirections = recipe.getDirections();
-        TextView resultsDirections = (TextView) findViewById(R.id.viewRecipeDirectionsInfo);
-        for(String i : recipeDirections)
-            resultsDirections.append(i + "\n");
+        LinearLayout ll = (LinearLayout) findViewById(R.id.viewRecipeDirectionsInfo);
+
+        for(int i = 0; i < recipeDirections.size()-1; i++){
+            TextView tv = new TextView(this);
+            tv.setText(recipeDirections.get(i));
+            ll.addView(tv);
+        }
     }
-    */
+
+    private void masterView(Recipe recipe){
+        setTitle(recipe);
+        setServing(recipe);
+        setPrep(recipe);
+        setCookTime(recipe);
+        setType(recipe);
+        setCalories(recipe);
+        setIngredients(recipe);
+        setDirections(recipe);
+    }
 
 }
