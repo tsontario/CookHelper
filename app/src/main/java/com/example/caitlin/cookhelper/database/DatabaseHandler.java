@@ -525,7 +525,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             return categories;
         }
 
-        System.out.println(cursor.getString(0));
         while (!cursor.isAfterLast()) {
             String category = cursor.getString(0);
             if (category != null && !category.isEmpty()) {
@@ -560,7 +559,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             return types;
         }
 
-        System.out.println(cursor.getString(0));
         while (!cursor.isAfterLast()) {
             String type = cursor.getString(0);
             if (type != null && !type.isEmpty()) {
