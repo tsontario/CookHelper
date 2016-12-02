@@ -219,38 +219,44 @@ public class Edit extends AppCompatActivity {
 
     private void setTitle(Recipe recipe){
         String recipeTitle = recipe.getName();
-        TextView resultsTitle = (TextView) findViewById(R.id.recipeName);
+        EditText resultsTitle = (EditText) findViewById(R.id.editTextNameEdit);
         resultsTitle.setText(recipeTitle);
     }
 
     private void setServing(Recipe recipe){
         String recipeServing = String.valueOf(recipe.getNumServings());
-        TextView resultsServing = (TextView) findViewById(R.id.txtviewRecipeServingsNumber);
+        EditText resultsServing = (EditText) findViewById(R.id.editTextServingsEdit);
         resultsServing.setText(recipeServing);
     }
 
     private void setPrep(Recipe recipe){
         String recipePrep = recipe.getPrepTime();
-        TextView resultsPrep = (TextView) findViewById(R.id.txtviewRecipePrepNumber);
+        EditText resultsPrep = (EditText) findViewById(R.id.editTextPrepTimeEdit);
         resultsPrep.setText(recipePrep);
     }
 
     private void setCookTime(Recipe recipe){
         String recipeCookTime = recipe.getCookTime();
-        TextView resultsCookTime = (TextView) findViewById(R.id.txtviewCookTimeNumber);
+        EditText resultsCookTime = (EditText) findViewById(R.id.editTextCookTimeEdit);
         resultsCookTime.setText(recipeCookTime);
     }
 
     private void setType(Recipe recipe){
         String recipeType = recipe.getType();
-        TextView resultsType = (TextView) findViewById(R.id.viewRecipeTypeInfo);
+        EditText resultsType = (EditText) findViewById(R.id.editTextTypeEdit);
         resultsType.setText(recipeType);
     }
 
     private void setCalories(Recipe recipe){
         String recipeCalories = String.valueOf(recipe.getNumCalories());
-        TextView resultsCalories = (TextView) findViewById(R.id.viewRecipeCaloriesInfo);
+        EditText resultsCalories = (EditText) findViewById(R.id.editTextCaloriesEdit);
         resultsCalories.setText(recipeCalories);
+    }
+
+    private void setCategory(Recipe recipe){
+        String recipeCategory = recipe.getCategory();
+        EditText resultsCategory = (EditText) findViewById(R.id.editTextCategoryEdit);
+        resultsCategory.setText(recipeCategory);
     }
 
     private void setIngredients(Recipe recipe){
@@ -380,16 +386,16 @@ public class Edit extends AppCompatActivity {
     }
 
     private void masterView(Recipe recipe){
-        //setTitle(recipe);
-        //setServing(recipe);
-        //setPrep(recipe);
-        //setCookTime(recipe);
-        //setType(recipe);
-        //setCalories(recipe);
-        //setIngredients(recipe);
+        setTitle(recipe);
+        setServing(recipe);
+        setPrep(recipe);
+        setCookTime(recipe);
+        setType(recipe);
+        setCalories(recipe);
+        setCategory(recipe);
+        setIngredients(recipe);
         setDirections(recipe);
     }
-
     // ---------------
     // METHODS
     // ---------------
