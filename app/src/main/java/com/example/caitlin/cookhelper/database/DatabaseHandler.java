@@ -321,8 +321,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             searchQuery += "";
         }
 
-        String prefix = TABLE_SEARCH + "." + KEY_INGREDIENT_MEASURE_NAME;
+        String prefix = KEY_INGREDIENT_MEASURE_NAME;
         searchQuery += generateSQLQuery(ingredientQuery, prefix);
+        System.out.println(searchQuery);
 
 
         Cursor cursor = db.rawQuery(searchQuery, null);
@@ -387,23 +388,25 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     /** Helper methods for addRecipe(Recipe r) */
     private void addToIngredientTables(long _id, ArrayList<IngredientMeasure> iMeasures,
                                         SQLiteDatabase db) {
-        for (IngredientMeasure im: iMeasures) {
-            ContentValues ingredientValues = new ContentValues();
-            ContentValues ingredientMeasureValues = new ContentValues();
+        if (iMeasures != null) {
+            for (IngredientMeasure im: iMeasures) {
+                ContentValues ingredientValues = new ContentValues();
+                ContentValues ingredientMeasureValues = new ContentValues();
 
-            // Add Ingredient
-            ingredientValues.put(KEY_INGREDIENT_NAME, im.getIngredient().getName());
-            db.insertWithOnConflict(TABLE_INGREDIENTS, null,
-                    ingredientValues, db.CONFLICT_IGNORE);
+                // Add Ingredient
+                ingredientValues.put(KEY_INGREDIENT_NAME, im.getIngredient().getName());
+                db.insertWithOnConflict(TABLE_INGREDIENTS, null,
+                        ingredientValues, db.CONFLICT_IGNORE);
 
-            // IngredientMeasure table
-            ingredientMeasureValues.put(KEY_INGREDIENT_MEASURE_NAME, im.getIngredient().getName());
-            ingredientMeasureValues.put(KEY_INGREDIENT_MEASURE_RECIPE, _id);
-            ingredientMeasureValues.put(KEY_INGREDIENT_MEASURE_QTY, im.getAmount());
-            ingredientMeasureValues.put(KEY_INGREDIENT_MEASURE_MEASUREMENT, im.getUnit());
+                // IngredientMeasure table
+                ingredientMeasureValues.put(KEY_INGREDIENT_MEASURE_NAME, im.getIngredient().getName());
+                ingredientMeasureValues.put(KEY_INGREDIENT_MEASURE_RECIPE, _id);
+                ingredientMeasureValues.put(KEY_INGREDIENT_MEASURE_QTY, im.getAmount());
+                ingredientMeasureValues.put(KEY_INGREDIENT_MEASURE_MEASUREMENT, im.getUnit());
 
-            db.insert(TABLE_INGREDIENT_MEASURES, null, ingredientMeasureValues);
-            // DB closed in caller
+                db.insert(TABLE_INGREDIENT_MEASURES, null, ingredientMeasureValues);
+                // DB closed in caller
+            }
         }
     }
 

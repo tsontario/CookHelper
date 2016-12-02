@@ -121,15 +121,7 @@ public class SQLParser {
 
 
         BinaryExpressionTree root = stack.pop();
-
-        System.out.println(inOrder(root, prefix));
-
-        /** Once you have a tree, do an inOrder traversal, and at every operand that is a left child, place a left parens,
-         * and at every operand that is a right child, place a right parens. worry about unary operator later (NOT)
-         *
-         */
-
-        return "";
+        return inOrder(root, prefix);
     }
 
     private static boolean isBinaryOperator(String s) {
@@ -158,7 +150,7 @@ public class SQLParser {
         String result = "";
         BinaryExpressionTree.Node root = binaryExpressionTree.getRoot();
         if (root.getLeft() == null && root.getRight() == null) {
-            return cond + " LIKE " + root.getElement();
+            return cond + " LIKE \"%" + root.getElement() + "%\" ";
         }
 
         return result + inOrder(root, cond);
@@ -167,7 +159,7 @@ public class SQLParser {
         String result = "";
 
         if (node.getParent() != null && isUnaryOperator((String)node.getParent().getElement())) {
-            return "%" + node.getElement() + "%";
+            return "\"%" + node.getElement() + "%\"";
         }
         else if (isUnaryOperator((String) node.getElement())) {
             return cond + " NOT LIKE " + inOrder(node.getRight(), cond);
@@ -182,7 +174,7 @@ public class SQLParser {
         }
         else {
             result += inOrder(node.getLeft(), cond);
-            result += " " + node.getElement() + " ";
+            result += " \"" + node.getElement() + " \"";
             result += inOrder(node.getRight(), cond);
         }
         return result ;

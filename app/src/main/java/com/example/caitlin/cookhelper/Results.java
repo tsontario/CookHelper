@@ -18,7 +18,6 @@ public class Results extends AppCompatActivity {
 
     // associations
     RecipeBook rBook;
-    private SearchResult selectedRecipeSearch;
 
     // ---------------
     // ON CREATE
@@ -31,7 +30,7 @@ public class Results extends AppCompatActivity {
 
         rBook = RecipeBook.getInstance();
         ArrayList<String> criteria = getIntent().getExtras().getStringArrayList("criteria");
-
+        criteria.add("Eggs");
         final ArrayList<SearchResult> results = rBook.searchWithCriteria(getApplicationContext(),
                 criteria.get(0), criteria.get(1), criteria.get(2));
 
@@ -65,7 +64,7 @@ public class Results extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                selectedRecipeSearch = results.get(position);
+                SearchResult selectedRecipeSearch = results.get(position);
                 //Intent to go to the next screen
                 Intent intent = new Intent(getApplicationContext(), ViewRecipe.class);
                 intent.putExtra("recipe_id", selectedRecipeSearch.getId());     //Sending selected recipe name
