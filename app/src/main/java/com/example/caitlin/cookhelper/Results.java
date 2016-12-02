@@ -38,7 +38,9 @@ public class Results extends AppCompatActivity {
 
         // references to TextViews
         TextView kindOfSearch = (TextView) findViewById(R.id.txtviewSearchCriteria);
-        TextView inputtedIngInfo = (TextView) findViewById(R.id.txtviewSearchCriteriaInfo);
+        TextView inputtedIngCategory = (TextView) findViewById(R.id.txtviewSearchCriteriaCategory);
+        TextView inputtedIngType = (TextView) findViewById(R.id.txtviewSearchCriteriaType);
+        TextView inputtedIng = (TextView) findViewById(R.id.txtviewSearchCriteriaIngredients);
 
         results = new ArrayList<SearchResult>();
 
@@ -50,11 +52,10 @@ public class Results extends AppCompatActivity {
 
             kindOfSearch.setText("Showing results for:");
             ArrayList<String> allCriteria = intent.getExtras().getStringArrayList("criteria");
-            inputtedIngInfo.setText("Category: " + allCriteria.get(0) +
-                    ", Type: " + allCriteria.get(1) +
-                    "\n" + "Ingredients: " + allCriteria.get(2));
-            results = rBook.searchWithCriteria(getApplicationContext(),
-                    allCriteria.get(0), allCriteria.get(1), allCriteria.get(2));
+
+            inputtedIngCategory.setText("Category: " + allCriteria.get(0));
+            inputtedIngType.setText("Type: " + allCriteria.get(1));
+            inputtedIng.setText("Ingredients: " + allCriteria.get(2));
         }
 
         // ListView population

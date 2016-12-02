@@ -27,7 +27,7 @@
             />
 
         <LinearLayout
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -47,9 +47,19 @@
                 />
 
             <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtviewSearchCriteriaCategory" />
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/txtviewSearchCriteriaInfo" />
+                android:id="@+id/txtviewSearchCriteriaType" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtviewSearchCriteriaIngredients" />
         </LinearLayout>
 
         <View
