@@ -58,8 +58,6 @@ public class ViewRecipe extends AppCompatActivity {
         toDelete.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 createAlert();
-                //Calls on method in façade class RecipeBook to delete the selected recipe by ID
-                rBook.deleteRecipe(getApplicationContext(), r.getId());
             }
         });
     }
@@ -75,14 +73,17 @@ public class ViewRecipe extends AppCompatActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.cancel();
                         onResume();
+
                     }
                 })
                 .setNegativeButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
                     @Override
                     //If "Yes clicked"
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        //****To implement: Deleting the recipe from database method
+                        //Calls on method in façade class RecipeBook to delete the selected recipe by ID
+                        rBook.deleteRecipe(getApplicationContext(), r.getId());
                         onBackPressed();
+
                     }
                 });
 
