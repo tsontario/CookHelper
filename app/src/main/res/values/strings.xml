@@ -74,13 +74,13 @@
     <string name="how_to_edit"><u>How do I edit a recipe?</u></string>
     <string name="how_to_edit_instructions">First, select a recipe that you have already saved. You
         can do this by browsing your recipes or by finding a recipe with search criteria. Now
-        select the recipe you wish to edit; you should see a screen with this recipe\'s details. In
-        the top-right corner of the screen, there is an icon with a pencil. Select this icon to edit
+        select the recipe you wish to edit; you should see a screen with this recipe\'s details.
+        There will be a "Edit" button at the bottom of that screen. Select it to edit your recipe
         your recipe.</string>
 
     <string name="how_to_delete"><u>How do I delete a recipe?</u></string>
     <string name="how_to_delete_instructions">Follow the steps to edit a recipe. However, instead of
-    selecting the icon with a pencil, select the icon with a garbage can. </string>
+    pushing the Edit button, press the Delete button at the bottom of your recipe. </string>
 
     <!--FindRecipe-->
     <string name="search_ingredients_instructions1">Use ingredients and the words AND, OR, and NOT
