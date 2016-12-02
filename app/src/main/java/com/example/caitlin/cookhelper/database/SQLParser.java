@@ -3,6 +3,7 @@ package com.example.caitlin.cookhelper.database;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -31,7 +32,8 @@ public class SQLParser {
         return inOrder(root, prefix);
     }
 
-    public static Stack<BinaryExpressionTree> getBinaryExpressionTree(LinkedList<String> inFixList) {
+    public static Stack<BinaryExpressionTree> getBinaryExpressionTree(LinkedList<String> inFixList)
+    throws EmptyStackException {
         BinaryExpressionTree binaryExpressionTree1;
         BinaryExpressionTree binaryExpressionTree2;
 

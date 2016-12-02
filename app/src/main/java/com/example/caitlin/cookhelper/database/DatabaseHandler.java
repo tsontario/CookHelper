@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.caitlin.cookhelper.Ingredient;
@@ -17,6 +18,7 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -293,25 +295,27 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      *
      */
     public ArrayList<SearchResult> findRecipes(String category, String type, String ingredientQuery) {
-        SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<SearchResult> results = new ArrayList<>();
+        try {
+            SQLiteDatabase db = this.getReadableDatabase();
 
-        // Make a temporary search table
-        String TABLE_SEARCH = "search";
-        String createTempTable = "CREATE TEMPORARY TABLE " + TABLE_SEARCH +"("
-                                + KEY_RECIPE_ID + " INTEGER, "
-                                + KEY_RECIPE_CATEGORY + " TEXT, "
-                                + KEY_RECIPE_TYPE + " TEXT, "
-                                + KEY_RECIPE_NAME + " TEXT, "
-                                + INGS + " TEXT"
-                                + ");";
+            // Make a temporary search table
+            String TABLE_SEARCH = "search";
+            String createTempTable = "CREATE TEMPORARY TABLE " + TABLE_SEARCH + "("
+                    + KEY_RECIPE_ID + " INTEGER, "
+                    + KEY_RECIPE_CATEGORY + " TEXT, "
+                    + KEY_RECIPE_TYPE + " TEXT, "
+                    + KEY_RECIPE_NAME + " TEXT, "
+                    + INGS + " TEXT"
+                    + ");";
 
-        // Create and populate the search table
-        String dropTable = "DROP TABLE IF EXISTS " + TABLE_SEARCH;
-        db.execSQL(dropTable);
-        db.execSQL(createTempTable);
-        db.execSQL(  "INSERT INTO search ("
+            // Create and populate the search table
+            String dropTable = "DROP TABLE IF EXISTS " + TABLE_SEARCH;
+            db.execSQL(dropTable);
+            db.execSQL(createTempTable);
+            db.execSQL("INSERT INTO search ("
                     + KEY_RECIPE_ID + ", " + KEY_RECIPE_CATEGORY + ", "
-                    + KEY_RECIPE_TYPE + ", " + KEY_RECIPE_NAME +  ", ings) SELECT "
+                    + KEY_RECIPE_TYPE + ", " + KEY_RECIPE_NAME + ", ings) SELECT "
                     + TABLE_INGREDIENT_MEASURES + "." + KEY_INGREDIENT_MEASURE_RECIPE + ", "
                     + TABLE_RECIPES + "." + KEY_RECIPE_CATEGORY + ", "
                     + TABLE_RECIPES + "." + KEY_RECIPE_TYPE + ", "
@@ -322,56 +326,73 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     + TABLE_INGREDIENT_MEASURES + "." + KEY_INGREDIENT_MEASURE_RECIPE
                     + " GROUP BY " + TABLE_RECIPES + "." + KEY_RECIPE_ID + ";");
 
-        // Create the custom query
-        Map<String, String> rankArgs = new HashMap<>(); // For ranking results later
+            // Create the custom query
+            Map<String, String> rankArgs = new HashMap<>(); // For ranking results later
 
-        String searchQuery =    "SELECT " + KEY_RECIPE_ID + ", " + KEY_RECIPE_NAME + ", "
-                                + INGS + " FROM "
-                                + TABLE_SEARCH + " WHERE ";
+            String searchQuery = "SELECT " + KEY_RECIPE_ID + ", " + KEY_RECIPE_NAME + ", "
+                    + INGS + " FROM "
+                    + TABLE_SEARCH + " WHERE ";
 
-        if (category != null && category.length() > 0) {
-            searchQuery += KEY_RECIPE_CATEGORY + " = " + category + " AND ";
-        }
-        if (type != null && type.length() > 0) {
-            searchQuery += KEY_RECIPE_TYPE + " = " + type + " AND ";
-        }
-
-        searchQuery += generateSQLQuery(ingredientQuery, INGS, rankArgs);
-        Cursor cursor = db.rawQuery(searchQuery, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-        } else {
-            return null;
-        }
-
-        // Gather all results, ranking as we go.
-        ArrayList<SearchResult> results = new ArrayList<>();
-        while (!cursor.isAfterLast()) {
-            String r_name = cursor.getString(1);
-            long r_id = cursor.getInt(0);
-            String s = cursor.getString(2);
-            SearchResult result = new SearchResult(r_name, r_id);
-            setRank(result, rankArgs, s);
-            results.add(result);
-            cursor.moveToNext();
-        }
-
-        // Now sort the results according to ranking
-        Collections.sort(results, new Comparator<SearchResult>() {
-            public int compare(SearchResult o1, SearchResult o2) {
-                if (o1.getRank() > o2.getRank()) {
-                    return -1;
-                }
-                else if (o1.getRank() < o2.getRank()) {
-                    return 1;
-                }
-                return 0;
+            boolean lookBehind = false;
+            if (category != null && category.length() > 0) {
+                searchQuery += KEY_RECIPE_CATEGORY + " LIKE \"%" + category + "%\" ";
+                lookBehind = true;
             }
-        });
+            if (type != null && type.length() > 0) {
+                if (lookBehind) {
+                    searchQuery += " AND ";
+                }
+                searchQuery += KEY_RECIPE_TYPE + " LIKE \"%" + type + "%\" ";
+                lookBehind = true;
+            }
+            if (lookBehind) {
+                searchQuery += "AND ";
+            }
 
-        cursor.close();
-        db.close();
+            searchQuery += generateSQLQuery(ingredientQuery, INGS, rankArgs);
+            System.out.println(searchQuery);
+            Cursor cursor = db.rawQuery(searchQuery, null);
+            if (cursor != null) {
+                cursor.moveToFirst();
+            } else {
+                return null;
+            }
 
+            // Gather all results, ranking as we go.
+            while (!cursor.isAfterLast()) {
+                String r_name = cursor.getString(1);
+                long r_id = cursor.getInt(0);
+                String s = cursor.getString(2);
+                SearchResult result = new SearchResult(r_name, r_id);
+                setRank(result, rankArgs, s);
+                results.add(result);
+                cursor.moveToNext();
+            }
+
+            // Now sort the results according to ranking
+            Collections.sort(results, new Comparator<SearchResult>() {
+                public int compare(SearchResult o1, SearchResult o2) {
+                    if (o1.getRank() > o2.getRank()) {
+                        return -1;
+                    } else if (o1.getRank() < o2.getRank()) {
+                        return 1;
+                    }
+                    return 0;
+                }
+            });
+
+            cursor.close();
+            db.close();
+        }
+        // On error, return an error list
+        catch (SQLiteException e) {
+            results = new ArrayList<>();
+            results.add(new SearchResult("Error parsing query!", 1));
+        }
+        catch (EmptyStackException e) {
+            results = new ArrayList<>();
+            results.add(new SearchResult("Error parsing query!", 1));
+        }
         return results;
     }
 

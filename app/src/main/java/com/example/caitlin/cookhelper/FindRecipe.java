@@ -59,24 +59,24 @@ public class FindRecipe extends AppCompatActivity {
 
     private void populateTypeSpinner() {
         DatabaseHandler db = new DatabaseHandler(this);
-        String[] categories = receiveSpinnerInfo(db.getCategories());
+        String[] types = receiveSpinnerInfo(db.getTypes());
 
         //Populating category spinner
         Spinner spinnerType = (Spinner) findViewById(R.id.typeSpinner);
         ArrayAdapter<String> adapterType=
-                new ArrayAdapter<String>(FindRecipe.this,android.R.layout.simple_spinner_item, categories);
+                new ArrayAdapter<String>(FindRecipe.this,android.R.layout.simple_spinner_item, types);
         adapterType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerType.setAdapter(adapterType);
     }
 
     private void populateCategorySpinner() {
         DatabaseHandler db = new DatabaseHandler(this);
-        String[] types = receiveSpinnerInfo(db.getTypes());
+        String[] categories = receiveSpinnerInfo(db.getCategories());
 
         //Populating category spinner
         Spinner spinnerCategory = (Spinner) findViewById(R.id.categorySpinner);
         ArrayAdapter<String> adapterCategory=
-                new ArrayAdapter<String>(FindRecipe.this,android.R.layout.simple_spinner_item, types);
+                new ArrayAdapter<String>(FindRecipe.this,android.R.layout.simple_spinner_item, categories);
         adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCategory.setAdapter(adapterCategory);
     }

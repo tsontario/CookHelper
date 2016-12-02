@@ -65,7 +65,6 @@ public class RecipeBook {
 
     public ArrayList<SearchResult> searchWithCriteria(Context context, String category, String type,
                                    String ingredientCriteria) {
-
         return new DatabaseHandler(context).findRecipes(category, type, ingredientCriteria);
     }
 
