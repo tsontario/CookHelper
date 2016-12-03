@@ -331,6 +331,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     + TABLE_INGREDIENT_MEASURES + "." + KEY_INGREDIENT_MEASURE_RECIPE
                     + " GROUP BY " + TABLE_RECIPES + "." + KEY_RECIPE_ID + ";");
 
+            // Normalize the inputs
+            category = category.trim();
+            type = type.trim();
             // Create the custom query
             ArrayList<String> rankArgs = new ArrayList<>(); // For ranking results later
 
@@ -519,7 +522,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ArrayList<String> categories = new ArrayList<>();
         categories.add("");  // default empty value
 
-        String queryString = "SELECT " + KEY_RECIPE_CATEGORY + " FROM " + TABLE_RECIPES;
+        String queryString = "SELECT " + KEY_RECIPE_CATEGORY + " FROM " + TABLE_RECIPES + " GROUP BY " +
+                TABLE_RECIPES + "." + KEY_RECIPE_CATEGORY;
         Cursor cursor = db.rawQuery(queryString, null);
 
         if (cursor != null) {
@@ -538,6 +542,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             cursor.moveToNext();
         }
 
+        for (String s : categories) {
+            System.out.println(s);
+        }
+        System.out.println("THOSE ARE CATS");
         cursor.close();
         db.close();
         return categories;
@@ -553,7 +561,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ArrayList<String> types = new ArrayList<>();
         types.add("");  // default empty value
 
-        String queryString = "SELECT " + KEY_RECIPE_TYPE + " FROM " + TABLE_RECIPES;
+        String queryString = "SELECT " + KEY_RECIPE_TYPE + " FROM " + TABLE_RECIPES + " GROUP BY " +
+                TABLE_RECIPES + "." + KEY_RECIPE_TYPE;
         Cursor cursor = db.rawQuery(queryString, null);
 
         if (cursor != null) {
