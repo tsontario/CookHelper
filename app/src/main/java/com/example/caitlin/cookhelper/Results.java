@@ -56,6 +56,9 @@ public class Results extends AppCompatActivity {
             inputtedIngCategory.setText("Category: " + allCriteria.get(0));
             inputtedIngType.setText("Type: " + allCriteria.get(1));
             inputtedIng.setText("Ingredients: " + allCriteria.get(2));
+
+            results = rBook.searchWithCriteria(getApplicationContext(),
+                    allCriteria.get(0), allCriteria.get(1), allCriteria.get(2));
         }
 
         // ListView population
