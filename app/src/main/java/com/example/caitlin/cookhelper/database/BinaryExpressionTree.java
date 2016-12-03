@@ -1,4 +1,9 @@
 package com.example.caitlin.cookhelper.database;
+
+/**
+ * Represents a Tree with utilities for representing an algebraic expression.
+ * @param <V> Type of element of a node in a tree
+ */
 public class BinaryExpressionTree<V> {
 
     class Node<V> {

@@ -9,9 +9,26 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Stack;
 
+/**
+ * A (static) utility class for generating SQL statements and gathering auxiliary information
+ * regarding queries. The main motivation of this class is to translate infix user-entered
+ * queries into binary expression trees to ease in translating queries to SQL. The tree is
+ * also used to get additional information about operands (leaf nodes) for ranking query results.
+ */
+
 public class SQLParser {
 
-    public static String generateSQLQuery(String q, String prefix, Map<String, String> rankArgs)
+    /**
+     * Converts a well-formed infix boolean expression to it's corresponding SQL select statement
+     * that searches the table given by prefix. rankArgs is a secondary structure that records
+     * information useful for ranking search results.
+     * @param q The raw infix boolean expression
+     * @param prefix The SQLite syntax for forming the expression (e.g. "WHERE col_name LIKE ..."
+     * @param rankArgs An ArrayList holding the search criteria to be used for ranking
+     * @return A well-formed SQL query
+     * @throws IllegalArgumentException
+     */
+    public static String generateSQLQuery(String q, String prefix, ArrayList<String> rankArgs)
             throws IllegalArgumentException {
 
         // This regex tokenizes our String properly (but still needs trimming).
@@ -32,6 +49,13 @@ public class SQLParser {
         return inOrder(root, prefix);
     }
 
+    /**
+     * Return a tree representing the given infix expression.
+     * @param inFixList A linked list representing an infix algebraic expression
+     * @return A stack containing one element: a tree whose inorder traversal represents the given
+     *          infix algebraic expression
+     * @throws EmptyStackException
+     */
     public static Stack<BinaryExpressionTree> getBinaryExpressionTree(LinkedList<String> inFixList)
     throws EmptyStackException {
         BinaryExpressionTree binaryExpressionTree1;
@@ -81,6 +105,13 @@ public class SQLParser {
     }
 
 
+    /**
+     * Converts an array representing an infix expression into a postfix expression. The precedence
+     * and operators are defined specifically within the class, though could be extracted and
+     * generified elsewhere.
+     * @param elements An array representing an infix expression of operands and operators
+     * @return
+     */
     private static LinkedList<String> convertToPostfix(String[] elements) {
         LinkedList<String> operandStack = new LinkedList<>();
         Stack<String> operatorStack = new Stack<>();
@@ -133,6 +164,9 @@ public class SQLParser {
         return operandStack;
     }
 
+    /**
+     * Utility methods
+     */
     private static boolean isBinaryOperator(String s) {
         return (s.equals("AND") || s.equals("OR"));
     }
@@ -155,6 +189,10 @@ public class SQLParser {
     }
 
 
+    /**
+     * Traversals. inOrder yields a legal SQL statement, leafOrder iterates over all leaf values
+     * (guaranteed to be operands) to be used for subsequent ranking of search results.
+     */
     private static String inOrder(BinaryExpressionTree binaryExpressionTree, String cond) {
         String result = "";
         BinaryExpressionTree.Node root = binaryExpressionTree.getRoot();
@@ -189,17 +227,17 @@ public class SQLParser {
         return result ;
     }
 
-    private static Map<String, String> leafOrder(BinaryExpressionTree binaryExpressionTree,
-                                                 Map<String, String> rankArgs) {
+    private static ArrayList<String> leafOrder(BinaryExpressionTree binaryExpressionTree,
+                                                 ArrayList<String> rankArgs) {
         BinaryExpressionTree.Node root = binaryExpressionTree.getRoot();
         if (root.getLeft() == null && root.getRight() == null) {
-            rankArgs.put("", "");
+            rankArgs.add("");
         }
 
         leafOrder(root, rankArgs);
         return rankArgs;
     }
-    private static void leafOrder(BinaryExpressionTree.Node node, Map<String, String> rankArgs) {
+    private static void leafOrder(BinaryExpressionTree.Node node, ArrayList<String> rankArgs) {
 
         if (node == null) {
             return;
@@ -208,7 +246,7 @@ public class SQLParser {
             return;
         }
         else if ((node.isLeftChild() || node.isRightChild()) && node.isLeaf()) {
-            rankArgs.put(""+node.getElement(), ""+node.getElement());
+            rankArgs.add(""+node.getElement());
             return;
         }
         else {

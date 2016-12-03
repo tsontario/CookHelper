@@ -23,6 +23,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This class describes the full functionality of the persistent storage of the CookHelper
+ * application. It defines all table schema and all relevant CRUD operations (as defined by
+ * the public interface).
+ */
 public class DatabaseHandler extends SQLiteOpenHelper {
 
     /** SCHEMA DEFINITIONS */
@@ -327,7 +332,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     + " GROUP BY " + TABLE_RECIPES + "." + KEY_RECIPE_ID + ";");
 
             // Create the custom query
-            Map<String, String> rankArgs = new HashMap<>(); // For ranking results later
+            ArrayList<String> rankArgs = new ArrayList<>(); // For ranking results later
 
             String searchQuery = "SELECT " + KEY_RECIPE_ID + ", " + KEY_RECIPE_NAME + ", "
                     + INGS + " FROM "
@@ -348,7 +353,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             if (lookBehind) {
                 searchQuery += "AND ";
             }
-
+            System.out.println(searchQuery);
             searchQuery += generateSQLQuery(ingredientQuery, INGS, rankArgs);
             System.out.println(searchQuery);
             Cursor cursor = db.rawQuery(searchQuery, null);
@@ -499,7 +504,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      *                 query value (e.g. one ingredient). This wil be used for ranking results.
      * @return A legally formatted SQLite string that can execute a query on the DB.
      */
-    private String generateSQLQuery(String q, String prefix, Map<String, String> rankArgs) {
+    private String generateSQLQuery(String q, String prefix, ArrayList<String> rankArgs) {
         return SQLParser.generateSQLQuery(q, prefix, rankArgs);
     }
 
@@ -579,11 +584,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * @param criteria A mapping of the ingredients from the query
      * @param ings The ingredients in the actual recipe being ranked (to be compared to 'criteria'
      */
-    public void setRank(SearchResult result, Map<String, String> criteria, String ings) {
+    public void setRank(SearchResult result, ArrayList<String> criteria, String ings) {
         String[] ingList = ings.split("!");
         for (String i: ingList) {
             int rank = 0;
-            for (String el : criteria.keySet()) {
+            for (String el : criteria) {
                 if (el.equalsIgnoreCase(i)) {
                     rank++;
                 }
