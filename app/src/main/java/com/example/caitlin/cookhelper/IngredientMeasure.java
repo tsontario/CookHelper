@@ -1,67 +1,40 @@
 package com.example.caitlin.cookhelper;
 
 /**
- * IngredientMeasure class
+ * The IngredientMeasure class stores information about the quantity of a specific ingredient.
  */
-
 public class IngredientMeasure {
 
+    // ---------------
+    // VARIABLES
+    // ---------------
+
+    // attributes
     private String unit;
     private String amount;
+
+    // association
     private Ingredient ingredient;
 
-    /*
-    IngredientMeasure constructor
-     */
+    // ---------------
+    // CONSTRUCTOR
+    // ---------------
+
     public IngredientMeasure(Ingredient ingredient, String unit, String amount) {
         this.ingredient = ingredient;
         this.unit = unit;
         this.amount = amount;
     }
 
+    // ---------------
+    // GETTERS
+    // ---------------
 
-    /*
-    IngredientMeasure getters
-     */
-    public String getUnit(){
-        return unit;
-    }
+    public String getUnit() { return unit; }
 
-    public String getAmount(){
-        return amount;
-    }
+    public String getAmount() { return amount; }
 
-    /*
-    IngredientMeasure setters
-    */
-    public void setUnit(String unit){this.unit = unit;
-    }
-
-    public void setAmount(String amount){
-        this.amount = amount;
-    }
-
-    /*
-    Unidirectional [*..1] link to specific Ingredient
-     */
-    public void setIngredientLink(Ingredient ingredient){
-        this.ingredient = ingredient;
-    }
-
-    public Ingredient getIngredient(){
-        return ingredient;
-    }
-
-
-    /**
-     * This method deletes the calling IngredientMeasure object and removes it from the databse.
-     */
-    public void delete() {
-        ingredient = null;
-        unit = null;
-        amount = null;
-        // TO DO delete from database
-    }
+    public Ingredient getIngredient() { return ingredient; }
 
     @Override
     public String toString(){

@@ -1,20 +1,28 @@
 package com.example.caitlin.cookhelper;
 
 /**
- * Ingredient class
+ * The Ingredient class represents a single ingredient.
  */
-
 public class Ingredient {
 
+    // ---------------
+    // VARIABLES
+    // ---------------
+
+    // attribute
     private String name;
 
+    // ---------------
+    // CONSTRUCTOR
+    // ---------------
     public Ingredient(String name){
         this.name = name;
     }
 
-    /*
-    Getters and setters to handle search & edit activities
-     */
+    // ---------------
+    // GETTER AND SETTER
+    // ---------------
+
     public String getName(){
         return name;
     }

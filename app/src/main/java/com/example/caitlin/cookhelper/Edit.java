@@ -13,7 +13,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 
 public class Edit extends AppCompatActivity {
@@ -44,26 +43,16 @@ public class Edit extends AppCompatActivity {
 
         toSave();
         toCancel();
-
-        masterView(r);
-
         toAddInstruction();
         toAddIngredient();
 
+        masterView(r);
     }
 
     // ---------------
     // GETTERS FOR EDITTEXT STRINGS
     // ---------------
 
-
-    // COMMENT BY CF
-    // TO DO: FIX R.id.fixNameOfViewsHere
-    // TO DO: HAVE EACH GETTER CHECK IF EDIT TEXT
-    // IS JUST WHITE SPACE
-    // IF SO, RETURN r.getWhateverInfo()
-    // IF INFO HAS BEEN ENTERED IN EDIT TEXT FIELD
-    // PULL INFO FROM EDITTEXT FIELD AND RETURN THIS INFO INSTEAD
     private String getRecipeName() {
 
         EditText edit = (EditText) findViewById(R.id.editTextNameEdit);
@@ -259,6 +248,11 @@ public class Edit extends AppCompatActivity {
         resultsCategory.setText(recipeCategory);
     }
 
+    /**
+     * This method populates a LinearLayout with a Recipe's added instructions.
+     *
+     * @param recipe the recipe to edit
+     */
     private void setIngredients(Recipe recipe){
         LinearLayout ll = (LinearLayout) findViewById(R.id.addedIMLLEdit);
 
@@ -331,10 +325,13 @@ public class Edit extends AppCompatActivity {
 
             ll.addView(horizLL);
         }
-
-
     }
 
+    /**
+     * This method populates a LinearLayout with a Recipe's added ingredient information.
+     *
+     * @param recipe the recipe to edit
+     */
     private void setDirections(Recipe recipe){
         ArrayList<String> recipeDirections = recipe.getDirections();
         LinearLayout ll = (LinearLayout) findViewById(R.id.addedInstructionLLEdit);
@@ -385,6 +382,16 @@ public class Edit extends AppCompatActivity {
         }
     }
 
+    // ---------------
+    // METHODS
+    // ---------------
+
+    /**
+     * This method calls the above setter methods, which populate the Edit form with
+     * the given Recipe's saved information.
+     *
+     * @param recipe the recipe to edit
+     */
     private void masterView(Recipe recipe){
         setTitle(recipe);
         setServing(recipe);
@@ -396,17 +403,11 @@ public class Edit extends AppCompatActivity {
         setIngredients(recipe);
         setDirections(recipe);
     }
-    // ---------------
-    // METHODS
-    // ---------------
-
-
 
     /**
      * This method clears the EditText object into which users input their instructions.
      * It also adds the most recently entered instruction to an LinearLayout reserved
      * for inputted instructions.
-     *
      *
      */
     public void addNewInstructionEdit() {
@@ -471,7 +472,6 @@ public class Edit extends AppCompatActivity {
      * This method clears the EditText objects into which users input the quantities, units,
      * and names of a recipe's ingredients. It also adds the most recently entered ingredient
      * information to an LinearLayout reserved for inputted ingredients.
-     *
      */
     public void addNewIngredientMeasureEdit() {
 
@@ -569,11 +569,9 @@ public class Edit extends AppCompatActivity {
      */
     private void toSave() {
 
-        // COMMENT
-        // CF: I think it makes sense to have an alert here. If a user didn't mean to drastically
-        // change his or her recipe, then confirming is a good idea.
         Button toEdit = (Button) findViewById(R.id.saveRecipeButtonEdit);
         toEdit.setOnClickListener(new View.OnClickListener() {
+
             public void onClick(View v) {
 
                 createAlertEdit();
@@ -582,15 +580,13 @@ public class Edit extends AppCompatActivity {
     }
 
     /**
-     * When the user clicks cancel, this method takes the user back to the Home activity.
+     * When the user clicks cancel, this method takes the user back to the ViewRecipe activity.
      */
     private void toCancel() {
 
-        // QUESTION
-        // CF: I think it would be a good idea to have an alert here. Can you image selecting
-        // cancel accidentally and losing your work?
         Button toEdit = (Button) findViewById(R.id.cancelEditButton);
         toEdit.setOnClickListener(new View.OnClickListener() {
+
             public void onClick(View v) {
 
                 createAlertEditCancel();
@@ -598,19 +594,32 @@ public class Edit extends AppCompatActivity {
         });
     }
 
+
+    /**
+     * This sets the onClickListener for the Button addInstructionButtonEdit.
+     */
     private void toAddInstruction() {
+
         ImageButton toViewRecipe = (ImageButton) findViewById(R.id.addInstructionButtonEdit);
         toViewRecipe.setOnClickListener(new View.OnClickListener() {
+
             public void onClick(View v) {
+
                 addNewInstructionEdit();
             }
         });
     }
 
+    /**
+     * This sets the onClickListener for the Button addIngredientButtonEdit.
+     */
     private void toAddIngredient() {
+
         ImageButton toViewRecipe = (ImageButton) findViewById(R.id.addIngredientButtonEdit);
         toViewRecipe.setOnClickListener(new View.OnClickListener() {
+
             public void onClick(View v) {
+
                 addNewIngredientMeasureEdit();
             }
         });
@@ -618,9 +627,10 @@ public class Edit extends AppCompatActivity {
 
     /**
      * This method creates a dialog that allows the user to either cancel his or her recipe edits
-     * and then return back to the viewRecipe screen without making the edited changes
+     * and then returns to the ViewRecipe screen without saving any changes to the Recipe.
      */
     private void createAlertEditCancel() {
+
         onPause();
         AlertDialog.Builder a_builder = new AlertDialog.Builder(this);
         a_builder.setMessage(getResources().getString(R.string.cancelQuestion))
@@ -642,11 +652,10 @@ public class Edit extends AppCompatActivity {
                             // if "Yes" clicked
                             public void onClick(DialogInterface dialogInterface, int i) {
 
-                                //Sending original text name to view activity, and then starting viewRecipe
                                 Intent intent = new Intent(getApplicationContext(), ViewRecipe.class);
-                                intent.putExtra("recipe_id", r.getId());     //Sending added recipe name
+                                intent.putExtra("recipe_id", r.getId());
                                 startActivity(intent);
-                                finish();   //Ending edit activity
+                                finish();
                             }
                         });
 
@@ -706,11 +715,6 @@ public class Edit extends AppCompatActivity {
      */
     private Recipe editRecipe() {
 
-        // COMMENT BY CF
-        // TO DO: TEST IF EDITTEXT FIELDS ARE WHITE SPACE
-        // IF SO, PASS r.getWhateverInfo()
-        // IF INFO HAS BEEN ENTERED IN EDIT TEXT FIELD
-        // PULL INFO FROM EDITTEXT FIELD
         Recipe newRecipe = new RecipeBuilder().setName(getRecipeName())
                 .setNumServings(getRecipeServings())
                 .setNumCalories(getRecipeCalories())

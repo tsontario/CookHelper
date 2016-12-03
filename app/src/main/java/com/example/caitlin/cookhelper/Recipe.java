@@ -3,7 +3,8 @@ package com.example.caitlin.cookhelper;
 import java.util.ArrayList;
 
 /**
- * Created by Caitlin on 11/27/2016.
+ * The Recipe class stores information about a recipe's details, its ingredients,
+ * and its preparation.
  */
 public class Recipe {
 
@@ -78,71 +79,4 @@ public class Recipe {
         ingredientMeasures = newIngredientMeasures;
     }
 
-    // ---------------
-    // METHODS
-    // ---------------
-
-    /**
-     * This method adds a new IngredientMeasure object to the end of this recipe's
-     * ingredientMeasures list.
-     *
-     * @param amount
-     * @param unit
-     * @param ingredientName
-     */
-    public void addIngredientMeasure(String amount, String unit, String ingredientName) {
-
-        Ingredient newIng = new Ingredient(ingredientName);
-        IngredientMeasure newIngMeasure = new IngredientMeasure(newIng, unit, amount);
-        ingredientMeasures.add(newIngMeasure);
-    }
-
-    /**
-     * This method removes an IngredientMeasure object at the specified position from
-     * this recipe's ingredientMeasures list. It also deletes the IngredientMeasure object.
-     *
-     * @param index
-     */
-    public void removeIngredientMeasure(int index) {
-
-        IngredientMeasure ingMeasureToRemove = ingredientMeasures.get(index);
-        ingMeasureToRemove.delete();
-        ingredientMeasures.remove(index);
-    }
-
-    /**
-     * This method adds a new recipe instruction to the end of this recipe's list of directions.
-     *
-     * @param aNewDirection
-     */
-    public void addDirection(String aNewDirection) {
-
-        directions.add(aNewDirection);
-    }
-
-    /**
-     * This method removes an instruction at the given index from this recipe's directions list.
-     *
-     * @param index
-     */
-    public void removeDirection(int index) {
-
-        directions.remove(index);
-    }
-
-    /**
-     * This method removes all of a Recipe object's associated IngredientMeasure objects.
-     * The Recipe object is deleted from the database.
-     */
-    public void deleteRecipe() {
-
-        ingredientMeasures = null;
-        name = null;
-        prepTime = null;
-        cookTime = null;
-        directions = null;
-        type = null;
-        category = null;
-        // TODO db.delete(this._id) e.g.
-    }
 }

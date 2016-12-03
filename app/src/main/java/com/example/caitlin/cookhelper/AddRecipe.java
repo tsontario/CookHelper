@@ -1,6 +1,5 @@
 package com.example.caitlin.cookhelper;
 
-
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,10 +13,12 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 
-
+/**
+ * The AddRecipe class provides users with an interactive form into which they can
+ * enter information about a new Recipe.
+ */
 public class AddRecipe extends AppCompatActivity {
 
     // ---------------
@@ -205,7 +206,7 @@ public class AddRecipe extends AppCompatActivity {
      * It also adds the most recently entered instruction to an LinearLayout reserved
      * for inputted instructions.
      *
-     * @param v
+     * @param v the clicked ImageButton
      */
     public void addNewInstruction(View v) {
 
@@ -215,6 +216,7 @@ public class AddRecipe extends AppCompatActivity {
         if ((instruction.trim().length() == 0) || (instruction == null)) { // if whitespace
 
             return;
+
         } else {
 
             // prepare the EditText for the next instruction
@@ -269,7 +271,7 @@ public class AddRecipe extends AppCompatActivity {
      * This method clears the EditText objects into which users input the quantities, units,
      * and names of a recipe's ingredients. It also adds the most recently entered ingredient
      * information to an LinearLayout reserved for inputted ingredients.
-     * @param v
+     * @param v the clicked ImageButton
      */
     public void addNewIngredientMeasure(View v) {
 
@@ -284,6 +286,7 @@ public class AddRecipe extends AppCompatActivity {
         if ((ingNameStr.trim().length() == 0) || (ingNameStr == null)) { // if no ingredient given
 
             return;
+
         } else {
 
             // prepare the EditTexts for more ingredient details
@@ -368,9 +371,6 @@ public class AddRecipe extends AppCompatActivity {
      */
     private void toSave() {
 
-        // QUESTION
-        // CF: I think it would be a better idea to NOT have an alert here. If a user didn't mean
-        // to select save, then he or she can easily edit or delete the recipe from the next screen.
         Button toViewRecipe = (Button) findViewById(R.id.saveRecipeButton);
         toViewRecipe.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -393,9 +393,6 @@ public class AddRecipe extends AppCompatActivity {
      */
     private void toCancel() {
 
-        // QUESTION
-        // CF: I think it would be a good idea to have an alert here. Can you image selecting
-        // cancel accidentally and losing your work?
         Button toViewRecipe = (Button) findViewById(R.id.cancelAddButton);
         toViewRecipe.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

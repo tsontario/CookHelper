@@ -44,7 +44,7 @@ public class FindRecipe extends AppCompatActivity {
 
                 Intent intent = new Intent(getApplicationContext(), Results.class);
                 intent.putStringArrayListExtra("criteria", allCriteria);
-                intent.putExtra("search_type", "Find_with_criteria");
+                intent.putExtra("search_type", "Criteria");
                 startActivity(intent);
             }
         });
@@ -63,7 +63,7 @@ public class FindRecipe extends AppCompatActivity {
 
         //Populating category spinner
         Spinner spinnerType = (Spinner) findViewById(R.id.typeSpinner);
-        ArrayAdapter<String> adapterType=
+        ArrayAdapter<String> adapterType =
                 new ArrayAdapter<String>(FindRecipe.this,android.R.layout.simple_spinner_item, types);
         adapterType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerType.setAdapter(adapterType);
