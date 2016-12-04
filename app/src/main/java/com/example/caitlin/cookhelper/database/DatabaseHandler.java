@@ -165,6 +165,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         // Create the Recipe object from the database row
         Recipe r = getRecipeObject(id, db, cursor);
+
         // Clean up and return the recipe
         cursor.close();
         db.close();
@@ -244,6 +245,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.delete(TABLE_INGREDIENT_MEASURES, KEY_INGREDIENT_MEASURE_RECIPE + " =?",
                 new String[] {String.valueOf(id)});
 
+        System.out.println("I AM BEING CALLED");
+        System.out.println("ID IS: " + id);
         db.close();
     }
 
@@ -295,6 +298,109 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return results;
     }
 
+    /**
+     * Fetches a list of all the categories of recipes in the database. Also includes an empty string
+     * to denote when no type is specified.
+     * @return An ArrayList containing all the categories in the DB.
+     */
+    public ArrayList<String> getCategories() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<String> categories = new ArrayList<>();
+        categories.add("");  // default empty value
+
+        String queryString = "SELECT " + KEY_RECIPE_CATEGORY + " FROM " + TABLE_RECIPES + " GROUP BY " +
+                TABLE_RECIPES + "." + KEY_RECIPE_CATEGORY;
+        Cursor cursor = db.rawQuery(queryString, null);
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+        } else {
+            cursor.close();
+            db.close();
+            return categories;
+        }
+
+        while (!cursor.isAfterLast()) {
+            String category = cursor.getString(0);
+            if (category != null && !category.isEmpty()) {
+                categories.add(category);
+            }
+            cursor.moveToNext();
+        }
+
+        for (String s : categories) {
+            System.out.println(s);
+        }
+        System.out.println("THOSE ARE CATS");
+        cursor.close();
+        db.close();
+        return categories;
+    }
+
+    /**
+     * Fetches a list of all the types of recipes in the database. Also includes an empty string
+     * to denote when no type is specified
+     * @return An ArrayList containing all the types in the DB.
+     */
+    public ArrayList<String> getTypes() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<String> types = new ArrayList<>();
+        types.add("");  // default empty value
+
+        String queryString = "SELECT " + KEY_RECIPE_TYPE + " FROM " + TABLE_RECIPES + " GROUP BY " +
+                TABLE_RECIPES + "." + KEY_RECIPE_TYPE;
+        Cursor cursor = db.rawQuery(queryString, null);
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+        } else {
+            cursor.close();
+            db.close();
+            return types;
+        }
+
+        while (!cursor.isAfterLast()) {
+            String type = cursor.getString(0);
+            if (type != null && !type.isEmpty()) {
+                types.add(type);
+            }
+            cursor.moveToNext();
+        }
+
+        cursor.close();
+        db.close();
+        return types;
+    }
+
+    /**
+     * Iterates over search results and ranks them according to how many of their terms
+     * match the search criteria. Only ranks over ingredients, not type and category.
+     * @param result A SearchResult object
+     * @param criteria A mapping of the ingredients from the query
+     * @param ings The ingredients in the actual recipe being ranked (to be compared to 'criteria'
+     */
+    public void setRank(SearchResult result, ArrayList<String> criteria, String ings) {
+        String[] ingList = ings.split("!");
+        for (String i: ingList) {
+            int rank = 0;
+            for (String el : criteria) {
+                if (el.equalsIgnoreCase(i)) {
+                    rank++;
+                }
+            }
+            result.setRank(rank);
+        }
+    }
+
+    /************** PRIVATE UTILITY / HELPER METHODS *******************/
+
+    /**
+     * Populates the results list with results pointed to by cursor.
+     * Additionally calculates the rank of each match as well for later sorting.
+     * @param results A list to be populated with search results
+     * @param rankArgs A list of ingredients to assist in determining the rank of each result
+     * @param cursor A cursor pointing to a row in the database representing a successful search result.
+     */
     private void gatherResults(ArrayList<SearchResult> results, ArrayList<String> rankArgs, Cursor cursor) {
         while (!cursor.isAfterLast()) {
             String r_name = cursor.getString(1);
@@ -343,8 +449,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return searchQuery;
     }
 
-    /************** PRIVATE UTILITY / HELPER METHODS *******************/
-
     /** Helper methods for getRecipe(int id) */
 
     private Recipe getRecipeObject(long id, SQLiteDatabase db, Cursor cursor) {
@@ -367,8 +471,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         // Now build the recipe
         RecipeBuilder builder = new RecipeBuilder();
-        builder.setId(id)
-                .setName(name)
+        builder.setName(name)
                 .setNumServings(numServings)
                 .setNumCalories(numCalories)
                 .setPrepTime(prepTime)
@@ -379,7 +482,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 .setIngredientMeasures(ingredientMeasures);
 
         // Return the recipe
-        return builder.createRecipe();
+        Recipe r = builder.createRecipe();
+        r.setId(id);
+        return r;
     }
 
     private void getDirections(String rawDirectionsString, ArrayList<String> directions) {
@@ -419,7 +524,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      *  Deletes all references to a recipe in Ingredient_Measures table
      *  New references will be populated in updateRecipe().
      */
-    public void deleteIngredientMeasures(long id) {
+    private void deleteIngredientMeasures(long id) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         db.delete(TABLE_INGREDIENT_MEASURES, KEY_INGREDIENT_MEASURE_RECIPE + " =?",
@@ -525,97 +630,4 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         });
     }
 
-    /**
-     * Fetches a list of all the categories of recipes in the database. Also includes an empty string
-     * to denote when no type is specified.
-     * @return An ArrayList containing all the categories in the DB.
-     */
-    public ArrayList<String> getCategories() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        ArrayList<String> categories = new ArrayList<>();
-        categories.add("");  // default empty value
-
-        String queryString = "SELECT " + KEY_RECIPE_CATEGORY + " FROM " + TABLE_RECIPES + " GROUP BY " +
-                TABLE_RECIPES + "." + KEY_RECIPE_CATEGORY;
-        Cursor cursor = db.rawQuery(queryString, null);
-
-        if (cursor != null) {
-            cursor.moveToFirst();
-        } else {
-            cursor.close();
-            db.close();
-            return categories;
-        }
-
-        while (!cursor.isAfterLast()) {
-            String category = cursor.getString(0);
-            if (category != null && !category.isEmpty()) {
-                categories.add(category);
-            }
-            cursor.moveToNext();
-        }
-
-        for (String s : categories) {
-            System.out.println(s);
-        }
-        System.out.println("THOSE ARE CATS");
-        cursor.close();
-        db.close();
-        return categories;
-    }
-
-    /**
-     * Fetches a list of all the types of recipes in the database. Also includes an empty string
-     * to denote when no type is specified
-     * @return An ArrayList containing all the types in the DB.
-     */
-    public ArrayList<String> getTypes() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        ArrayList<String> types = new ArrayList<>();
-        types.add("");  // default empty value
-
-        String queryString = "SELECT " + KEY_RECIPE_TYPE + " FROM " + TABLE_RECIPES + " GROUP BY " +
-                TABLE_RECIPES + "." + KEY_RECIPE_TYPE;
-        Cursor cursor = db.rawQuery(queryString, null);
-
-        if (cursor != null) {
-            cursor.moveToFirst();
-        } else {
-            cursor.close();
-            db.close();
-            return types;
-        }
-
-        while (!cursor.isAfterLast()) {
-            String type = cursor.getString(0);
-            if (type != null && !type.isEmpty()) {
-                types.add(type);
-            }
-            cursor.moveToNext();
-        }
-
-        cursor.close();
-        db.close();
-        return types;
-    }
-
-    /**
-     * Iterates over search results and ranks them according to how many of their terms
-     * match the search criteria. Only ranks over ingredients, not type and category.
-     * @param result A SearchResult object
-     * @param criteria A mapping of the ingredients from the query
-     * @param ings The ingredients in the actual recipe being ranked (to be compared to 'criteria'
-     */
-    public void setRank(SearchResult result, ArrayList<String> criteria, String ings) {
-        String[] ingList = ings.split("!");
-        for (String i: ingList) {
-            int rank = 0;
-            for (String el : criteria) {
-                if (el.equalsIgnoreCase(i)) {
-                    rank++;
-                }
-            }
-            result.setRank(rank);
-        }
-    }
 }

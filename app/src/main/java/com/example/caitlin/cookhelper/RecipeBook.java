@@ -60,7 +60,7 @@ public class RecipeBook {
      */
     public Recipe getRecipe(Context context, long id){
 
-        return new DatabaseHandler(context).getRecipe((int) id);
+        return new DatabaseHandler(context).getRecipe(id);
     }
 
     /**
@@ -83,8 +83,6 @@ public class RecipeBook {
      * @param id the id of the recipe to delete
      */
     public void deleteRecipe(Context context, long id){
-
-        new DatabaseHandler(context).deleteIngredientMeasures(id);
         new DatabaseHandler(context).deleteRecipe(id);
     }
 
