@@ -15,6 +15,12 @@ import java.util.ArrayList;
 
 public class FindRecipe extends AppCompatActivity {
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        populateCategorySpinner();
+        populateTypeSpinner();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
