@@ -38,6 +38,12 @@ public class ViewRecipe extends AppCompatActivity {
         toDelete();
     }
 
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+        finish();
+    }
+
     //Click listener for Edit activity
     private void toEdit() {
         Button toEdit = (Button) findViewById(R.id.btnEdit);

@@ -19,7 +19,7 @@ public class Home extends AppCompatActivity {
         goToFind();
         goToResults();
         goToAdd();
-        goToHep();
+        goToHelp();
     }
 
     //Onclick method for find button
@@ -57,7 +57,7 @@ public class Home extends AppCompatActivity {
     }
 
     //Onclick method for Help button
-    private void goToHep() {
+    private void goToHelp() {
         Button toFind = (Button) findViewById(R.id.btnHelp);
         toFind.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
