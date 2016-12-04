@@ -20,9 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EmptyStackException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * This class describes the full functionality of the persistent storage of the CookHelper
