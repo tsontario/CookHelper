@@ -76,8 +76,11 @@ public class Results extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), ViewRecipe.class);
                 intent.putExtra("recipe_id", selectedRecipeSearch.getId());
                 startActivity(intent);
+                finish();
             }
         });
     }
+
+
 
 }

@@ -203,7 +203,7 @@ public class Edit extends AppCompatActivity {
     }
 
     // ---------------
-    // SETTERS FOR TEXTVIEWS
+    // SETTERS FOR EDITTEXT
     // ---------------
 
     private void setTitle(Recipe recipe){
