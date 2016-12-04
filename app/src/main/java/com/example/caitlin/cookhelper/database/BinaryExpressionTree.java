@@ -6,6 +6,10 @@ package com.example.caitlin.cookhelper.database;
  */
 public class BinaryExpressionTree<V> {
 
+    /**
+     * Private inner class representing Nodes of the Binary Tree owner
+     * @param <V> The element of the node
+     */
     class Node<V> {
         private Node right;
         private Node left;

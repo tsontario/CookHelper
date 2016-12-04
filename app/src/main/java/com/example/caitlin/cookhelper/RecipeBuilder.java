@@ -12,6 +12,7 @@ public class RecipeBuilder {
     // ---------------
 
     // attributes
+    private long id;
     private String name;
     private String numServings;
     private String numCalories;
@@ -34,6 +35,11 @@ public class RecipeBuilder {
     // ---------------
     // SETTERS
     // ---------------
+
+    public RecipeBuilder setId(long id) {
+        this.id = id;
+        return this;
+    }
 
     public RecipeBuilder setName(String aName) {
         name = aName;

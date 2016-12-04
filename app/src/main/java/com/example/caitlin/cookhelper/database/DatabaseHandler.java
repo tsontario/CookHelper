@@ -163,7 +163,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             return null;
         }
 
-        // Iterate through all columns
+        // Create the Recipe object from the database row
+        Recipe r = getRecipe(id, db, cursor);
+
+
+        cursor.close();
+        db.close();
+        return r;
+    }
+
+    private Recipe getRecipe(long id, SQLiteDatabase db, Cursor cursor) {
         String name = cursor.getString(1);
         String numServings = cursor.getString(2);
         String numCalories = cursor.getString(3);
@@ -183,7 +192,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         // Now build the recipe
         RecipeBuilder builder = new RecipeBuilder();
-        builder.setName(name)
+        builder.setId(id)
+                .setName(name)
                 .setNumServings(numServings)
                 .setNumCalories(numCalories)
                 .setPrepTime(prepTime)
@@ -194,12 +204,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 .setIngredientMeasures(ingredientMeasures);
 
         // Return the recipe
-        Recipe r = builder.createRecipe();
-        r.setId(id);
-
-        cursor.close();
-        db.close();
-        return r;
+        return builder.createRecipe();
     }
 
     /**
