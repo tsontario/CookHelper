@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.annotation.NonNull;
 
 import com.example.caitlin.cookhelper.Ingredient;
 import com.example.caitlin.cookhelper.IngredientMeasure;
@@ -61,8 +62,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_INGREDIENT_MEASURE_NAME         = "name";
     private static final String KEY_INGREDIENT_MEASURE_QTY          = "quantity";
     private static final String KEY_INGREDIENT_MEASURE_MEASUREMENT  = "measurement";
-    // Temp column
+    // Temp values
     public static final String INGS                                 = "ings";
+    public static final String TABLE_SEARCH                         = "SEARCH";
 
 
     /** Constructor */
@@ -154,7 +156,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Cursor cursor = db.query(TABLE_RECIPES, null,
                 KEY_RECIPE_ID + " =?",
                 new String[] {String.valueOf(id)}, null, null, null);
-
         // Get row if exists
         if (cursor != null) {
             cursor.moveToFirst();
@@ -162,49 +163,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         else {
             return null;
         }
-
         // Create the Recipe object from the database row
-        Recipe r = getRecipe(id, db, cursor);
-
-
+        Recipe r = getRecipeObject(id, db, cursor);
+        // Clean up and return the recipe
         cursor.close();
         db.close();
         return r;
-    }
-
-    private Recipe getRecipe(long id, SQLiteDatabase db, Cursor cursor) {
-        String name = cursor.getString(1);
-        String numServings = cursor.getString(2);
-        String numCalories = cursor.getString(3);
-        String prepTime = cursor.getString(4);
-        String cookTime = cursor.getString(5);
-        String type = cursor.getString(6);
-        String category = cursor.getString(7);
-
-        // Get directions as ArrayList (stored in DB as JSON string)
-        String directionsJSONString = cursor.getString(8);
-        ArrayList<String> directions = new ArrayList<>();
-        getDirections(directionsJSONString, directions);
-
-        // Get Ingredient Measures from separate table
-        ArrayList<IngredientMeasure> ingredientMeasures = new ArrayList<>();
-        getIngredientMeasures(id, ingredientMeasures, db);
-
-        // Now build the recipe
-        RecipeBuilder builder = new RecipeBuilder();
-        builder.setId(id)
-                .setName(name)
-                .setNumServings(numServings)
-                .setNumCalories(numCalories)
-                .setPrepTime(prepTime)
-                .setCookTime(cookTime)
-                .setType(type)
-                .setCategory(category)
-                .setDirections(directions)
-                .setIngredientMeasures(ingredientMeasures);
-
-        // Return the recipe
-        return builder.createRecipe();
     }
 
     /**
@@ -218,7 +182,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
         String selectQuery = "SELECT * FROM " + TABLE_RECIPES;
-
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         // Loop through all rows and add to the list
@@ -232,22 +195,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return recipeList;
-    }
-
-    /** Counts total number of recipes in the database
-     *
-     * @return the number of recipes in the DB.
-     */
-    public int getRecipesCount() {
-        String countQuery = "SELECT * FROM " + TABLE_RECIPES;
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        Cursor cursor = db.rawQuery(countQuery, null);
-        int count = cursor.getCount();
-
-        cursor.close();
-        db.close();
-        return count;
     }
 
     /** Updates the values of the given recipe. ID is kept the same but all other values can change.
@@ -307,63 +254,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public ArrayList<SearchResult> findRecipes(String category, String type, String ingredientQuery) {
         ArrayList<SearchResult> results = new ArrayList<>();
         try {
-            SQLiteDatabase db = this.getReadableDatabase();
-
             // Make a temporary search table
-            String TABLE_SEARCH = "search";
-            String createTempTable = "CREATE TEMPORARY TABLE " + TABLE_SEARCH + "("
-                    + KEY_RECIPE_ID + " INTEGER, "
-                    + KEY_RECIPE_CATEGORY + " TEXT, "
-                    + KEY_RECIPE_TYPE + " TEXT, "
-                    + KEY_RECIPE_NAME + " TEXT, "
-                    + INGS + " TEXT"
-                    + ");";
-
-            // Create and populate the search table
-            String dropTable = "DROP TABLE IF EXISTS " + TABLE_SEARCH;
-            db.execSQL(dropTable);
-            db.execSQL(createTempTable);
-            db.execSQL("INSERT INTO search ("
-                    + KEY_RECIPE_ID + ", " + KEY_RECIPE_CATEGORY + ", "
-                    + KEY_RECIPE_TYPE + ", " + KEY_RECIPE_NAME + ", ings) SELECT "
-                    + TABLE_INGREDIENT_MEASURES + "." + KEY_INGREDIENT_MEASURE_RECIPE + ", "
-                    + TABLE_RECIPES + "." + KEY_RECIPE_CATEGORY + ", "
-                    + TABLE_RECIPES + "." + KEY_RECIPE_TYPE + ", "
-                    + TABLE_RECIPES + "." + KEY_RECIPE_NAME + ", "
-                    + "group_concat( " + TABLE_INGREDIENT_MEASURES + "." + KEY_INGREDIENT_MEASURE_NAME + ",\"!\") "
-                    + "FROM " + TABLE_RECIPES + " LEFT JOIN " + TABLE_INGREDIENT_MEASURES
-                    + " ON " + TABLE_RECIPES + "." + KEY_RECIPE_ID + " = "
-                    + TABLE_INGREDIENT_MEASURES + "." + KEY_INGREDIENT_MEASURE_RECIPE
-                    + " GROUP BY " + TABLE_RECIPES + "." + KEY_RECIPE_ID + ";");
+            SQLiteDatabase db = this.getReadableDatabase();
+            generateSearchTable(db);
 
             // Normalize the inputs
             category = category.trim();
             type = type.trim();
+
             // Create the custom query
             ArrayList<String> rankArgs = new ArrayList<>(); // For ranking results later
+            String searchQuery = composeQuery(category, type, ingredientQuery, TABLE_SEARCH, rankArgs);
 
-            String searchQuery = "SELECT " + KEY_RECIPE_ID + ", " + KEY_RECIPE_NAME + ", "
-                    + INGS + " FROM "
-                    + TABLE_SEARCH + " WHERE ";
-
-            boolean lookBehind = false;
-            if (category != null && category.length() > 0) {
-                searchQuery += KEY_RECIPE_CATEGORY + " LIKE \"%" + category + "%\" ";
-                lookBehind = true;
-            }
-            if (type != null && type.length() > 0) {
-                if (lookBehind) {
-                    searchQuery += " AND ";
-                }
-                searchQuery += KEY_RECIPE_TYPE + " LIKE \"%" + type + "%\" ";
-                lookBehind = true;
-            }
-            if (lookBehind) {
-                searchQuery += "AND ";
-            }
-            System.out.println(searchQuery);
-            searchQuery += generateSQLQuery(ingredientQuery, INGS, rankArgs);
-            System.out.println(searchQuery);
+            // Perform the search
             Cursor cursor = db.rawQuery(searchQuery, null);
             if (cursor != null) {
                 cursor.moveToFirst();
@@ -371,29 +274,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 return null;
             }
 
-            // Gather all results, ranking as we go.
-            while (!cursor.isAfterLast()) {
-                String r_name = cursor.getString(1);
-                long r_id = cursor.getInt(0);
-                String s = cursor.getString(2);
-                SearchResult result = new SearchResult(r_name, r_id);
-                setRank(result, rankArgs, s);
-                results.add(result);
-                cursor.moveToNext();
-            }
+            // Gather all results, then rank
+            gatherResults(results, rankArgs, cursor);
+            rankResults(results);
 
-            // Now sort the results according to ranking
-            Collections.sort(results, new Comparator<SearchResult>() {
-                public int compare(SearchResult o1, SearchResult o2) {
-                    if (o1.getRank() > o2.getRank()) {
-                        return -1;
-                    } else if (o1.getRank() < o2.getRank()) {
-                        return 1;
-                    }
-                    return 0;
-                }
-            });
-
+            // Cleanup
             cursor.close();
             db.close();
         }
@@ -403,15 +288,100 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             results.add(new SearchResult("Error parsing query!", 1));
         }
         catch (EmptyStackException e) {
+            // This is thrown when we have certain malformed queries
             results = new ArrayList<>();
             results.add(new SearchResult("Error parsing query!", 1));
         }
         return results;
     }
 
+    private void gatherResults(ArrayList<SearchResult> results, ArrayList<String> rankArgs, Cursor cursor) {
+        while (!cursor.isAfterLast()) {
+            String r_name = cursor.getString(1);
+            long r_id = cursor.getInt(0);
+            String s = cursor.getString(2);
+            SearchResult result = new SearchResult(r_name, r_id);
+            setRank(result, rankArgs, s);
+            results.add(result);
+            cursor.moveToNext();
+        }
+    }
+
+    /**
+     * Composes a valid SQL query on the predefined search table from raw user input.
+     * @param category category field
+     * @param type type field
+     * @param ingredientQuery A boolean expression where the operands are ingredients.
+     * @param TABLE_SEARCH The predefined search table
+     * @param rankArgs Composes a list of ingredients in the query (excluding NOTed operands). This
+     *                 is used to rank the search results in the caller.
+     * @return A legal SQlite expression representing the inputted query
+     */
+    @NonNull
+    private String composeQuery(String category, String type, String ingredientQuery,
+                                String TABLE_SEARCH, ArrayList<String> rankArgs) {
+        String searchQuery = "SELECT " + KEY_RECIPE_ID + ", " + KEY_RECIPE_NAME + ", "
+                + INGS + " FROM "
+                + TABLE_SEARCH + " WHERE ";
+
+        boolean lookBehind = false;
+        if (category != null && category.length() > 0) {
+            searchQuery += KEY_RECIPE_CATEGORY + " LIKE \"%" + category + "%\" ";
+            lookBehind = true;
+        }
+        if (type != null && type.length() > 0) {
+            if (lookBehind) {
+                searchQuery += " AND ";
+            }
+            searchQuery += KEY_RECIPE_TYPE + " LIKE \"%" + type + "%\" ";
+            lookBehind = true;
+        }
+        if (lookBehind) {
+            searchQuery += "AND ";
+        }
+        searchQuery += SQLParser.generateSQLQuery(ingredientQuery, INGS, rankArgs);
+        return searchQuery;
+    }
+
     /************** PRIVATE UTILITY / HELPER METHODS *******************/
 
     /** Helper methods for getRecipe(int id) */
+
+    private Recipe getRecipeObject(long id, SQLiteDatabase db, Cursor cursor) {
+        String name = cursor.getString(1);
+        String numServings = cursor.getString(2);
+        String numCalories = cursor.getString(3);
+        String prepTime = cursor.getString(4);
+        String cookTime = cursor.getString(5);
+        String type = cursor.getString(6);
+        String category = cursor.getString(7);
+
+        // Get directions as ArrayList (stored in DB as JSON string)
+        String directionsJSONString = cursor.getString(8);
+        ArrayList<String> directions = new ArrayList<>();
+        getDirections(directionsJSONString, directions);
+
+        // Get Ingredient Measures from separate table
+        ArrayList<IngredientMeasure> ingredientMeasures = new ArrayList<>();
+        getIngredientMeasures(id, ingredientMeasures, db);
+
+        // Now build the recipe
+        RecipeBuilder builder = new RecipeBuilder();
+        builder.setId(id)
+                .setName(name)
+                .setNumServings(numServings)
+                .setNumCalories(numCalories)
+                .setPrepTime(prepTime)
+                .setCookTime(cookTime)
+                .setType(type)
+                .setCategory(category)
+                .setDirections(directions)
+                .setIngredientMeasures(ingredientMeasures);
+
+        // Return the recipe
+        return builder.createRecipe();
+    }
+
     private void getDirections(String rawDirectionsString, ArrayList<String> directions) {
         try {
             JSONArray transform = new JSONArray(rawDirectionsString);
@@ -504,18 +474,56 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
     /** End of helper methods for addRecipe(Recipe r) */
 
+    /** Helper methods for findRecipes */
+
     /**
-     * Delegated call to static helper method for parsing text input into a legal SQLite statement
-     * @param q The raw query string
-     * @param prefix The name of the column to search over
-     * @param rankArgs when generateSQLQuery returns, this will contain a 1-1 mapping of each atomic
-     *                 query value (e.g. one ingredient). This wil be used for ranking results.
-     * @return A legally formatted SQLite string that can execute a query on the DB.
+     * Create a temporary DB table for searching recipes. Concatenates all ingredients
+     * sharing a recipe id and joins it to the appropriate recipe, type, and category.
+     * @param db A reference to the readable database
      */
-    private String generateSQLQuery(String q, String prefix, ArrayList<String> rankArgs) {
-        return SQLParser.generateSQLQuery(q, prefix, rankArgs);
+    private void generateSearchTable(SQLiteDatabase db) {
+        String createTempTable = "CREATE TEMPORARY TABLE " + TABLE_SEARCH + "("
+                + KEY_RECIPE_ID + " INTEGER, "
+                + KEY_RECIPE_CATEGORY + " TEXT, "
+                + KEY_RECIPE_TYPE + " TEXT, "
+                + KEY_RECIPE_NAME + " TEXT, "
+                + INGS + " TEXT"
+                + ");";
+
+        // Create and populate the search table
+        String dropTable = "DROP TABLE IF EXISTS " + TABLE_SEARCH;
+        db.execSQL(dropTable);
+        db.execSQL(createTempTable);
+        db.execSQL("INSERT INTO search ("
+                + KEY_RECIPE_ID + ", " + KEY_RECIPE_CATEGORY + ", "
+                + KEY_RECIPE_TYPE + ", " + KEY_RECIPE_NAME + ", ings) SELECT "
+                + TABLE_INGREDIENT_MEASURES + "." + KEY_INGREDIENT_MEASURE_RECIPE + ", "
+                + TABLE_RECIPES + "." + KEY_RECIPE_CATEGORY + ", "
+                + TABLE_RECIPES + "." + KEY_RECIPE_TYPE + ", "
+                + TABLE_RECIPES + "." + KEY_RECIPE_NAME + ", "
+                + "group_concat( " + TABLE_INGREDIENT_MEASURES + "." + KEY_INGREDIENT_MEASURE_NAME + ",\"!\") "
+                + "FROM " + TABLE_RECIPES + " LEFT JOIN " + TABLE_INGREDIENT_MEASURES
+                + " ON " + TABLE_RECIPES + "." + KEY_RECIPE_ID + " = "
+                + TABLE_INGREDIENT_MEASURES + "." + KEY_INGREDIENT_MEASURE_RECIPE
+                + " GROUP BY " + TABLE_RECIPES + "." + KEY_RECIPE_ID + ";");
     }
 
+    /**
+     * Ranks results according to the number of ingredients that match the search query
+     * @param results A sorted list of SearchResults
+     */
+    private void rankResults(ArrayList<SearchResult> results) {
+        Collections.sort(results, new Comparator<SearchResult>() {
+            public int compare(SearchResult o1, SearchResult o2) {
+                if (o1.getRank() > o2.getRank()) {
+                    return -1;
+                } else if (o1.getRank() < o2.getRank()) {
+                    return 1;
+                }
+                return 0;
+            }
+        });
+    }
 
     /**
      * Fetches a list of all the categories of recipes in the database. Also includes an empty string
