@@ -56,31 +56,30 @@
 
     <!--Help-->
     <string name="how_to_find"><u>How do I find a recipe?</u></string>
-    <string name="how_to_find_instructions">First, go to the home screen and select the Find A
-        Recipe button. Next, enter your search criteria. You can select a Category and or a Type
+    <string name="how_to_find_instructions">First, go to the home screen and select the \"Find A
+        Recipe\" button. Next, enter your search criteria. You can select a Category and or a Type
         from the drop-down menus. You can also enter ingredients that you would (or would not) like
         a recipe to contain. For example, you can type "chicken AND onion NOT potato" in the field
-        that says Ingredients. Finally, select the Search button.</string>
+        that says Ingredients. Finally, select the \"Search\" button.</string>
 
     <string name="how_to_browse"><u>How do I view all of my recipes?</u></string>
-    <string name="how_to_browse_instructions">Go to the home screen and select the Browse
-        My Recipes button.</string>
+    <string name="how_to_browse_instructions">Go to the home screen and select the \"Browse
+        My Recipes\" button.</string>
 
     <string name="how_to_add"><u>How do I add a new recipe?</u></string>
-    <string name="how_to_add_instructions">Select the Add A Recipe button on the home screen. Then,
-    add your recipe\'s details to the form and select the Save button at the bottom of the screen.
+    <string name="how_to_add_instructions">Select the \"Add A Recipe\" button on the home screen.
+        Then, add your recipe\'s details to the form and select the \"Save\" button at the bottom of the screen.
     </string>
 
     <string name="how_to_edit"><u>How do I edit a recipe?</u></string>
     <string name="how_to_edit_instructions">First, select a recipe that you have already saved. You
-        can do this by browsing your recipes or by finding a recipe with search criteria. Now
-        select the recipe you wish to edit; you should see a screen with this recipe\'s details.
-        There will be a "Edit" button at the bottom of that screen. Select it to edit your recipe
-        your recipe.</string>
+        can do so by browsing your recipes or by finding a specific recipe with search criteria. Now
+        select the recipe you wish to edit; you will see a screen with this recipe\'s details.
+        There will be a \"Edit\" button at the bottom of that screen. Select it to edit your recipe.</string>
 
     <string name="how_to_delete"><u>How do I delete a recipe?</u></string>
     <string name="how_to_delete_instructions">Follow the steps to edit a recipe. However, instead of
-    pushing the Edit button, press the Delete button at the bottom of your recipe. </string>
+    pushing the \"Edit\" button, press the \"Delete\" button at the bottom of your recipe. </string>
 
     <!--FindRecipe-->
     <string name="search_ingredients_instructions1">Use ingredients and the words AND, OR, and NOT
